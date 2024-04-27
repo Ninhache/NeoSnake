@@ -1,0 +1,8 @@
+{
+    "extends": "./tsconfig.json",  // Inherits settings from the main tsconfig.json
+    "include": [
+      "src/**/*",  // Include all your source files
+      "eslint.config.js"  // Specifically include your ESLint config file
+    ]
+  }
+  
