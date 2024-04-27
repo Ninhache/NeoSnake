@@ -42,10 +42,17 @@ export class Obstacles extends Entity {
     }
 }
 
-export class Food extends Entity {
+
+
+export abstract class Food extends Entity {
+
+
     constructor(sprite: Nullable<Sprite>, coordinates: Coordinates) {
         super(sprite, coordinates);
     }
+
+    abstract effect(snake: Snake): void;
+    abstract draw(ctx: CanvasRenderingContext2D): void;
 
     /**
      * Respawn the food at a random location on the screen, but not on the snake's body
@@ -53,31 +60,94 @@ export class Food extends Entity {
      * @param snake the snake is provided to prevent the food from spawning on the snake's body
      */
     public respawn(snake: Snake, gameWidth: number, gameHeight: number): void {
-       let possiblePositions = [];
-       for (let i = 0; i < gameWidth; i++) {
-           for (let j = 0; j < gameHeight; j++) {
-               possiblePositions.push({ x: i, y: j });
-           }
-       }
+        let possiblePositions = [];
+        for (let i = 0; i < gameWidth; i++) {
+            for (let j = 0; j < gameHeight; j++) {
+                possiblePositions.push({ x: i, y: j });
+            }
+        }
 
-       // Remove positions that are occupied by the snake
-       const snakePositions = new Set(snake.body.map(segment => `${segment.x},${segment.y}`));
-       possiblePositions = possiblePositions.filter(pos => !snakePositions.has(`${pos.x},${pos.y}`));
+        // Remove positions that are occupied by the snake
+        const snakePositions = new Set(snake.body.map(segment => `${segment.x},${segment.y}`));
+        possiblePositions = possiblePositions.filter(pos => {
+            return !snakePositions.has(`${pos.x},${pos.y}`);
+        });
 
-       // Randomly pick a position from the remaining valid positions
-       const randomIndex = Math.floor(Math.random() * possiblePositions.length);
-       const newPos = possiblePositions[randomIndex];
+        // Randomly pick a position from the remaining valid positions
+        const randomIndex = Math.floor(Math.random() * possiblePositions.length);
+        const newPos = possiblePositions[randomIndex];
 
-       // Update food position
-       this.coordinates = newPos;
+        // Update food position
+        this.coordinates = newPos;
+    }
+
+
+
+}
+
+export class BasicFood extends Food {
+
+    public effect(snake: Snake): void {
+        snake.growSnake();
     }
 
     public draw(ctx: CanvasRenderingContext2D): void {
         ctx.fillStyle = "red";
         ctx.fillRect(this.coordinates.x * 20, this.coordinates.y * 20, 20, 20);
     }
-
 }
+
+abstract class FoodDecorator extends Food {
+    protected food: Food;
+
+    constructor(food: Food) {
+        super(null, food.coordinates);
+        this.food = food;
+    }
+
+    public draw(ctx: CanvasRenderingContext2D): void {
+        this.food.draw(ctx);
+    }
+
+    public effect(snake: Snake): void {
+        this.food.effect(snake);
+    }
+}
+
+export class BigFruit extends FoodDecorator {
+    constructor(food: Food) {
+        super(food);
+    }
+
+    effect(snake: Snake): void {
+        for (let i = 0; i < 5; i++) {
+            snake.growSnake();
+        }
+    }
+
+    public draw(ctx: CanvasRenderingContext2D): void {
+        ctx.fillStyle = "orange";
+        ctx.fillRect(this.coordinates.x * 20, this.coordinates.y * 20, 20, 20);
+    }
+}
+
+export class DeadlyFruit extends FoodDecorator {
+    constructor(food: Food) {
+        super(food);
+    }
+
+    effect(snake: Snake): void {
+        snake.kill();
+    }
+
+    public draw(ctx: CanvasRenderingContext2D): void {
+        ctx.fillStyle = "black";
+        ctx.fillRect(this.coordinates.x * 20, this.coordinates.y * 20, 20, 20);
+    }
+}
+
+
+
 
 export class Snake extends Entity {
 
@@ -86,8 +156,9 @@ export class Snake extends Entity {
     directionQueue: Direction[] = [];
     currentDirection: Direction;
     // speed: number; // ?
-    grow: boolean = false;
-    
+    // grow: boolean = false;
+    hasToDie: boolean = false;
+
 
     constructor(sprite: Nullable<Sprite>, coordinates: Coordinates) {
         super(sprite, coordinates);
@@ -100,9 +171,13 @@ export class Snake extends Entity {
         this.currentDirection = Direction.Right;
     }
 
-    public eat(food: Food): void {
-        this.grow = true;
-        food.respawn(this, Math.floor(800 / 20), Math.floor(800 / 20));
+    public eat(food: Food, gameWidth: number, gameHeight: number): void {
+        food.effect(this);
+        food.respawn(this, gameWidth, gameHeight);
+    }
+
+    public growSnake(): void {
+        this.body.push({ x: this.body[this.body.length - 1].x, y: this.body[this.body.length - 1].y });
     }
 
     public enqueueDirection(newDirection: Direction) {
@@ -127,17 +202,25 @@ export class Snake extends Entity {
         }
     }
 
+    public kill(): void {
+        this.hasToDie = true;
+    }
+
     public move(gameWidth: number, gameHeight: number): boolean {
-        
+
         if (this.directionQueue.length > 0) {
             this.currentDirection = this.directionQueue.shift()!;
         }
 
+        if (this.hasToDie) {
+            return false;
+        }
+
         const newHead: Coordinates = { x: this.head.x, y: this.head.y };
         switch (this.currentDirection) {
-            case Direction.Up:    newHead.y -= 1; break;
-            case Direction.Down:  newHead.y += 1; break;
-            case Direction.Left:  newHead.x -= 1; break;
+            case Direction.Up: newHead.y -= 1; break;
+            case Direction.Down: newHead.y += 1; break;
+            case Direction.Left: newHead.x -= 1; break;
             case Direction.Right: newHead.x += 1; break;
         }
 
@@ -147,11 +230,7 @@ export class Snake extends Entity {
 
         this.body.unshift({ x: this.head.x, y: this.head.y });
         this.head = newHead;
-
-        if (!this.grow) {
-            this.body.pop();
-        }
-        this.grow = false;
+        this.body.pop();
 
         this.directionQueue = [];
 
@@ -179,7 +258,7 @@ export class Snake extends Entity {
     }
 
     public draw(ctx: CanvasRenderingContext2D): void {
-        
+
         // draw the head as "light" as possible
         ctx.fillStyle = '#00D000';
         ctx.fillRect(this.head.x * 20, this.head.y * 20, 20, 20);
@@ -191,6 +270,6 @@ export class Snake extends Entity {
 
     }
 
-    
+
 
 }
