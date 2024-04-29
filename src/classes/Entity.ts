@@ -51,7 +51,7 @@ export abstract class Food extends Entity {
         super(sprite, coordinates);
     }
 
-    abstract effect(snake: Snake): void;
+    abstract effect(snake: Snake, gameWidth: number, gameHeight: number): void;
     abstract draw(ctx: CanvasRenderingContext2D): void;
 
     /**
@@ -87,7 +87,8 @@ export abstract class Food extends Entity {
 
 export class BasicFood extends Food {
 
-    public effect(snake: Snake): void {
+    public effect(snake: Snake, gameWidth: number, gameHeight: number): void {
+        this.respawn(snake, gameWidth, gameHeight);
         snake.growSnake();
     }
 
@@ -109,8 +110,8 @@ abstract class FoodDecorator extends Food {
         this.food.draw(ctx);
     }
 
-    public effect(snake: Snake): void {
-        this.food.effect(snake);
+    public effect(snake: Snake, gameWidth: number, gameHeight: number): void {
+        this.food.effect(snake, gameWidth, gameHeight);
     }
 }
 
@@ -123,6 +124,7 @@ export class BigFruit extends FoodDecorator {
         for (let i = 0; i < 5; i++) {
             snake.growSnake();
         }
+        this.coordinates = { x: -1, y: -1 };
     }
 
     public draw(ctx: CanvasRenderingContext2D): void {
@@ -141,18 +143,39 @@ export class DeadlyFruit extends FoodDecorator {
     }
 
     public draw(ctx: CanvasRenderingContext2D): void {
-        ctx.fillStyle = "black";
+        ctx.fillStyle = "purple";
         ctx.fillRect(this.coordinates.x * 20, this.coordinates.y * 20, 20, 20);
     }
 }
 
 
+class SnakeSegment {
+    current: Coordinates;
+    target: Coordinates;
 
+    constructor(coordinates: Coordinates) {
+        this.current = coordinates;
+        this.target = coordinates;
+    }
+
+    updatePosition(newX: number, newY: number) {
+        this.current = { ...this.target };
+        this.target = { x: newX, y: newY };
+    }
+
+    get x(): number {
+        return this.current.x;
+    }
+
+    get y(): number {
+        return this.current.y;
+    }
+}
 
 export class Snake extends Entity {
 
-    head: Coordinates;
-    body: Coordinates[];
+    head: SnakeSegment;
+    body: SnakeSegment[];
     directionQueue: Direction[] = [];
     currentDirection: Direction;
     // speed: number; // ?
@@ -162,22 +185,22 @@ export class Snake extends Entity {
 
     constructor(sprite: Nullable<Sprite>, coordinates: Coordinates) {
         super(sprite, coordinates);
-        this.head = coordinates;
+        this.head = new SnakeSegment(coordinates);
         this.body = [
-            { x: coordinates.x - 1, y: coordinates.y },
-            { x: coordinates.x - 2, y: coordinates.y },
-            { x: coordinates.x - 3, y: coordinates.y },
+            new SnakeSegment({ x: coordinates.x - 1, y: coordinates.y }),
+            new SnakeSegment({ x: coordinates.x - 2, y: coordinates.y }),
+            new SnakeSegment({ x: coordinates.x - 3, y: coordinates.y })
         ];
         this.currentDirection = Direction.Right;
     }
 
     public eat(food: Food, gameWidth: number, gameHeight: number): void {
-        food.effect(this);
-        food.respawn(this, gameWidth, gameHeight);
+        food.effect(this, gameWidth, gameHeight);
     }
 
     public growSnake(): void {
-        this.body.push({ x: this.body[this.body.length - 1].x, y: this.body[this.body.length - 1].y });
+        const current = this.body[this.body.length - 1].current;
+        this.body.push(new SnakeSegment({ x: current.x, y: current.y }));
     }
 
     public enqueueDirection(newDirection: Direction) {
@@ -216,7 +239,11 @@ export class Snake extends Entity {
             return false;
         }
 
-        const newHead: Coordinates = { x: this.head.x, y: this.head.y };
+        const newHead: Coordinates = {
+            x: this.head.target.x,
+            y: this.head.target.y
+        };
+
         switch (this.currentDirection) {
             case Direction.Up: newHead.y -= 1; break;
             case Direction.Down: newHead.y += 1; break;
@@ -228,9 +255,11 @@ export class Snake extends Entity {
             return false;
         }
 
-        this.body.unshift({ x: this.head.x, y: this.head.y });
-        this.head = newHead;
-        this.body.pop();
+        this.head.updatePosition(newHead.x, newHead.y);        
+        this.body[0].updatePosition(this.head.current.x, this.head.current.y);
+        for (let i = 0; i < this.body.length - 1; i++) {
+            this.body[i + 1].updatePosition(this.body[i].current.x, this.body[i].current.y);
+        }
 
         this.directionQueue = [];
 
@@ -238,7 +267,7 @@ export class Snake extends Entity {
     }
 
     public isCollidingWithSelf(newHead: Coordinates): boolean {
-        return this.body.some(segment => segment.x === newHead.x && segment.y === newHead.y);
+        return this.body.slice(0, -1).some(segment => segment.x === newHead.x && segment.y === newHead.y);
     }
 
     public isLeavingTheScreen(newHead: Coordinates, gameWidth: number, gameHeight: number): boolean {
@@ -257,15 +286,25 @@ export class Snake extends Entity {
         return Math.floor(0xA0 - (i * 0xA0 / length)) + 0x40;
     }
 
-    public draw(ctx: CanvasRenderingContext2D): void {
+    private interpolate(current: Coordinates, target: Coordinates, alpha: number): Coordinates {
+        
+        return {
+            x: current.x + (target.x - current.x) * alpha,
+            y: current.y + (target.y - current.y) * alpha
+        };
+    }
 
-        // draw the head as "light" as possible
+    public draw(ctx: CanvasRenderingContext2D, alpha: number = 0): void {
+
         ctx.fillStyle = '#00D000';
-        ctx.fillRect(this.head.x * 20, this.head.y * 20, 20, 20);
+
+        let headPos = this.interpolate(this.head.current, this.head.target, alpha);
+        ctx.fillRect(headPos.x * 20, headPos.y * 20, 20, 20);
 
         this.body.forEach((segment, i) => {
             ctx.fillStyle = `rgb(0,${this.calculateColor(i, this.body.length)},0)`;
-            ctx.fillRect(segment.x * 20, segment.y * 20, 20, 20);
+            let segmentPos = this.interpolate(segment.current, segment.target, alpha);
+            ctx.fillRect(segmentPos.x * 20, segmentPos.y * 20, 20, 20);
         });
 
     }
