@@ -1,14 +1,30 @@
 
-import GameCanvas from './components/GameCanvas'
+import { Route, BrowserRouter as Router, Routes, } from 'react-router-dom'
+import WidgetHeader from './components/Widgets/WidgetHeader'
+import NavBar from './components/Widgets/WidgetNavbar'
+
+import WidgetFooter from './components/Widgets/WidgetFooter'
+import WidgetGame from './components/Widgets/WidgetGame'
 import './styles/App.css'
+import WidgetHome from './components/Widgets/WidgetHome'
+import WidgetFaq from './components/Widgets/WidgetFaq'
 
-function App() {
-  
-
+const App: React.FC<{ }> = ({ }) => {
   return (
-    <>
-      <GameCanvas width={800} height={800} />
-    </>
+      <>
+        <div className='flex justify-center items-center flex-col'>
+          <WidgetHeader />
+          <Router>
+            <NavBar />
+            <Routes>
+              <Route path="/" element={<WidgetHome />} />
+              <Route path="/play" element={<WidgetGame />} />
+              <Route path="/faq" element={<WidgetFaq />} />
+            </Routes>
+          </Router>
+          <WidgetFooter />
+        </div>
+      </>
   )
 }
 

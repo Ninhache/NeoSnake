@@ -1,6 +1,6 @@
 
 import { useEffect, useRef } from "react";
-import { Food, Snake } from "../classes/Entity";
+import { BasicFood, BigFruit, DeadlyFruit, Food, Snake } from "../classes/Entity";
 
 import { Direction } from "../enums";
 
@@ -16,12 +16,14 @@ const GameCanvas: React.FC<Props> = ({ width, height }) => {
     
     // const food = useRef(new Food(null, { x: 15, y: 15 }));
     const foodsRef = useRef([
-        new Food(null, { x: 10, y: 10 }),
-        new Food(null, { x: 20, y: 20 }),
-        new Food(null, { x: 30, y: 35 })
+        new BasicFood(null, { x: 10, y: 10 }),
+        new BigFruit(new BasicFood(null, { x: 20, y: 20 })),
+        new BasicFood(null, { x: 30, y: 35 }),
+        new DeadlyFruit(new BasicFood(null, { x: 20, y: 20 }))
     ]);
 
     const handleKeyPress = (event: KeyboardEvent) => {
+        event.preventDefault();
         const { key } = event;
 
         switch (key) {
@@ -61,7 +63,9 @@ const GameCanvas: React.FC<Props> = ({ width, height }) => {
             const render = () => {
                 frameCount++;
 
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                // ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
                 draw(ctx);
 
                 animationFrameId = window.requestAnimationFrame(render);
@@ -69,8 +73,10 @@ const GameCanvas: React.FC<Props> = ({ width, height }) => {
                 if (frameCount % 15 === 0) {
 
                     foodsRef.current.forEach((food) => {
+                        
+                        console.log(width, height)
                         if (snake.current.head.x === food.coordinates.x && snake.current.head.y === food.coordinates.y) {
-                            snake.current.eat(food);
+                            snake.current.eat(food, Math.floor(width / 20), Math.floor(height / 20))
                         }
                     });
 
