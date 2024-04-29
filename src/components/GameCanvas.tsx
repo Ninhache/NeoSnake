@@ -63,7 +63,9 @@ const GameCanvas: React.FC<Props> = ({ width, height }) => {
             const render = () => {
                 frameCount++;
 
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                // ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
                 draw(ctx);
 
                 animationFrameId = window.requestAnimationFrame(render);
