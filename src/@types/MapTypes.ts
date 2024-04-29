@@ -1,5 +1,6 @@
-import { DirectionType } from "../enums";
+
 import { Coordinates } from "./CoordinatesType";
+import { DirectionType } from "./DirectionType";
 
 export type foodType = "FBa" | "FBi";
 export type obstacleType = "OBa" | "ODi";

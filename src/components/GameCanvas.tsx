@@ -4,7 +4,8 @@ import { useEffect, useRef } from "react";
 import jsonMap from "../assets/jsons/testMap.json";
 import { Food } from "../classes/Entity";
 import { SnakeMap } from "../classes/Map";
-import { Direction } from "../enums";
+import { Direction } from "../@types/DirectionType";
+
 
 type Props = {
 	width: number;
