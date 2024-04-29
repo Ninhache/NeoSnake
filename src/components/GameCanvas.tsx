@@ -17,12 +17,22 @@ const GameCanvas: React.FC<Props> = ({ width, height }) => {
     // const food = useRef(new Food(null, { x: 15, y: 15 }));
     const foodsRef = useRef([
         new BasicFood(null, { x: 10, y: 10 }),
-        new BigFruit(new BasicFood(null, { x: 20, y: 20 })),
+        new BigFruit(new BasicFood(null, { x: 25, y: 20 })),
         new BasicFood(null, { x: 30, y: 35 }),
-        new DeadlyFruit(new BasicFood(null, { x: 20, y: 20 }))
+        new DeadlyFruit(new BasicFood(null, { x: 15, y: 20 }))
     ]);
 
     const handleKeyPress = (event: KeyboardEvent) => {
+        // Keep all the events unless they are arrow keys
+        if (
+            ![
+              "ArrowLeft",
+              "ArrowUp",
+              "ArrowRight",
+              "ArrowDown",
+            ].includes(event.key)
+          )
+            return;
         event.preventDefault();
         const { key } = event;
 
@@ -40,14 +50,14 @@ const GameCanvas: React.FC<Props> = ({ width, height }) => {
                 snake.current.enqueueDirection(Direction.Right);
                 break;
         }
-
     };
 
-    const draw = (ctx: CanvasRenderingContext2D) => {
+    const draw = (ctx: CanvasRenderingContext2D, frameNumber: number) => {
         foodsRef.current.forEach(food => {
-            food.draw(ctx);
-        });
-        snake.current.draw(ctx);
+			food.draw(ctx);
+		});
+
+		snake.current.draw(ctx, (frameNumber % 20) / 20);
     };
 
     useEffect(() => {
@@ -62,30 +72,31 @@ const GameCanvas: React.FC<Props> = ({ width, height }) => {
 
             const render = () => {
                 frameCount++;
-
-                // ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                draw(ctx);
-
                 animationFrameId = window.requestAnimationFrame(render);
 
-                if (frameCount % 15 === 0) {
+                
+                ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                if (frameCount % 20 === 0) {
+
+                    const snakeHasMoved = snake.current.move(Math.floor(width / 20), Math.floor(height / 20));
 
                     foodsRef.current.forEach((food) => {
-                        
-                        console.log(width, height)
                         if (snake.current.head.x === food.coordinates.x && snake.current.head.y === food.coordinates.y) {
                             snake.current.eat(food, Math.floor(width / 20), Math.floor(height / 20))
                         }
                     });
 
-                    if (!snake.current.move(Math.floor(width / 20), Math.floor(height / 20))) {
+                    if (!snakeHasMoved) {
                         alert('Game Over');
                         window.cancelAnimationFrame(animationFrameId);
                     }
 
                 }
+
+				draw(ctx, frameCount);
+
             }
 
             render();
@@ -96,24 +107,7 @@ const GameCanvas: React.FC<Props> = ({ width, height }) => {
             }
 
         }
-
-        // if (ctx && canvas) {
-        //     const gameLoop = setInterval(() => {
-        //         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        //         snake.current.move();
-        //         food.current.draw(ctx);
-        //         snake.current.draw(ctx);
-        //     }, 100);
-
-        //     window.addEventListener('keydown', handleKeyPress);
-
-        //     return () => {
-        //         clearInterval(gameLoop),
-        //         window.removeEventListener('keydown', handleKeyPress);
-        //     }
-        // }
-
-    }, [draw]);
+    }, []);
 
     return (<canvas ref={canvasRef} width={width} height={height} style={{ border: '1px solid black' }} />);
 
