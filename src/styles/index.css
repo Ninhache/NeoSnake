@@ -3,5 +3,15 @@
 @tailwind utilities;
 
 :root {
-    background-color: #cecece;
+  background-color: #cecece;
+}
+
+/* https://www.w3schools.com/howto/howto_css_hide_scrollbars.asp */
+:root::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+:root {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
