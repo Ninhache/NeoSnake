@@ -1,4 +1,3 @@
-import { Coordinates } from "../@types/CoordinatesType";
 import { Nullable } from "../@types/NullableType";
 import { SnakeMap, Tile } from "./Map";
 
@@ -165,30 +164,6 @@ export class DeadlyFruit extends FoodDecorator {
 	public draw(ctx: CanvasRenderingContext2D): void {
 		ctx.fillStyle = "purple";
 		ctx.fillRect(this.getLocationTile().x * 20, this.getLocationTile().y * 20, 20, 20);
-	}
-}
-
-
-class SnakeSegment {
-	current: Coordinates;
-	target: Coordinates;
-
-	constructor(coordinates: Coordinates) {
-		this.current = coordinates;
-		this.target = coordinates;
-	}
-
-	updatePosition(newX: number, newY: number) {
-		this.current = { ...this.target };
-		this.target = { x: newX, y: newY };
-	}
-
-	get x(): number {
-		return this.current.x;
-	}
-
-	get y(): number {
-		return this.current.y;
 	}
 }
 
