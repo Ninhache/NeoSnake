@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prod": "yarn build && yarn preview",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
