@@ -1,4 +1,3 @@
-
 import { useEffect, useRef } from "react";
 
 import jsonMap from "../assets/jsons/testMap.json";
@@ -6,103 +5,98 @@ import { Food } from "../classes/Entity";
 import { SnakeMap } from "../classes/Map";
 import { Direction } from "../@types/DirectionType";
 
-
 type Props = {
-	width: number;
-	height: number;
-}
+  width: number;
+  height: number;
+};
 
 const GameCanvas: React.FC<Props> = ({ width, height }) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const map = new SnakeMap(JSON.stringify(jsonMap));
+  const snake = map.snake;
 
-	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const map = new SnakeMap(JSON.stringify(jsonMap));
-	const snake = map.snake;
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
 
-	useEffect(() => {
-		const canvas = canvasRef.current;
-		const ctx = canvas?.getContext('2d');
+    const handleKeyPress = (event: KeyboardEvent) => {
+      // Keep all the events unless they are arrow keys
+      if (
+        !["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].includes(event.key)
+      )
+        return;
+      event.preventDefault();
+      const { key } = event;
 
-		const handleKeyPress = (event: KeyboardEvent) => {
-			// Keep all the events unless they are arrow keys
-			if (
-				![
-					"ArrowLeft",
-					"ArrowUp",
-					"ArrowRight",
-					"ArrowDown",
-				].includes(event.key)
-			)
-				return;
-			event.preventDefault();
-			const { key } = event;
+      switch (key) {
+        case "ArrowUp":
+          snake.enqueueDirection(Direction.Up);
+          break;
+        case "ArrowDown":
+          snake.enqueueDirection(Direction.Down);
+          break;
+        case "ArrowLeft":
+          snake.enqueueDirection(Direction.Left);
+          break;
+        case "ArrowRight":
+          snake.enqueueDirection(Direction.Right);
+          break;
+      }
+    };
 
-			switch (key) {
-				case "ArrowUp":
-					snake.enqueueDirection(Direction.Up);
-					break;
-				case "ArrowDown":
-					snake.enqueueDirection(Direction.Down);
-					break;
-				case "ArrowLeft":
-					snake.enqueueDirection(Direction.Left);
-					break;
-				case "ArrowRight":
-					snake.enqueueDirection(Direction.Right);
-					break;
-			}
-		};
+    const draw = (ctx: CanvasRenderingContext2D, frameNumber: number) => {
+      map.draw(ctx, (frameNumber % 10) / 10);
+    };
 
-		const draw = (ctx: CanvasRenderingContext2D, frameNumber: number) => {
-			map.draw(ctx, (frameNumber % 20) / 20);
-		};
+    if (ctx && canvas) {
+      let frameCount = 0;
+      let animationFrameId: number;
 
-		if (ctx && canvas) {
-			let frameCount = 0;
-			let animationFrameId: number;
+      window.addEventListener("keydown", handleKeyPress);
 
-			window.addEventListener('keydown', handleKeyPress);
+      const render = () => {
+        frameCount++;
+        animationFrameId = window.requestAnimationFrame(render);
 
-			const render = () => {
-				frameCount++;
-				animationFrameId = window.requestAnimationFrame(render);
+        ctx.fillStyle = "rgba(255, 255, 255, 1)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-				ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-				ctx.fillRect(0, 0, canvas.width, canvas.height);
+        if (frameCount % 10 === 0) {
+          const snakeHasMoved = snake.processMovement(map);
 
-				if (frameCount % 20 === 0) {
+          const tile = map.getTile(snake.head);
+          if (tile) {
+            if (tile.data instanceof Food) {
+              snake.eat(tile.data);
+            }
+          }
 
-					const snakeHasMoved = snake.processMovement(map);
+          if (!snakeHasMoved) {
+            alert("Game Over");
+            window.cancelAnimationFrame(animationFrameId);
+          }
+        }
 
-					const tile = map.getTile(snake.head);
-					if (tile) {
-						if (tile.data instanceof Food) {
-							snake.eat(tile.data);
-						}
-					}
+        draw(ctx, frameCount);
+      };
 
-					if (!snakeHasMoved) {
-						alert('Game Over');
-						window.cancelAnimationFrame(animationFrameId);
-					}
+      render();
 
-				}
+      return () => {
+        window.cancelAnimationFrame(animationFrameId),
+          window.removeEventListener("keydown", handleKeyPress);
+      };
+    }
+  }, []);
 
-				draw(ctx, frameCount);
-
-			}
-
-			render();
-
-			return () => {
-				window.cancelAnimationFrame(animationFrameId),
-					window.removeEventListener('keydown', handleKeyPress);
-			}
-
-		}
-	}, []);
-
-	return (<canvas ref={canvasRef} width={width} height={height} style={{ border: '1px solid black' }} />);
-
+  return (
+    <canvas
+      ref={canvasRef}
+      width={width}
+      height={height}
+      style={{ border: "1px solid black" }}
+    />
+  );
 };
 
 export default GameCanvas;
