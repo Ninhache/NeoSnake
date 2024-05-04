@@ -40,10 +40,14 @@ const WidgetHome: React.FC<Props> = ({}) => {
 
   return (
     <LayoutComponent>
-      {data.map((post) => (
-        <UIArticlePreview article={post} key={post.id} />
-      ))}
-      ;
+      <div className="flex flex-wrap justify-center -mx-2">
+        {data.map((article) => (
+          <UIArticlePreview
+            key={`${article.id}-${article.path}`}
+            article={article}
+          />
+        ))}
+      </div>
     </LayoutComponent>
   );
 };
