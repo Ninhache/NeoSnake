@@ -5,4 +5,10 @@ export type BlogPostPreview = {
   date: string;
   abstract: string;
   image: string;
+  authorname: string;
+  authorimage: string;
+};
+
+export type BlogPost = BlogPostPreview & {
+  content: string;
 };

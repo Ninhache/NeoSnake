@@ -1,16 +1,16 @@
-import { useParams } from "react-router-dom";
-import LayoutComponent from "../layouts/LayoutComponent";
-import { BlogPostPreview } from "../../@types/BlogPosts";
 import { useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import { useParams } from "react-router-dom";
+import { BlogPost } from "../../@types/BlogPosts";
 import { Nullable } from "../../@types/NullableType";
-import infoIcon from "../../assets/svg/info_icon.svg";
 import UINotification from "../UI/UINotification";
+import LayoutComponent from "../layouts/LayoutComponent";
 
 type Props = {};
 const WidgetArticle: React.FC<Props> = ({}) => {
   const params = useParams();
 
-  const [data, setData] = useState<Nullable<BlogPostPreview>>(null);
+  const [data, setData] = useState<Nullable<BlogPost>>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [wrongId, setWrongId] = useState<boolean>(false);
 
@@ -55,10 +55,7 @@ const WidgetArticle: React.FC<Props> = ({}) => {
           pour vous finir le meilleur résultat possible
         </UINotification>
       )}
-      <h1>{data.title}</h1>
-      <p>{data.date}</p>
-      <p>{data.abstract}</p>
-      <img src={data.image} alt={data.title} />
+      <ReactMarkdown className={`markdown`}>{data.content}</ReactMarkdown>
     </LayoutComponent>
   );
 };
