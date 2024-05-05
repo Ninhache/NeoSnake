@@ -2,7 +2,8 @@
 
 # Installation
 
-Simply install using :  
+Simply install using :
+
 ```
 https://github.com/Ninhache/PitSnake.git
 cd PitSnake
@@ -11,11 +12,18 @@ yarn
 
 # Setup & Run
 
+You need to create and populate the .env file with the following structure, where I've provided the default value for the API:
+
+```.env
+VITE_SNAKE_API_ROUTE=http://localhost:3000
+```
+
 There's no particular setup to do, you've access to 2 major commands :
+
 - `yarn dev` starts a local web server with Hot Module Replacement for development
 - `yarn build & yarn preview` builds the project, and outputs to the folder `./dist`.. and starts a local web server that serves the built solution from `./dist` for previewing
 
-# _History_ 
+# _History_
 
 ## Tech choice
 
@@ -39,20 +47,23 @@ UI, A Left menu to show EVERY levels that's are available (Maybe not EVERY, only
 
 ## Brainstorm Ideas
 
-__Ideas :__
+**Ideas :**
+
 - a snek...
 - Obstacles / Ennemies
 - Differents skins (+ custom)
 - Boosts (Speed / Growth / ?)
 - Solo / Multi
 
-__*Vibing* Ideas :__
+**_Vibing_ Ideas :**
+
 - Mods (that you can wrote in random langages to modify the game ?)
 - Score handling (+ anticheat lol)
 - Multiplayer / Multiple Snake ?
 
-------
-## Bullshit i've to read so modify 
+---
+
+## Bullshit i've to read so modify
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
@@ -71,15 +82,14 @@ If you are developing a production application, we recommend updating the config
 export default {
   // other rules...
   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
+    ecmaVersion: "latest",
+    sourceType: "module",
+    project: ["./tsconfig.json", "./tsconfig.node.json"],
     tsconfigRootDir: __dirname,
   },
-}
+};
 ```
 
 - Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
 - Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
 - Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
-

@@ -1,0 +1,12 @@
+.markdown > * {
+  all: revert;
+}
+
+.markdown p,
+.markdown li {
+  color: #aeaeae;
+}
+
+.markdown strong {
+  color: white;
+}
