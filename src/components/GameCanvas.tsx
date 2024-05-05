@@ -4,6 +4,7 @@ import jsonMap from "../assets/jsons/testMap.json";
 import { Food } from "../classes/Entity";
 import { SnakeMap } from "../classes/Map";
 import { Direction } from "../@types/DirectionType";
+import { useGame } from "./contexts/GameContext";
 
 type Props = {
   width: number;
@@ -11,6 +12,8 @@ type Props = {
 };
 
 const GameCanvas: React.FC<Props> = ({ width, height }) => {
+  const { dispatch } = useGame();
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const map = new SnakeMap(JSON.stringify(jsonMap));
   const snake = map.snake;
@@ -67,6 +70,7 @@ const GameCanvas: React.FC<Props> = ({ width, height }) => {
           const tile = map.getTile(snake.head);
           if (tile) {
             if (tile.data instanceof Food) {
+              dispatch({ type: "GAME_EAT_FRUIT", fruit: tile.data });
               snake.eat(tile.data);
             }
           }
