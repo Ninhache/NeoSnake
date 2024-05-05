@@ -11,9 +11,9 @@ const UIArticlePreview: React.FC<Props> = ({ article }) => {
 
   return (
     <>
-      <article className="bg-gray-900 custom-width m-2 rounded-lg overflow-hidden group">
-        <NavLink to={`/article/${path}`}>
-          <div className="flex gap-3 flex-col ">
+      <article className="bg-gray-800 custom-width m-2 rounded-lg overflow-hidden group flex">
+        <NavLink to={`/article/${path}`} className="w-full">
+          <div className="flex gap-3 flex-col h-full">
             <div className="overflow-hidden">
               <img
                 src={`${import.meta.env.VITE_SNAKE_API_ROUTE}/${image}`}
@@ -21,11 +21,12 @@ const UIArticlePreview: React.FC<Props> = ({ article }) => {
                 className="h-52 w-full object-cover transform transition-transform group-hover:scale-110"
               />
             </div>
-            <div className="m-5">
-              <h1 className="text-center font-bold ">
-                Blabla lorem ispum {title} ipsum dolor sit amet
-              </h1>
-              <p className="text-gray-400 my-4">{abstract}</p>
+            <div className="mx-5 mt-2 mb-5 h-full flex flex-col ">
+              <div className="h-full">
+                <h1 className="text-center font-bold ">{title}</h1>
+                <p className="text-gray-400 mt-4">{abstract}</p>
+              </div>
+
               <p className="bg-blue-950 p-2 rounded-md">
                 Written by {authorname} on {parseDateTime(date, "en-EN")}
               </p>
