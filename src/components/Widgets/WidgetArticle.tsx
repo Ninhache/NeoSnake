@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useParams } from "react-router-dom";
+import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import rehypeHighlight from "rehype-highlight";
+import rehypeSlug from "rehype-slug";
 import { BlogPost } from "../../@types/BlogPosts";
 import { Nullable } from "../../@types/NullableType";
 import UINotification from "../UI/UINotification";
 import LayoutComponent from "../layouts/LayoutComponent";
+
+import "../../styles/markdown.css";
 
 type Props = {};
 const WidgetArticle: React.FC<Props> = ({}) => {
@@ -55,7 +60,12 @@ const WidgetArticle: React.FC<Props> = ({}) => {
           pour vous finir le meilleur résultat possible
         </UINotification>
       )}
-      <ReactMarkdown className={`markdown`}>{data.content}</ReactMarkdown>
+      <ReactMarkdown
+        className={`markdown`}
+        rehypePlugins={[rehypeSlug, rehypeAutolinkHeadings, rehypeHighlight]}
+      >
+        {data.content}
+      </ReactMarkdown>
     </LayoutComponent>
   );
 };
