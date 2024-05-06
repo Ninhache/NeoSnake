@@ -10,6 +10,7 @@ import UINotification from "../UI/UINotification";
 import LayoutComponent from "../layouts/LayoutComponent";
 
 import "../../styles/markdown.css";
+import UISuspense from "../UI/UISuspense";
 
 type Props = {};
 const WidgetArticle: React.FC<Props> = ({}) => {
@@ -40,7 +41,11 @@ const WidgetArticle: React.FC<Props> = ({}) => {
   }, []);
 
   if (isLoading) {
-    return <LayoutComponent>Loading...</LayoutComponent>;
+    return (
+      <LayoutComponent>
+        <UISuspense />
+      </LayoutComponent>
+    );
   }
 
   if (!data) {
