@@ -6,6 +6,7 @@ interface GameState {
   score: number;
   level: number;
   name: string;
+  speed: number;
 }
 
 type GameAction =
@@ -13,6 +14,7 @@ type GameAction =
   | { type: "GAME_NEXT_LEVEL" }
   | { type: "GAME_SET_LEVEL"; payload: number }
   | { type: "GAME_SET_NAME"; payload: string }
+  | { type: "GAME_SET_SPEED"; payload: number }
   | { type: "GAME_LOOSE" };
 
 function gameReducer(state: GameState, action: GameAction): GameState {
@@ -34,15 +36,17 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         score: 0,
       };
-    case "GAME_LOOSE":
-      return {
-        ...state,
-        score: 0,
-      };
     case "GAME_SET_LEVEL":
       return {
         ...state,
         level: action.payload,
+      };
+    case "GAME_SET_SPEED":
+      console.log("Setting speed to", action.payload);
+      return {
+        ...state,
+        score: 0,
+        speed: action.payload,
       };
     case "GAME_SET_NAME":
       return {
@@ -58,7 +62,10 @@ function gameReducer(state: GameState, action: GameAction): GameState {
 const GameContext = createContext<{
   state: GameState;
   dispatch: React.Dispatch<GameAction>;
-}>({ state: { score: 0, level: 1, name: "NO_NAME" }, dispatch: () => null });
+}>({
+  state: { score: 0, level: 1, name: "NO_NAME", speed: 10 },
+  dispatch: () => null,
+});
 
 type Props = {
   children: React.ReactNode;
@@ -69,6 +76,7 @@ const GameProvider: React.FC<Props> = ({ children }) => {
     score: 0,
     level: 1,
     name: "NO_NAME",
+    speed: 10,
   });
 
   return (
