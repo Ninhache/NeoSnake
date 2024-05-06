@@ -18,10 +18,10 @@ const UILevelSelector: React.FC<Props> = ({ levelId, disabled }) => {
   return (
     <button
       disabled={disabled}
-      className={`border-2 border-red-400 h-12 w-12 m-2 rounded-lg ${
-        state.level === levelId ? "bg-red-500" : ""
+      className={`border-2 border-red-400 h-12 w-12 m-2 rounded-lg transition-colors duration-300 ${
+        state.level === levelId ? "bg-red-500 cursor-default" : ""
       }
-      ${disabled ? "opacity-50" : ""}
+      ${disabled ? "opacity-50" : "hover:bg-red-500"}
       `}
       onClick={handleClick}
     >
