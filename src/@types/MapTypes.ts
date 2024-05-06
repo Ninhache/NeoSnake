@@ -27,3 +27,5 @@ export interface SnakeMapData {
 export interface NextFrameInfo {
   snakeHasMoved: boolean;
 }
+
+export type SnakeMapType = "LOADED" | "LOADING" | "ERROR";
