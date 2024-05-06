@@ -1,9 +1,13 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import jsonMap from "../assets/jsons/testMap.json";
+import { Direction } from "../@types/DirectionType";
+import { Nullable } from "../@types/NullableType";
 import { Food } from "../classes/Entity";
 import { SnakeMap } from "../classes/Map";
-import { Direction } from "../@types/DirectionType";
+import UISuspense from "./UI/UISuspense";
+import { useGame } from "./contexts/GameContext";
+import { SnakeMapType } from "../@types/MapTypes";
+import UINotification from "./UI/UINotification";
 
 type Props = {
   width: number;
@@ -11,13 +15,49 @@ type Props = {
 };
 
 const GameCanvas: React.FC<Props> = ({ width, height }) => {
+  const { state, dispatch } = useGame();
+  const stateRef = useRef(state);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const map = new SnakeMap(JSON.stringify(jsonMap));
-  const snake = map.snake;
+  const [json, setJson] = useState<Nullable<JSON>>(null);
+
+  const [jsonState, setJsonState] = useState<SnakeMapType>("LOADING");
 
   useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
+
+  useEffect(() => {
+    setJson(null);
+
+    fetch(
+      `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/${stateRef.current.level}`
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to load level data");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        dispatch({ type: "GAME_SET_NAME", payload: data.options.name });
+        setJson(data);
+        setJsonState("LOADED");
+      })
+      .catch((error) => {
+        setJson(null);
+        setJsonState("ERROR");
+        console.error("Failed to load level data", error);
+      });
+  }, [state.level]);
+
+  useEffect(() => {
+    if (json === null) return;
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
+    let map = new SnakeMap(JSON.stringify(json));
+    const snake = map.snake;
+
+    if (!canvas || !ctx) return;
 
     const handleKeyPress = (event: KeyboardEvent) => {
       // Keep all the events unless they are arrow keys
@@ -45,7 +85,7 @@ const GameCanvas: React.FC<Props> = ({ width, height }) => {
     };
 
     const draw = (ctx: CanvasRenderingContext2D, frameNumber: number) => {
-      map.draw(ctx, (frameNumber % 10) / 10);
+      map.draw(ctx, (frameNumber % state.speed) / state.speed);
     };
 
     if (ctx && canvas) {
@@ -61,19 +101,25 @@ const GameCanvas: React.FC<Props> = ({ width, height }) => {
         ctx.fillStyle = "rgba(255, 255, 255, 1)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        if (frameCount % 10 === 0) {
-          const snakeHasMoved = snake.processMovement(map);
+        // No magic numbers.. I've to put that in a constant or in the JSON object
+        if (stateRef.current.score >= 10) {
+          dispatch({ type: "GAME_NEXT_LEVEL" });
+        }
+
+        if (frameCount % state.speed === 0) {
+          let snakeHasMoved = snake.processMovement(map);
 
           const tile = map.getTile(snake.head);
           if (tile) {
             if (tile.data instanceof Food) {
+              dispatch({ type: "GAME_EAT_FRUIT", fruit: tile.data });
               snake.eat(tile.data);
             }
           }
 
           if (!snakeHasMoved) {
-            alert("Game Over");
-            window.cancelAnimationFrame(animationFrameId);
+            map.reset();
+            dispatch({ type: "GAME_LOOSE" });
           }
         }
 
@@ -87,16 +133,30 @@ const GameCanvas: React.FC<Props> = ({ width, height }) => {
           window.removeEventListener("keydown", handleKeyPress);
       };
     }
-  }, []);
+  }, [json, state.speed]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      width={width}
-      height={height}
-      style={{ border: "1px solid black" }}
-    />
-  );
+  if (json === null) {
+    return (
+      <div
+        style={{
+          width: `${width}px`,
+          height: `${height}px`,
+          minWidth: `${width}px`,
+          minHeight: `${height}px`,
+        }}
+        className="mr-4"
+      >
+        {import.meta.env.DEV && jsonState === "ERROR" && (
+          <UINotification type="error" className="mb-4">
+            *DEV* Check if the API is running
+          </UINotification>
+        )}
+        <UISuspense />
+      </div>
+    );
+  }
+
+  return <canvas ref={canvasRef} width={width} height={height} />;
 };
 
 export default GameCanvas;

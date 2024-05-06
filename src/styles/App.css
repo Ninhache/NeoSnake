@@ -39,7 +39,7 @@
   background-color: rgb(255, 255, 255);
   transform: scaleX(0);
   transition: transform 0.3s ease-in-out;
-  box-shadow: 0 0 10px 2px #efba4d;
+  box-shadow: 0 0 10px 2px #e34141;
 }
 
 .nav-link.active::before {
@@ -48,11 +48,4 @@
 
 .nav-link:hover::before {
   transform: scaleX(1);
-}
-
-.faq-title {
-  color: #efba4d;
-  font-size: 1.8rem;
-  line-height: 1.25em;
-  font-weight: 700;
 }

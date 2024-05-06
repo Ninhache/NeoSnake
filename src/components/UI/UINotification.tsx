@@ -7,8 +7,13 @@ type NotificationType = "info" | "error" | "warning";
 type Props = {
   children: React.ReactNode;
   type: NotificationType;
+  className?: string;
 };
-const UINotification: React.FC<Props> = ({ children, type = "info" }) => {
+const UINotification: React.FC<Props> = ({
+  children,
+  type = "info",
+  className,
+}) => {
   const [isOpen, setOpen] = useState<boolean>(true);
 
   if (!isOpen) {
@@ -43,7 +48,7 @@ const UINotification: React.FC<Props> = ({ children, type = "info" }) => {
 
   return (
     <div
-      className="border-2 rounded-lg p-4 flex items-center justify-between "
+      className={`border-2 rounded-lg p-4 flex items-center justify-between ${className}`}
       style={{
         backgroundColor: color.backgroundColor,
         borderColor: color.borderColor,
