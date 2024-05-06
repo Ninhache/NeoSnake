@@ -104,7 +104,6 @@ export abstract class Food extends Entity {
       }
 
       this.move(trash);
-      // this.locationTile = null;
     }
   }
 }

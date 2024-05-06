@@ -42,7 +42,6 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         level: action.payload,
       };
     case "GAME_SET_SPEED":
-      console.log("Setting speed to", action.payload);
       return {
         ...state,
         score: 0,
