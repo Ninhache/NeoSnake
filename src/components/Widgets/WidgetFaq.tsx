@@ -5,7 +5,9 @@ type Props = {};
 const WidgetFaq: React.FC<Props> = ({}) => {
   return (
     <LayoutComponent>
-      <h1 className="faq-title">Foire aux questions</h1>
+      <h1 className="faq-title text-red-500 font-bold text-3xl">
+        Foire aux questions
+      </h1>
       <UIFaqQuestion title="Que pensez-vous de la situation d'alternant">
         <p>
           Je ne pense pas qu'il y ait de bonne ou de mauvaise situation. Il y a
