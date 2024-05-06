@@ -1,8 +1,7 @@
-import { Nullable } from "../@types/NullableType";
 import { SnakeMap, Tile } from "./Map";
 
 export abstract class Entity {
-  locationTile: Nullable<Tile>;
+  locationTile: Tile;
 
   /**
    * @param {@class Tile} tile To instanciate an entity, a {@Tile} must be provided, Even if further the Tile can be null
@@ -114,17 +113,18 @@ export class BasicFood extends Food {
   public effect(): void {
     const map = this.getLocationTile().parent;
 
-    map.snake.growSnake();
+    map.snake.grow();
     this.respawn(map);
   }
 
   public draw(ctx: CanvasRenderingContext2D): void {
     ctx.fillStyle = "red";
+
     ctx.fillRect(
-      this.getLocationTile().x * 20,
-      this.getLocationTile().y * 20,
-      20,
-      20
+      this.getLocationTile().x * this.locationTile.parent.cellSize,
+      this.getLocationTile().y * this.locationTile.parent.cellSize,
+      this.locationTile.parent.cellSize,
+      this.locationTile.parent.cellSize
     );
   }
 }
@@ -152,13 +152,13 @@ export class BigFruit extends FoodDecorator {
   }
 
   getValue(): number {
-    return this.food.getValue() * 5;
+    return this.food.getValue() * 15;
   }
 
   effect(): void {
     const map = this.getLocationTile().parent;
     for (let i = 0; i < 5; i++) {
-      map.snake.growSnake();
+      map.snake.grow();
     }
 
     this.disappear();
@@ -166,11 +166,12 @@ export class BigFruit extends FoodDecorator {
 
   public draw(ctx: CanvasRenderingContext2D): void {
     ctx.fillStyle = "orange";
+
     ctx.fillRect(
-      this.getLocationTile().x * 20,
-      this.getLocationTile().y * 20,
-      20,
-      20
+      this.getLocationTile().x * this.locationTile.parent.cellSize,
+      this.getLocationTile().y * this.locationTile.parent.cellSize,
+      this.locationTile.parent.cellSize,
+      this.locationTile.parent.cellSize
     );
   }
 }
@@ -187,10 +188,10 @@ export class DeadlyFruit extends FoodDecorator {
   public draw(ctx: CanvasRenderingContext2D): void {
     ctx.fillStyle = "purple";
     ctx.fillRect(
-      this.getLocationTile().x * 20,
-      this.getLocationTile().y * 20,
-      20,
-      20
+      this.getLocationTile().x * this.locationTile.parent.cellSize,
+      this.getLocationTile().y * this.locationTile.parent.cellSize,
+      this.locationTile.parent.cellSize,
+      this.locationTile.parent.cellSize
     );
   }
 }

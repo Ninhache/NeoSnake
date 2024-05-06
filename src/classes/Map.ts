@@ -9,7 +9,7 @@ import { Nullable } from "../@types/NullableType";
 
 import { BasicFood, BigFruit, Entity } from "./Entity";
 import { BasicObstacle, DifferentObstacle } from "./Obstacles";
-import { Snake, SnakeSegment } from "./Snake";
+import { Snake } from "./Snake";
 
 export class Tile {
   parent: SnakeMap;
@@ -77,10 +77,31 @@ export class Tile {
 export class SnakeMap {
   tiles: Tile[];
   snake: Snake;
+  private jsonObj: SnakeMapData;
 
+  /**
+   * The width of the map in pixels (should be always 800)
+   */
   width_px: number;
+
+  /**
+   * The height of the map in pixels (should be always 800)
+   */
   height_px: number;
+
+  /**
+   * The size of each cell in the map
+   */
+  cellSize: number;
+
+  /**
+   * The width of the map in cells
+   */
   width_cell: number;
+
+  /**
+   * The height of the map in cells
+   */
   height_cell: number;
 
   constructor(serializedMap: string) {
@@ -90,17 +111,18 @@ export class SnakeMap {
 
     this.width_px = jsonObj.options.width;
     this.height_px = jsonObj.options.height;
+    this.cellSize = jsonObj.options.cellSize;
 
-    this.width_cell = Math.floor(this.width_px / 20);
-    this.height_cell = Math.floor(this.height_px / 20);
+    this.width_cell = Math.floor(this.width_px / jsonObj.options.cellSize);
+    this.height_cell = Math.floor(this.height_px / jsonObj.options.cellSize);
 
     // Create the map tiles
-    for (let i = 0; i < this.width_cell; i++) {
-      for (let j = 0; j < this.height_cell; j++) {
+    for (let i = 0; this.cellSize * i < this.width_px; i++) {
+      for (let j = 0; this.cellSize * j < this.height_px; j++) {
         this.tiles.push(new Tile(this, { x: i, y: j }));
       }
     }
-    // Trash the old tiles
+    // Create the trash tile
     this.tiles.push(new Tile(this, { x: -1, y: -1 }));
 
     // Create the snake
@@ -111,16 +133,10 @@ export class SnakeMap {
       );
     }
 
-    this.snake = new Snake(startTile);
-    this.snake.body.push(
-      ...jsonObj.snake.bodyParts.map((part) => {
-        const tile = this.getTile(part);
-        if (!tile) {
-          throw new Error(`Invalid body part for snake at ${part}`);
-        }
-        return new SnakeSegment(tile);
-      })
-    );
+    this.snake = new Snake(startTile, this.cellSize);
+    for (let i = 1; i < jsonObj.snake.length; i++) {
+      this.snake.grow();
+    }
 
     this.snake.directionQueue = [
       stringToDirectionType(jsonObj.snake.direction) || Direction.Right,
@@ -144,6 +160,7 @@ export class SnakeMap {
       }
       tile.data = obj;
     });
+    this.jsonObj = jsonObj;
   }
 
   draw(ctx: CanvasRenderingContext2D, alpha: number = 0): void {
@@ -154,6 +171,44 @@ export class SnakeMap {
     });
 
     this.snake.draw(ctx, alpha);
+  }
+
+  reset(jsonObj?: SnakeMapData): void {
+    if (jsonObj === undefined) {
+      jsonObj = this.jsonObj;
+    }
+
+    const startCoordinates = jsonObj.snake.startPosition as Coordinates;
+    const startTile = this.getTile(startCoordinates);
+    if (startTile === null) {
+      throw new Error(
+        `Invalid start position for snake at ${startCoordinates}`
+      );
+    }
+
+    this.snake.reset(startTile);
+    for (let i = 1; i < jsonObj.snake.length; i++) {
+      this.snake.grow();
+    }
+
+    this.tiles.forEach((tile) => {
+      if (tile.data !== null) {
+        tile.vacate();
+      }
+    });
+
+    jsonObj.gameObject.forEach((obj) => {
+      const tile = this.getTile({ x: obj.x, y: obj.y });
+      if (tile === null) {
+        throw new Error(
+          `Invalid tile position for object of type ${obj.type} at ${obj.x}, ${obj.y}`
+        );
+      }
+
+      tile.data = GameObjectFactory.createGameObject(this, obj);
+
+      this.jsonObj = jsonObj;
+    });
   }
 
   playNextFrame(): NextFrameInfo {
