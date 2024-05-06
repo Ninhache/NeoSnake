@@ -1,32 +1,56 @@
 import React, { createContext, useContext, useReducer } from "react";
 import { Food } from "../../classes/Entity";
+import { saveLevelProgress } from "../../lib/localstorage";
 
 interface GameState {
   score: number;
   level: number;
-  fruitsCollected: number;
+  name: string;
 }
 
 type GameAction =
   | { type: "GAME_EAT_FRUIT"; fruit: Food }
-  | { type: "GAME_NEXT_LEVEL" };
+  | { type: "GAME_NEXT_LEVEL" }
+  | { type: "GAME_SET_LEVEL"; payload: number }
+  | { type: "GAME_SET_NAME"; payload: string }
+  | { type: "GAME_LOOSE" };
 
 function gameReducer(state: GameState, action: GameAction): GameState {
-  console.log(state, action);
   switch (action.type) {
     case "GAME_EAT_FRUIT":
       return {
         ...state,
         score: state.score + action.fruit.getValue(),
-        fruitsCollected: state.fruitsCollected + 1,
       };
     case "GAME_NEXT_LEVEL":
+      saveLevelProgress(state.level + 1);
       return {
         ...state,
+        score: 0,
         level: state.level + 1,
-        fruitsCollected: 0,
+      };
+    case "GAME_LOOSE":
+      return {
+        ...state,
+        score: 0,
+      };
+    case "GAME_LOOSE":
+      return {
+        ...state,
+        score: 0,
+      };
+    case "GAME_SET_LEVEL":
+      return {
+        ...state,
+        level: action.payload,
+      };
+    case "GAME_SET_NAME":
+      return {
+        ...state,
+        name: action.payload,
       };
     default:
+      console.warn("Action not handled:", action);
       return state;
   }
 }
@@ -34,7 +58,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
 const GameContext = createContext<{
   state: GameState;
   dispatch: React.Dispatch<GameAction>;
-}>({ state: { score: 0, level: 1, fruitsCollected: 0 }, dispatch: () => null });
+}>({ state: { score: 0, level: 1, name: "NO_NAME" }, dispatch: () => null });
 
 type Props = {
   children: React.ReactNode;
@@ -44,7 +68,7 @@ const GameProvider: React.FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(gameReducer, {
     score: 0,
     level: 1,
-    fruitsCollected: 0,
+    name: "NO_NAME",
   });
 
   return (

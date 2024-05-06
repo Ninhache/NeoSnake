@@ -1,10 +1,11 @@
-import { useEffect, useRef } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 
-import jsonMap from "../assets/jsons/testMap.json";
+import { Direction } from "../@types/DirectionType";
 import { Food } from "../classes/Entity";
 import { SnakeMap } from "../classes/Map";
-import { Direction } from "../@types/DirectionType";
 import { useGame } from "./contexts/GameContext";
+import { Nullable } from "../@types/NullableType";
+import { SnakeMapData } from "../@types/MapTypes";
 
 type Props = {
   width: number;
@@ -12,15 +13,45 @@ type Props = {
 };
 
 const GameCanvas: React.FC<Props> = ({ width, height }) => {
-  const { dispatch } = useGame();
-
+  const { state, dispatch } = useGame();
+  const stateRef = useRef(state);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const map = new SnakeMap(JSON.stringify(jsonMap));
-  const snake = map.snake;
+  const [json, setJson] = useState<Nullable<JSON>>(null);
 
   useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
+
+  useEffect(() => {
+    setJson(null);
+
+    fetch(
+      `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/${stateRef.current.level}`
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to load level data");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        dispatch({ type: "GAME_SET_NAME", payload: data.options.name });
+        setJson(data);
+      })
+      .catch((error) => {
+        setJson(null);
+        console.error("Failed to load level data", error);
+      });
+  }, [state.level]);
+
+  useEffect(() => {
+    if (json === null) return;
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
+    let map = new SnakeMap(JSON.stringify(json));
+    const snake = map.snake;
+
+    if (!canvas || !ctx) return;
 
     const handleKeyPress = (event: KeyboardEvent) => {
       // Keep all the events unless they are arrow keys
@@ -64,8 +95,13 @@ const GameCanvas: React.FC<Props> = ({ width, height }) => {
         ctx.fillStyle = "rgba(255, 255, 255, 1)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+        // No magic numbers.. I've to put that 10 in a constant or in the JSON object
+        if (stateRef.current.score >= 10) {
+          dispatch({ type: "GAME_NEXT_LEVEL" });
+        }
+
         if (frameCount % 10 === 0) {
-          const snakeHasMoved = snake.processMovement(map);
+          let snakeHasMoved = snake.processMovement(map);
 
           const tile = map.getTile(snake.head);
           if (tile) {
@@ -76,8 +112,8 @@ const GameCanvas: React.FC<Props> = ({ width, height }) => {
           }
 
           if (!snakeHasMoved) {
-            alert("Game Over");
-            window.cancelAnimationFrame(animationFrameId);
+            map.reset();
+            dispatch({ type: "GAME_LOOSE" });
           }
         }
 
@@ -91,16 +127,17 @@ const GameCanvas: React.FC<Props> = ({ width, height }) => {
           window.removeEventListener("keydown", handleKeyPress);
       };
     }
-  }, []);
+  }, [json]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      width={width}
-      height={height}
-      style={{ border: "1px solid black" }}
-    />
-  );
+  if (json === null) {
+    return (
+      <div style={{ width: `${width}px`, height: `${height}px` }}>
+        Loading level {state.level}...
+      </div>
+    );
+  }
+
+  return <canvas ref={canvasRef} width={width} height={height} />;
 };
 
 export default GameCanvas;
