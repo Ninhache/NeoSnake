@@ -1,3 +1,4 @@
+import { getColorFromType } from "../@types/MapTypes";
 import { Entity } from "./Entity";
 import { SnakeMap, Tile } from "./Map";
 import { Snake } from "./Snake";
@@ -32,7 +33,7 @@ export class BasicObstacle extends Obstacle {
   }
 
   public draw(ctx: CanvasRenderingContext2D): void {
-    ctx.fillStyle = "black";
+    ctx.fillStyle = getColorFromType("OBa");
     ctx.fillRect(
       this.getLocationTile().x * this.locationTile.parent.cellSize,
       this.getLocationTile().y * this.locationTile.parent.cellSize,
@@ -53,7 +54,7 @@ export class DifferentObstacle extends ObstacleDecorator {
   }
 
   public draw(ctx: CanvasRenderingContext2D): void {
-    ctx.fillStyle = "blue";
+    ctx.fillStyle = getColorFromType("ODi");
     ctx.fillRect(
       this.getLocationTile().x * this.locationTile.parent.cellSize,
       this.getLocationTile().y * this.locationTile.parent.cellSize,

@@ -13,7 +13,7 @@ const WidgetListOfLevel: React.FC<Props> = ({}) => {
   const [jsonState, setJsonState] = useState<SnakeMapType>("LOADING");
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_SNAKE_API_ROUTE}/levels`)
+    fetch(`${import.meta.env.VITE_SNAKE_API_ROUTE}/level`)
       .then((response) => response.json())
       .then((data) => {
         setLevelLength(data.length);

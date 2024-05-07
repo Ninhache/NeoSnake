@@ -13,6 +13,9 @@ const NavBar: React.FC = () => {
             <UINavLink path="/play" text="Jouer" />
           </li>
           <li>
+            <UINavLink path="/create" text="Créer" />
+          </li>
+          <li>
             <UINavLink path="/faq" text="FAQ" />
           </li>
         </ul>
