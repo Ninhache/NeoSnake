@@ -23,7 +23,6 @@ const WidgetEditableOptions: React.FC = () => {
     }
 
     setLoading(true);
-    console.log("Sending mapData:", JSON.stringify(mapData));
     fetch(`${import.meta.env.VITE_SNAKE_API_ROUTE}/level/upload`, {
       method: "POST",
       headers: {
@@ -31,8 +30,7 @@ const WidgetEditableOptions: React.FC = () => {
       },
       body: JSON.stringify({ ...mapData, id: uuid }),
     })
-      .then((data) => {
-        console.log("Response Data:", data);
+      .then((_) => {
         setLoading(false);
       })
       .catch((err) => {
