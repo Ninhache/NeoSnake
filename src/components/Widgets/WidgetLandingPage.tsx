@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { BlogPostPreview } from "../../@types/BlogPosts";
 import UIArticlePreview from "../UI/UIArticlePreview";
 import LayoutComponent from "../layouts/LayoutComponent";
+import UISuspense from "../UI/UISuspense";
 
 type Props = {};
 const WidgetHome: React.FC<Props> = ({}) => {
@@ -11,7 +12,7 @@ const WidgetHome: React.FC<Props> = ({}) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      fetch(`${import.meta.env.VITE_SNAKE_API_ROUTE}/articles`)
+      fetch(`${import.meta.env.VITE_SNAKE_API_ROUTE}/article`)
         .then((response) => {
           if (!response.ok) {
             throw response;
@@ -35,7 +36,11 @@ const WidgetHome: React.FC<Props> = ({}) => {
   }
 
   if (loading) {
-    return <LayoutComponent>Loading...</LayoutComponent>;
+    return (
+      <LayoutComponent>
+        <UISuspense />
+      </LayoutComponent>
+    );
   }
 
   return (
