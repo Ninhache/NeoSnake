@@ -1,4 +1,4 @@
-import { getColorFromType } from "../@types/MapTypes";
+import { foodType, getColorFromType } from "../@types/MapTypes";
 import { SnakeMap, Tile } from "./Map";
 
 export abstract class Entity {
@@ -47,6 +47,7 @@ export abstract class Entity {
 
 export abstract class Food extends Entity {
   protected value: number = 1;
+  protected abstract type: foodType;
 
   constructor(tile: Tile) {
     super(tile);
@@ -57,7 +58,17 @@ export abstract class Food extends Entity {
   }
 
   abstract effect(): void;
-  abstract draw(ctx: CanvasRenderingContext2D): void;
+
+  draw(ctx: CanvasRenderingContext2D): void {
+    ctx.fillStyle = getColorFromType(this.type);
+
+    ctx.fillRect(
+      this.getLocationTile().x * this.locationTile.parent.cellSize,
+      this.getLocationTile().y * this.locationTile.parent.cellSize,
+      this.locationTile.parent.cellSize,
+      this.locationTile.parent.cellSize
+    );
+  }
 
   /**
    * Respawn the food at a random location on the screen, but not on the snake's body
@@ -110,22 +121,16 @@ export abstract class Food extends Entity {
 }
 
 export class BasicFood extends Food {
+  protected type: foodType = "FBa";
+  constructor(tile: Tile) {
+    super(tile);
+  }
+
   public effect(): void {
     const map = this.getLocationTile().parent;
 
     map.snake.grow();
     this.respawn(map);
-  }
-
-  public draw(ctx: CanvasRenderingContext2D): void {
-    ctx.fillStyle = getColorFromType("FBa");
-
-    ctx.fillRect(
-      this.getLocationTile().x * this.locationTile.parent.cellSize,
-      this.getLocationTile().y * this.locationTile.parent.cellSize,
-      this.locationTile.parent.cellSize,
-      this.locationTile.parent.cellSize
-    );
   }
 }
 
@@ -138,7 +143,13 @@ abstract class FoodDecorator extends Food {
   }
 
   public draw(ctx: CanvasRenderingContext2D): void {
-    this.food.draw(ctx);
+    ctx.fillStyle = getColorFromType(this.type);
+    ctx.fillRect(
+      this.getLocationTile().x * this.locationTile.parent.cellSize,
+      this.getLocationTile().y * this.locationTile.parent.cellSize,
+      this.locationTile.parent.cellSize,
+      this.locationTile.parent.cellSize
+    );
   }
 
   public effect(): void {
@@ -147,6 +158,7 @@ abstract class FoodDecorator extends Food {
 }
 
 export class BigFruit extends FoodDecorator {
+  protected type: foodType = "FBi";
   constructor(food: Food) {
     super(food);
   }
@@ -163,35 +175,15 @@ export class BigFruit extends FoodDecorator {
 
     this.disappear();
   }
-
-  public draw(ctx: CanvasRenderingContext2D): void {
-    ctx.fillStyle = getColorFromType("FBi");
-
-    ctx.fillRect(
-      this.getLocationTile().x * this.locationTile.parent.cellSize,
-      this.getLocationTile().y * this.locationTile.parent.cellSize,
-      this.locationTile.parent.cellSize,
-      this.locationTile.parent.cellSize
-    );
-  }
 }
 
 export class DeadlyFruit extends FoodDecorator {
+  protected type: foodType = "FDe";
   constructor(food: Food) {
     super(food);
   }
 
   effect(): void {
     this.getLocationTile().parent.snake.kill();
-  }
-
-  public draw(ctx: CanvasRenderingContext2D): void {
-    ctx.fillStyle = getColorFromType("FDe");
-    ctx.fillRect(
-      this.getLocationTile().x * this.locationTile.parent.cellSize,
-      this.getLocationTile().y * this.locationTile.parent.cellSize,
-      this.locationTile.parent.cellSize,
-      this.locationTile.parent.cellSize
-    );
   }
 }
