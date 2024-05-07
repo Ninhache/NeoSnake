@@ -1,3 +1,4 @@
+import { getColorFromType } from "../@types/MapTypes";
 import { SnakeMap, Tile } from "./Map";
 
 export abstract class Entity {
@@ -117,7 +118,7 @@ export class BasicFood extends Food {
   }
 
   public draw(ctx: CanvasRenderingContext2D): void {
-    ctx.fillStyle = "red";
+    ctx.fillStyle = getColorFromType("FBa");
 
     ctx.fillRect(
       this.getLocationTile().x * this.locationTile.parent.cellSize,
@@ -164,7 +165,7 @@ export class BigFruit extends FoodDecorator {
   }
 
   public draw(ctx: CanvasRenderingContext2D): void {
-    ctx.fillStyle = "orange";
+    ctx.fillStyle = getColorFromType("FBi");
 
     ctx.fillRect(
       this.getLocationTile().x * this.locationTile.parent.cellSize,
@@ -185,7 +186,7 @@ export class DeadlyFruit extends FoodDecorator {
   }
 
   public draw(ctx: CanvasRenderingContext2D): void {
-    ctx.fillStyle = "purple";
+    ctx.fillStyle = getColorFromType("FDe");
     ctx.fillRect(
       this.getLocationTile().x * this.locationTile.parent.cellSize,
       this.getLocationTile().y * this.locationTile.parent.cellSize,
