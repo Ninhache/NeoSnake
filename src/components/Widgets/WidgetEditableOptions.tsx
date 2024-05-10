@@ -1,20 +1,21 @@
-import { v4 as uuidv4 } from "uuid";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { uploadMap } from "../../lib/level";
+import UISuspense from "../UI/UISuspense";
 import { useEditor } from "../contexts/EditorContext";
+import DEVLogButton from "../devComponents/DEVLogButton";
 import CellHandler from "../editableComponents/CellHandler";
 import DirectionHandler from "../editableComponents/DirectionHandler";
 import LengthHandler from "../editableComponents/LengthHandler";
 import NameHandler from "../editableComponents/NameHandler";
 import PositionHandler from "../editableComponents/PositionHandler";
-import DEVLogButton from "../devComponents/DEVLogButton";
 
 const WidgetEditableOptions: React.FC = () => {
   const { mapData } = useEditor();
+  const { uuid } = useParams();
 
   useEffect(() => {}, [mapData]);
   const [loading, setLoading] = useState<boolean>(false);
-
-  const uuid = useMemo(() => uuidv4(), []);
 
   const handleSave = () => {
     if (!mapData) {
@@ -22,14 +23,13 @@ const WidgetEditableOptions: React.FC = () => {
       return;
     }
 
+    if (!uuid) {
+      console.error("uuid is undefined");
+      return;
+    }
+
     setLoading(true);
-    fetch(`${import.meta.env.VITE_SNAKE_API_ROUTE}/level/upload`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ ...mapData, id: uuid }),
-    })
+    uploadMap(mapData, uuid)
       .then((_) => {
         setLoading(false);
       })
@@ -78,7 +78,7 @@ const WidgetEditableOptions: React.FC = () => {
         className="border-4 border-green-500 rounded-lg p-2 hover:bg-green-400 transition-colors duration-300 font-bold text-xl"
         onClick={handleSave}
       >
-        {loading ? "Saving..." : "Save"}
+        {loading ? <UISuspense /> : "Save"}
       </button>
     </div>
   );
