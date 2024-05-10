@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import UILevelSelector from "../UI/UILevelSelector";
-import { loadLevelProgress } from "../../lib/localstorage";
-import UISuspense from "../UI/UISuspense";
 import { SnakeMapType } from "../../@types/MapTypes";
+import { getNumberOfLevels } from "../../lib/level";
+import { loadLevelProgress } from "../../lib/localstorage";
+import UILevelSelector from "../UI/UILevelSelector";
 import UINotification from "../UI/UINotification";
+import UISuspense from "../UI/UISuspense";
 
 type Props = {};
 const WidgetListOfLevel: React.FC<Props> = ({}) => {
@@ -13,10 +14,15 @@ const WidgetListOfLevel: React.FC<Props> = ({}) => {
   const [jsonState, setJsonState] = useState<SnakeMapType>("LOADING");
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_SNAKE_API_ROUTE}/level`)
-      .then((response) => response.json())
-      .then((data) => {
-        setLevelLength(data.length);
+    getNumberOfLevels()
+      .then((response) => {
+        if (!response.success) {
+          throw new Error("Failed to load level data");
+        }
+        return response;
+      })
+      .then((response) => {
+        setLevelLength(response.data);
         setLoading(false);
         setJsonState("LOADED");
       })

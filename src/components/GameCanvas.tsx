@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 
 import { Direction } from "../@types/DirectionType";
+import { SnakeMapType } from "../@types/MapTypes";
 import { Nullable } from "../@types/NullableType";
 import { Food } from "../classes/Entity";
 import { SnakeMap } from "../classes/Map";
+import { getCampaignLevel } from "../lib/level";
+import UINotification from "./UI/UINotification";
 import UISuspense from "./UI/UISuspense";
 import { useGame } from "./contexts/GameContext";
-import { SnakeMapType } from "../@types/MapTypes";
-import UINotification from "./UI/UINotification";
 
 type Props = {
   width: number;
@@ -29,18 +30,17 @@ const GameCanvas: React.FC<Props> = ({ width, height }) => {
   useEffect(() => {
     setJson(null);
 
-    fetch(
-      `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/${stateRef.current.level}`
-    )
+    getCampaignLevel(stateRef.current.level)
       .then((response) => {
-        if (!response.ok) {
+        if (!response.success) {
           throw new Error("Failed to load level data");
         }
-        return response.json();
+        return response;
       })
-      .then((data) => {
+      .then((response) => {
+        const data = response.data;
         dispatch({ type: "GAME_SET_NAME", payload: data.options.name });
-        setJson(data);
+        setJson(JSON.parse(JSON.stringify(response.data)));
         setJsonState("LOADED");
       })
       .catch((error) => {
