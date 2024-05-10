@@ -1,10 +1,16 @@
+import { useEffect } from "react";
 import UINavLink from "../UI/UINavLink";
+import { useAuth } from "../contexts/AuthContext";
 import LayoutComponent from "../layouts/LayoutComponent";
 
 const NavBar: React.FC = () => {
+  const { username } = useAuth();
+  useEffect(() => {}, [username]);
+
   return (
     <LayoutComponent>
-      <nav className="text-white md:rounded-lg ">
+      <nav className="text-white md:rounded-lg flex justify-between">
+        <br></br>
         <ul className="flex gap-10 items-center justify-center">
           <li>
             <UINavLink path="/" text="Accueil" />
@@ -19,6 +25,12 @@ const NavBar: React.FC = () => {
             <UINavLink path="/faq" text="FAQ" />
           </li>
         </ul>
+        <div className="mr-2">
+          <UINavLink
+            path={username ? "/logout" : "/login"}
+            text={username ? `${username}` : "Se connecter"}
+          />
+        </div>
       </nav>
     </LayoutComponent>
   );
