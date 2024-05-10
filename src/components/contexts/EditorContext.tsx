@@ -12,6 +12,7 @@ interface SnakeMapDataContextProps {
   addGameObject: (gameObject: GameObject) => void;
   setGameObjectType: (gameObjectType: gameObjectType) => void;
   deleteGameObject(x: number, y: number): void;
+  pendingChanges: boolean;
 }
 
 const defaultMapData: SnakeMapData = {
@@ -36,6 +37,7 @@ const EditorContext = createContext<SnakeMapDataContextProps>({
   addGameObject: () => {},
   setGameObjectType: () => {},
   deleteGameObject: () => {},
+  pendingChanges: false,
 });
 
 interface ProviderProps {
@@ -44,10 +46,13 @@ interface ProviderProps {
 
 const EditorContextProvider: React.FC<ProviderProps> = ({ children }) => {
   const [mapData, setMapData] = useState<SnakeMapData>(defaultMapData);
+  const [pendingChanges, setPendingChanges] = useState<boolean>(false);
+
   const [currentGameObjectType, setGameObjectType] =
     useState<gameObjectType>("FBa");
 
   const addGameObject = ({ x, y, type }: GameObject) => {
+    setPendingChanges(true);
     setMapData((prev) => ({
       ...prev,
       gameObject: [
@@ -58,6 +63,7 @@ const EditorContextProvider: React.FC<ProviderProps> = ({ children }) => {
   };
 
   const deleteGameObject = (x: number, y: number) => {
+    setPendingChanges(true);
     setMapData((prev) => ({
       ...prev,
       gameObject: prev.gameObject.filter((obj) => obj.x !== x || obj.y !== y),
@@ -73,6 +79,7 @@ const EditorContextProvider: React.FC<ProviderProps> = ({ children }) => {
         deleteGameObject,
         setGameObjectType,
         currentGameObjectType,
+        pendingChanges,
       }}
     >
       {children}
