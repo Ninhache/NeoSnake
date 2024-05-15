@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
+import { Nullable } from "../../@types/NullableType";
 import { uploadMap } from "../../lib/level";
+import UINotification from "../UI/UINotification";
 import UISuspense from "../UI/UISuspense";
 import { useEditor } from "../contexts/EditorContext";
 import DEVLogButton from "../devComponents/DEVLogButton";
-import CellHandler from "../editableComponents/CellHandler";
-import DirectionHandler from "../editableComponents/DirectionHandler";
-import LengthHandler from "../editableComponents/LengthHandler";
-import NameHandler from "../editableComponents/NameHandler";
-import PositionHandler from "../editableComponents/PositionHandler";
+import WidgetDefaultOptions from "./WidgetDefaultOptions";
+import WidgetEditableFruits from "./WidgetEditableFruits";
+import { isValidData } from "../../lib/mapData";
 
 const WidgetEditableOptions: React.FC = () => {
   const { mapData } = useEditor();
@@ -16,6 +17,8 @@ const WidgetEditableOptions: React.FC = () => {
 
   useEffect(() => {}, [mapData]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [returnValue, setReturnValue] = useState<Nullable<string>>(null);
+  const navigate = useNavigate();
 
   const handleSave = () => {
     if (!mapData) {
@@ -23,63 +26,46 @@ const WidgetEditableOptions: React.FC = () => {
       return;
     }
 
-    if (!uuid) {
-      console.error("uuid is undefined");
+    console.log(isValidData(mapData));
+    if (!isValidData(mapData)) {
+      console.error("mapData is invalid");
       return;
     }
 
+    let tmpUuid = uuid ?? uuidv4();
+
     setLoading(true);
-    uploadMap(mapData, uuid)
+    uploadMap(mapData, tmpUuid)
       .then((_) => {
+        setReturnValue("Upload with success");
         setLoading(false);
+        navigate(`/create/${tmpUuid}`);
       })
-      .catch((err) => {
-        console.error("Error sending mapData:", err);
-        setLoading(false);
-      });
+      .finally(() => setLoading(false));
   };
 
   return (
-    <div className="flex flex-col p-2 w-full ml-4 gap-4">
-      <h1 className="text-2xl font-bold text-center">Map options</h1>
-
-      <h2 className="font-bold text-xl text-center">Map Options</h2>
-      <div className="flex gap-2 justify-center">
-        <label className="flex gap-2">
-          <NameHandler />
-        </label>
-      </div>
-      <div className="flex gap-2 justify-center">
-        <label className="flex gap-2">
-          <CellHandler />
-        </label>
-      </div>
-
-      <h2 className="font-bold text-xl text-center">Snake Options</h2>
-      <div className="flex gap-2 justify-center">
-        <label className="flex gap-2 w-1/2 justify-center">
-          <PositionHandler axis="x" />
-        </label>
-        <label className="flex gap-2 w-1/2 justify-center">
-          <PositionHandler axis="y" />
-        </label>
-      </div>
-
-      <div className="flex gap-2 justify-center">
-        <DirectionHandler />
-      </div>
-
-      <label className="flex gap-2 justify-center">
-        <LengthHandler />
-      </label>
-
-      <DEVLogButton obj={mapData} />
-      <button
-        className="border-4 border-green-500 rounded-lg p-2 hover:bg-green-400 transition-colors duration-300 font-bold text-xl"
-        onClick={handleSave}
+    <div className="flex flex-col">
+      <div
+        className="flex flex-col w-full ml-4 gap-4"
+        style={{ height: "800px" }}
       >
-        {loading ? <UISuspense /> : "Save"}
-      </button>
+        <WidgetDefaultOptions />
+
+        <WidgetEditableFruits />
+        <div className="flex flex-wrap w-auto">
+          <DEVLogButton obj={mapData} className="w-1/2" />
+          <button
+            className="border-4 border-green-500 w-1/2 rounded-lg p-2 hover:bg-green-400 transition-colors duration-300 font-bold text-xl"
+            onClick={handleSave}
+          >
+            {loading ? <UISuspense /> : "Save"}
+          </button>
+        </div>
+        {returnValue && (
+          <UINotification type="info">{returnValue}</UINotification>
+        )}
+      </div>
     </div>
   );
 };

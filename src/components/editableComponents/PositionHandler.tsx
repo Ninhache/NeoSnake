@@ -17,24 +17,22 @@ const PositionHandler: React.FC<Props> = ({ axis }) => {
     [mapData.options.cellSize]
   );
 
-  const handleChange =
-    (axis: "x" | "y") => (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = parseInt(e.target.value, 10);
-      const clampedValue = clamp(value, 0, maxValue);
+  const handleChange = (axis: "x" | "y") => (value: number) => {
+    const clampedValue = clamp(value, 0, maxValue);
 
-      if (!isNaN(clampedValue)) {
-        setMapData({
-          ...mapData,
-          snake: {
-            ...mapData.snake,
-            startPosition: {
-              ...mapData.snake.startPosition,
-              [axis]: clampedValue,
-            },
+    if (!isNaN(clampedValue)) {
+      setMapData({
+        ...mapData,
+        snake: {
+          ...mapData.snake,
+          startPosition: {
+            ...mapData.snake.startPosition,
+            [axis]: clampedValue,
           },
-        });
-      }
-    };
+        },
+      });
+    }
+  };
 
   return (
     <>
@@ -42,7 +40,7 @@ const PositionHandler: React.FC<Props> = ({ axis }) => {
         <h3 className="font-bold">{axis.toUpperCase()} :</h3>
         <UINumberInput
           value={mapData.snake.startPosition[axis]}
-          handleChange={handleChange(axis)}
+          onChangeValue={handleChange(axis)}
           max={maxValue}
           min={0}
         />

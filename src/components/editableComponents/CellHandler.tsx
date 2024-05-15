@@ -2,16 +2,17 @@ import { clamp } from "../../lib/math";
 import UINumberInput from "../UI/UINumberInput";
 import { useEditor } from "../contexts/EditorContext";
 
-const CellHandler: React.FC = () => {
+const CellSizeHandler: React.FC = () => {
   const { mapData, setMapData } = useEditor();
 
   const maxValueCellSize = 50;
   const minValueCellSize = 10;
   const cellSizePossibleValues = [10, 16, 20, 25, 32, 40, 50];
 
-  const handleCellSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // const handleCellSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCellSizeChange = (newValue: number) => {
     let actualIndex = cellSizePossibleValues.indexOf(mapData.options.cellSize);
-    const indexMove = parseInt(e.target.value, 10) - mapData.options.cellSize;
+    const indexMove = newValue - mapData.options.cellSize;
 
     actualIndex += indexMove;
 
@@ -31,7 +32,7 @@ const CellHandler: React.FC = () => {
       <h3 className="font-bold">Cell size :</h3>
       <UINumberInput
         value={mapData.options.cellSize}
-        handleChange={handleCellSizeChange}
+        onChangeValue={handleCellSizeChange}
         max={maxValueCellSize}
         min={minValueCellSize}
       />
@@ -39,4 +40,4 @@ const CellHandler: React.FC = () => {
   );
 };
 
-export default CellHandler;
+export default CellSizeHandler;
