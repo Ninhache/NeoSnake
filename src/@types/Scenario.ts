@@ -84,6 +84,7 @@ export interface OptionsScenarioData {
   height: number;
   cellSize: number;
   name: string;
+  difficulty: number;
 }
 
 export interface ScenarioData {
