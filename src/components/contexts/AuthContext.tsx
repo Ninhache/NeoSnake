@@ -46,7 +46,7 @@ const AuthContextProvider: React.FC<ProviderProps> = ({ children }) => {
   });
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken") as string;
+    const token = localStorage.getItem(LocalStorageToken.accessToken) as string;
 
     let user = null;
     try {
@@ -74,6 +74,7 @@ const AuthContextProvider: React.FC<ProviderProps> = ({ children }) => {
 
       setAuthState((state) => ({ ...state, accessToken }));
     } catch (error) {
+      setAuthState({ username: null, accessToken: null });
       throw new Error(`Failed to refresh token ${error}`);
     }
   };
