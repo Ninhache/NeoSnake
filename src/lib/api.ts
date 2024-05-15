@@ -1,8 +1,10 @@
-import { ApiResponse, LocalStorageToken, fetchNewAccessToken } from "./auth";
+import { ApiResponse } from "../@types/ApiType";
+import { LocalStorageToken, fetchNewAccessToken } from "./auth";
 import { isTokenExpired } from "./time";
 
 interface GetParams {
   path: string;
+  data?: Record<string, any>;
   headers?: HeadersInit;
 }
 
@@ -33,10 +35,10 @@ export async function customFetch(
   if (accessToken && isTokenExpired(accessToken)) {
     const refreshToken = localStorage.getItem(LocalStorageToken.refreshToken);
     if (refreshToken) {
-      const newAccessToken = await fetchNewAccessToken(refreshToken);
-      localStorage.setItem(LocalStorageToken.accessToken, newAccessToken);
+      const response = await fetchNewAccessToken(refreshToken);
+      accessToken = response.accessToken;
 
-      accessToken = newAccessToken;
+      localStorage.setItem(LocalStorageToken.accessToken, accessToken);
     } else {
       throw new Error("No refresh token available");
     }
@@ -79,7 +81,7 @@ export const post = async ({
 
 export const get = async ({
   path,
-  // data = {},
+
   headers = {},
 }: GetParams): Promise<any> => {
   const url = `${import.meta.env.VITE_SNAKE_API_ROUTE}${path}`;
@@ -90,7 +92,6 @@ export const get = async ({
       "Content-Type": "application/json",
       ...headers,
     },
-    // body: JSON.stringify(data),
   });
 
   return response.json();

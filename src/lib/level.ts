@@ -1,13 +1,13 @@
-import { SnakeMapData } from "../@types/MapTypes";
-import { customFetch, get, requestWithAuthorization } from "./api";
 import {
+  ApiErrorResponse,
   CampainMapSuccessResponse,
-  ErrorResponse,
   NumberOfLevelSuccessResponse,
-} from "./auth";
+} from "../@types/ApiType";
+import { ScenarioData } from "../@types/Scenario";
+import { customFetch, get, requestWithAuthorization } from "./api";
 
 export const getNumberOfLevels = async (): Promise<
-  NumberOfLevelSuccessResponse | ErrorResponse
+  NumberOfLevelSuccessResponse | ApiErrorResponse
 > => {
   return await get({
     path: `/level`,
@@ -16,14 +16,14 @@ export const getNumberOfLevels = async (): Promise<
 
 export const getCampaignLevel = async (
   id: number
-): Promise<CampainMapSuccessResponse | ErrorResponse> => {
+): Promise<CampainMapSuccessResponse | ApiErrorResponse> => {
   return await get({
     path: `/level/${id}`,
   });
 };
 
 export const uploadMap = async (
-  mapData: SnakeMapData,
+  mapData: ScenarioData,
   uuid: string
 ): Promise<any> => {
   const request = requestWithAuthorization(

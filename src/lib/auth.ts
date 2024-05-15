@@ -1,46 +1,15 @@
-import { SnakeMapData } from "../@types/MapTypes";
+import {
+  ApiErrorResponse,
+  ApiResponse,
+  LoginSuccessResponse,
+  RefreshResponse,
+  SignupSuccessResponse,
+} from "../@types/ApiType";
 import { get, post } from "./api";
 
 export enum LocalStorageToken {
   accessToken = "accessToken",
   refreshToken = "refreshToken",
-}
-
-export interface ApiResponse {
-  success: boolean;
-  statusCode: number;
-  message: string;
-}
-
-export interface ErrorResponse extends ApiResponse {
-  success: false;
-}
-
-export interface LoginSuccessResponse extends ApiResponse {
-  success: true;
-  statusCode: number;
-  accessToken: string;
-  refreshToken: string;
-  username: string;
-}
-
-export interface SignupSuccessResponse extends ApiResponse {
-  success: true;
-}
-
-export interface CampainMapSuccessResponse extends ApiResponse {
-  success: true;
-  data: SnakeMapData;
-}
-
-export interface NumberOfLevelSuccessResponse extends ApiResponse {
-  success: true;
-  data: number;
-}
-
-export interface OnlineMapSuccessResponse extends ApiResponse {
-  success: true;
-  data: SnakeMapData;
 }
 
 const loginWithCredentials = async (
@@ -62,7 +31,7 @@ const loginWithCredentials = async (
 const signupWithCredentials = async (
   username: string,
   password: string
-): Promise<SignupSuccessResponse | ErrorResponse> => {
+): Promise<SignupSuccessResponse | ApiErrorResponse> => {
   const response = await post({
     path: "/auth/signup",
     data: { username, password },
@@ -74,7 +43,7 @@ const signupWithCredentials = async (
 const signup = async (
   username: string,
   password: string
-): Promise<SignupSuccessResponse | ErrorResponse> => {
+): Promise<SignupSuccessResponse | ApiErrorResponse> => {
   const signupInfo = await signupWithCredentials(username, password);
 
   if (!signupInfo.success) {
@@ -104,7 +73,7 @@ const signup = async (
 const signin = async (
   username: string,
   password: string
-): Promise<LoginSuccessResponse | ErrorResponse> => {
+): Promise<LoginSuccessResponse | ApiErrorResponse> => {
   const loginInfo = await loginWithCredentials(username, password);
 
   if (!loginInfo.success) {
@@ -130,28 +99,33 @@ const signin = async (
 };
 
 export const updateStoredTokensFromRefresh = async (): Promise<void> => {
-  const accessToken = await fetchNewAccessToken(
-    localStorage.getItem(`${LocalStorageToken.refreshToken}`) as string
+  const { accessToken } = await fetchNewAccessToken(
+    localStorage.getItem(`${LocalStorageToken.refreshToken}`) || ""
   );
 
   if (accessToken) {
     localStorage.setItem(`${LocalStorageToken.accessToken}`, accessToken);
-    localStorage.setItem(`${LocalStorageToken.refreshToken}`, accessToken);
+  } else {
+    localStorage.removeItem(`${LocalStorageToken.accessToken}`);
   }
 };
 
 export const fetchNewAccessToken = async (
   refreshToken: string
-): Promise<string> => {
-  throw new Error("TO FIX");
+): Promise<RefreshResponse> => {
   try {
-    const accessToken = await get({
+    const response = (await get({
       path: "/auth/refresh",
-      // @ts-ignore
-      data: { token: refreshToken },
-    });
+      headers: {
+        authorization: refreshToken,
+      },
+    })) as RefreshResponse;
 
-    return accessToken;
+    if (!response.success) {
+      throw new Error(response.message);
+    } else {
+      return response;
+    }
   } catch (error) {
     throw new Error(`Failed to refresh token ${error}`);
   }
