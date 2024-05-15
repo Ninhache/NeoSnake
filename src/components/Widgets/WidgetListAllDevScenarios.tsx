@@ -10,7 +10,6 @@ const WidgetListAllDevScenarios: React.FC<Props> = ({}) => {
 
   useEffect(() => {
     getPreviewLevels().then((response) => {
-      console.log("gaga", response);
       if (response.success) {
         setScenariosName(response.data);
       }

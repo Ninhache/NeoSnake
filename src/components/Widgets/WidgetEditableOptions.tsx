@@ -26,7 +26,6 @@ const WidgetEditableOptions: React.FC = () => {
       return;
     }
 
-    console.log(isValidData(mapData));
     if (!isValidData(mapData)) {
       console.error("mapData is invalid");
       return;
