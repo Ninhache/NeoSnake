@@ -21,12 +21,16 @@ const UIFaqQuestion: React.FC<Props> = ({ title, children }) => {
           alt="chevron"
           width={14}
           height={14}
-          className={`transform ${isOpen ? "rotate-90" : ""} transition-transform duration-300 ease-in-out`}
+          className={`transform ${
+            isOpen ? "rotate-90" : ""
+          } transition-transform duration-300 ease-in-out`}
         />
       </div>
 
       <div
-        className={`${isOpen ? "max-h-96" : "max-h-0"} transition-max-height duration-300 ease bg-gray-900  border-blue-950 rounded-b-lg overflow-hidden`}
+        className={`${
+          isOpen ? "max-h-96" : "max-h-0"
+        } transition-max-height duration-300 ease bg-gray-900  border-blue-950 rounded-b-lg overflow-hidden`}
       >
         <div className={`border-blue-950 border-t-2 p-4`}>{children}</div>
       </div>
