@@ -1,14 +1,15 @@
 import { Coordinates } from "../@types/CoordinatesType";
 import { Direction, stringToDirectionType } from "../@types/DirectionType";
-import {
-  NextFrameInfo,
-  SnakeMapData,
-  gameObjectType,
-} from "../@types/MapTypes";
+import { NextFrameInfo } from "../@types/MapTypes";
 import { Nullable } from "../@types/NullableType";
+import {
+  ScenarioData,
+  ScenarioFruit,
+  ScenarioMapData,
+} from "../@types/Scenario";
 
-import { BasicFood, BigFruit, Entity } from "./Entity";
-import { BasicObstacle, DifferentObstacle } from "./Obstacles";
+import { Entity } from "./Entity";
+import { BasicObstacle } from "./Obstacles";
 import { Snake } from "./Snake";
 
 export class Tile {
@@ -77,7 +78,10 @@ export class Tile {
 export class SnakeMap {
   tiles: Tile[];
   snake: Snake;
-  private jsonObj: SnakeMapData;
+  private jsonObj: ScenarioData;
+  private indexCurrentMap: number;
+  private scoreForEachMap: number[];
+  private _scoreToWin: number;
 
   /**
    * The width of the map in pixels (should be always 800)
@@ -107,7 +111,7 @@ export class SnakeMap {
   constructor(serializedMap: string) {
     this.tiles = [];
 
-    const jsonObj = MapSerializer.deserialize(serializedMap) as SnakeMapData;
+    const jsonObj = MapSerializer.deserialize(serializedMap) as ScenarioData;
 
     this.width_px = jsonObj.options.width;
     this.height_px = jsonObj.options.height;
@@ -142,25 +146,59 @@ export class SnakeMap {
       stringToDirectionType(jsonObj.snake.direction) || Direction.Right,
     ];
 
-    // Create the game objects
-    const objs = jsonObj.gameObject.map((obj) =>
-      GameObjectFactory.createGameObject(this, obj)
-    );
-    objs.forEach((obj) => {
-      const tile = this.getTile({
-        x: obj.getLocationTile().x,
-        y: obj.getLocationTile().y,
+    this.indexCurrentMap = 0;
+    this.scoreForEachMap = [];
+    jsonObj.maps.forEach((map, index) => {
+      let score = 0;
+      map.fruits.forEach((fruit) => {
+        score += 1 + fruit.futurePosition.length;
       });
-      if (!tile) {
-        throw new Error(
-          `Invalid tile for object at ${obj.getLocationTile()} of type ${
-            obj.constructor.name
-          }`
-        );
-      }
-      tile.data = obj;
+      this.scoreForEachMap[index] = score;
     });
-    this.jsonObj = jsonObj;
+    this._scoreToWin = this.scoreForEachMap.reduce((a, b) => a + b, 0);
+    this.loadMap(jsonObj.maps[this.indexCurrentMap]);
+
+    this.jsonObj = JSON.parse(JSON.stringify(jsonObj));
+  }
+
+  loadMap(mapData: ScenarioMapData) {
+    this.tiles.forEach((tile) => {
+      tile.vacate();
+    });
+    mapData.fruits.forEach((fruit) => {
+      const { x, y } = fruit.actualPosition;
+      const cell = this.getTile({ x, y });
+      if (!cell) {
+        throw new Error(`Invalid fruit position at ${x}, ${y}`);
+      }
+      cell.occupy(new ScenarioFruit(cell, fruit.futurePosition));
+    });
+
+    mapData.obstacles.forEach((obstacle) => {
+      const { x, y } = obstacle;
+      const cell = this.getTile({ x, y });
+      if (!cell) {
+        throw new Error(`Invalid obstacle position at ${x}, ${y}`);
+      }
+      cell.occupy(new BasicObstacle(cell));
+    });
+  }
+
+  scoreNeeded(): number {
+    return this.scoreForEachMap[this.indexCurrentMap];
+  }
+
+  scoreToWin(): number {
+    return this._scoreToWin;
+  }
+
+  next(): void {
+    this.indexCurrentMap += 1;
+    if (this.indexCurrentMap >= this.jsonObj.maps.length) {
+      throw new Error("No more maps to load, apparently player wins!");
+    } else {
+      this.loadMap(this.jsonObj.maps[this.indexCurrentMap]);
+    }
   }
 
   draw(ctx: CanvasRenderingContext2D, alpha: number = 0): void {
@@ -173,7 +211,7 @@ export class SnakeMap {
     this.snake.draw(ctx, alpha);
   }
 
-  reset(jsonObj?: SnakeMapData): void {
+  reset(jsonObj?: ScenarioData): void {
     if (jsonObj === undefined) {
       jsonObj = this.jsonObj;
     }
@@ -191,24 +229,7 @@ export class SnakeMap {
       this.snake.grow();
     }
 
-    this.tiles.forEach((tile) => {
-      if (tile.data !== null) {
-        tile.vacate();
-      }
-    });
-
-    jsonObj.gameObject.forEach((obj) => {
-      const tile = this.getTile({ x: obj.x, y: obj.y });
-      if (tile === null) {
-        throw new Error(
-          `Invalid tile position for object of type ${obj.type} at ${obj.x}, ${obj.y}`
-        );
-      }
-
-      tile.data = GameObjectFactory.createGameObject(this, obj);
-
-      this.jsonObj = jsonObj;
-    });
+    this.loadMap(jsonObj.maps[this.indexCurrentMap]);
   }
 
   playNextFrame(): NextFrameInfo {
@@ -228,49 +249,10 @@ export class SnakeMap {
 
 export class MapSerializer {
   static serialize(map: any): string {
-    return JSON.stringify(map as SnakeMapData);
+    return JSON.stringify(map as ScenarioData);
   }
 
-  static deserialize(jsonString: string): SnakeMapData {
+  static deserialize(jsonString: string): ScenarioData {
     return JSON.parse(jsonString);
-  }
-}
-
-class GameObjectFactory {
-  static createGameObject(
-    map: SnakeMap,
-    item: { x: number; y: number; type: gameObjectType }
-  ): Entity {
-    const tile = map.getTile({ x: item.x, y: item.y });
-
-    if (tile === null) {
-      throw new Error(
-        `Invalid tile position for object of type ${item.type} at ${item.x}, ${item.y}`
-      );
-    }
-
-    if (item.type.startsWith("F")) {
-      const newFood = new BasicFood(tile);
-      switch (item.type) {
-        case "FBa":
-          return newFood;
-        case "FBi":
-          return new BigFruit(newFood);
-        default:
-          throw new Error("Unsupported food type");
-      }
-    } else if (item.type.startsWith("O")) {
-      const newObstacle = new BasicObstacle(tile);
-      switch (item.type) {
-        case "OBa":
-          return newObstacle;
-        case "ODi":
-          return new DifferentObstacle(newObstacle);
-        default:
-          throw new Error("Unsupported obstacle type");
-      }
-    }
-
-    throw new Error("Invalid game object type");
   }
 }
