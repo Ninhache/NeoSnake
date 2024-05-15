@@ -5,7 +5,6 @@ export function useStoreLastRoute() {
   const location = useLocation();
 
   useEffect(() => {
-    // Store the current location whenever it changes, except for login page
     if (
       location.pathname !== "/login" &&
       location.pathname !== "/signup" &&

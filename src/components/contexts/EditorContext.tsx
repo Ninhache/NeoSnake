@@ -1,43 +1,132 @@
 import React, { ReactNode, createContext, useContext, useState } from "react";
-import {
-  GameObject,
-  SnakeMapData,
-  gameObjectType,
-} from "../../@types/MapTypes";
+import { Coordinates } from "../../@types/CoordinatesType";
+import { foodType, gameObjectType, obstacleType } from "../../@types/MapTypes";
+import { Nullable } from "../../@types/NullableType";
+import { ScenarioData } from "../../@types/Scenario";
 
-interface SnakeMapDataContextProps {
-  mapData: SnakeMapData;
-  currentGameObjectType: gameObjectType;
-  setMapData: (data: SnakeMapData) => void;
-  addGameObject: (gameObject: GameObject) => void;
-  setGameObjectType: (gameObjectType: gameObjectType) => void;
-  deleteGameObject(x: number, y: number): void;
+interface ScenarioDataContextProps {
+  currentScenario: number;
+  currentGameObjectType: Nullable<gameObjectType>;
+  latestChanges: Coordinates[];
+  mapData: ScenarioData;
+  isDrawing: boolean;
   pendingChanges: boolean;
+  addFutureFruitPositions: (index: number, newCoordinates: Coordinates) => void;
+  addGameFruits: (data: { x: number; y: number; type: foodType }) => void;
+  addObstacle: (data: { x: number; y: number; type: obstacleType }) => void;
+  addScenario: () => void;
+  deleteFutureFruitPositions: (fruitIndex: number, futureIndex: number) => void;
+  deleteGameFruits: (index: number) => void;
+  deleteObstacle: (data: { x: number; y: number }) => void;
+  deleteScenario: (index: number) => void;
+  setCurrentScenario: (index: number) => void;
+  setDrawing: (value: boolean | ((prev: boolean) => boolean)) => void;
+  setGameObjectType: (type: Nullable<gameObjectType>) => void;
+  setLatestChanges: (data: Coordinates[]) => void;
+  setMapData: (data: ScenarioData) => void;
 }
 
-const defaultMapData: SnakeMapData = {
+const defaultScenario: ScenarioData = {
   options: {
     width: 800,
     height: 800,
     cellSize: 20,
-    name: "Default Map",
+    name: "Example Scenario",
   },
   snake: {
-    startPosition: { x: 5, y: 5 },
+    startPosition: { x: 10, y: 10 },
     direction: "Right",
     length: 3,
   },
-  gameObject: [],
+  maps: [
+    {
+      fruits: [
+        {
+          actualPosition: { x: 10, y: 15 },
+          futurePosition: [
+            { x: 10, y: 10 },
+            { x: 15, y: 5 },
+          ],
+          type: "FBa",
+        },
+        {
+          actualPosition: { x: 15, y: 10 },
+          futurePosition: [
+            { x: 10, y: 10 },
+            { x: 15, y: 5 },
+            { x: 15, y: 15 },
+            { x: 10, y: 10 },
+            { x: 15, y: 5 },
+            { x: 15, y: 15 },
+            { x: 10, y: 10 },
+            { x: 15, y: 5 },
+            { x: 15, y: 15 },
+            { x: 10, y: 10 },
+            { x: 15, y: 5 },
+            { x: 15, y: 15 },
+            { x: 10, y: 10 },
+            { x: 15, y: 5 },
+            { x: 15, y: 15 },
+          ],
+          type: "FBa",
+        },
+      ],
+      obstacles: [
+        {
+          x: 0,
+          y: 0,
+          type: "OBa",
+        },
+        {
+          x: 1,
+          y: 0,
+          type: "OBa",
+        },
+        {
+          x: 2,
+          y: 0,
+          type: "OBa",
+        },
+        {
+          x: 3,
+          y: 0,
+          type: "OBa",
+        },
+        {
+          x: 4,
+          y: 0,
+          type: "OBa",
+        },
+        {
+          x: 5,
+          y: 0,
+          type: "OBa",
+        },
+      ],
+    },
+  ],
 };
 
-const EditorContext = createContext<SnakeMapDataContextProps>({
-  mapData: defaultMapData,
-  currentGameObjectType: "FBa",
-  setMapData: () => {},
-  addGameObject: () => {},
-  setGameObjectType: () => {},
-  deleteGameObject: () => {},
+const EditorContext = createContext<ScenarioDataContextProps>({
+  currentScenario: 0,
+  currentGameObjectType: null,
+  latestChanges: [],
+  mapData: defaultScenario,
+  isDrawing: false,
   pendingChanges: false,
+  addFutureFruitPositions: () => {},
+  addGameFruits: () => {},
+  addObstacle: () => {},
+  addScenario: () => {},
+  deleteFutureFruitPositions: () => {},
+  deleteGameFruits: () => {},
+  deleteObstacle: () => {},
+  deleteScenario: () => {},
+  setCurrentScenario: () => {},
+  setDrawing: () => {},
+  setGameObjectType: () => {},
+  setLatestChanges: () => {},
+  setMapData: () => {},
 });
 
 interface ProviderProps {
@@ -45,40 +134,239 @@ interface ProviderProps {
 }
 
 const EditorContextProvider: React.FC<ProviderProps> = ({ children }) => {
-  const [mapData, setMapData] = useState<SnakeMapData>(defaultMapData);
+  const [mapData, setMapData] = useState<ScenarioData>(defaultScenario);
+  const [latestChanges, setLatestChanges] = useState<Coordinates[]>([]);
+  const [isDrawing, setDrawing] = useState<boolean>(false);
   const [pendingChanges, setPendingChanges] = useState<boolean>(false);
 
   const [currentGameObjectType, setGameObjectType] =
-    useState<gameObjectType>("FBa");
+    useState<Nullable<gameObjectType>>("FBa");
 
-  const addGameObject = ({ x, y, type }: GameObject) => {
+  const [currentScenario, setCurrentScenario] = useState<number>(0);
+
+  const addGameFruits = ({
+    x,
+    y,
+    type,
+  }: {
+    x: number;
+    y: number;
+    type: foodType;
+  }) => {
     setPendingChanges(true);
-    setMapData((prev) => ({
-      ...prev,
-      gameObject: [
-        ...prev.gameObject.filter((obj) => obj.x !== x || obj.y !== y),
-        { x, y, type },
-      ],
-    }));
+    setLatestChanges((prev) => {
+      return [...prev, { x, y }];
+    });
+
+    setMapData((prev) => {
+      const newFruits = [...prev.maps[currentScenario].fruits];
+
+      newFruits.push({
+        actualPosition: { x, y },
+        futurePosition: [],
+        type,
+      });
+
+      return {
+        ...prev,
+        maps: [
+          ...prev.maps.slice(0, currentScenario),
+          {
+            ...prev.maps[currentScenario],
+            fruits: newFruits,
+          },
+          ...prev.maps.slice(currentScenario + 1),
+        ],
+      };
+    });
   };
 
-  const deleteGameObject = (x: number, y: number) => {
+  const addFutureFruitPositions = (index: number, { x, y }: Coordinates) => {
     setPendingChanges(true);
-    setMapData((prev) => ({
-      ...prev,
-      gameObject: prev.gameObject.filter((obj) => obj.x !== x || obj.y !== y),
-    }));
+
+    setMapData((prev) => {
+      const newPositions = [
+        ...prev.maps[currentScenario].fruits[index].futurePosition,
+      ];
+
+      newPositions.push({ x, y });
+
+      return {
+        ...prev,
+        maps: [
+          ...prev.maps.slice(0, currentScenario),
+          {
+            ...prev.maps[currentScenario],
+            fruits: [
+              ...prev.maps[currentScenario].fruits.slice(0, index),
+              {
+                ...prev.maps[currentScenario].fruits[index],
+                futurePosition: newPositions,
+              },
+              ...prev.maps[currentScenario].fruits.slice(index + 1),
+            ],
+          },
+          ...prev.maps.slice(currentScenario + 1),
+        ],
+      };
+    });
+  };
+
+  const deleteGameFruits = (index: number) => {
+    setPendingChanges(true);
+
+    setMapData((prev) => {
+      return {
+        ...prev,
+        maps: [
+          ...prev.maps.slice(0, currentScenario),
+          {
+            ...prev.maps[currentScenario],
+            fruits: [
+              ...prev.maps[currentScenario].fruits.slice(0, index),
+              ...prev.maps[currentScenario].fruits.slice(index + 1),
+            ],
+          },
+          ...prev.maps.slice(currentScenario + 1),
+        ],
+      };
+    });
+  };
+
+  const deleteFutureFruitPositions = (
+    fruitIndex: number,
+    futureIndex: number
+  ) => {
+    setPendingChanges(true);
+
+    setMapData((prev) => {
+      const newPositions = [
+        ...prev.maps[currentScenario].fruits[fruitIndex].futurePosition,
+      ];
+
+      newPositions.splice(futureIndex, 1);
+
+      return {
+        ...prev,
+        maps: [
+          ...prev.maps.slice(0, currentScenario),
+          {
+            ...prev.maps[currentScenario],
+            fruits: [
+              ...prev.maps[currentScenario].fruits.slice(0, fruitIndex),
+              {
+                ...prev.maps[currentScenario].fruits[fruitIndex],
+                futurePosition: newPositions,
+              },
+              ...prev.maps[currentScenario].fruits.slice(fruitIndex + 1),
+            ],
+          },
+          ...prev.maps.slice(currentScenario + 1),
+        ],
+      };
+    });
+  };
+
+  const addObstacle = ({
+    x,
+    y,
+    type,
+  }: {
+    x: number;
+    y: number;
+    type: obstacleType;
+  }) => {
+    setPendingChanges(true);
+
+    setMapData((prev) => {
+      const newObstacles = [...prev.maps[currentScenario].obstacles];
+
+      newObstacles.push({ x, y, type });
+
+      return {
+        ...prev,
+        maps: [
+          ...prev.maps.slice(0, currentScenario),
+          {
+            ...prev.maps[currentScenario],
+            obstacles: newObstacles,
+          },
+          ...prev.maps.slice(currentScenario + 1),
+        ],
+      };
+    });
+  };
+
+  const deleteObstacle = ({ x, y }: { x: number; y: number }) => {
+    setPendingChanges(true);
+
+    setMapData((prev) => {
+      return {
+        ...prev,
+        maps: [
+          ...prev.maps.slice(0, currentScenario),
+          {
+            ...prev.maps[currentScenario],
+            obstacles: prev.maps[currentScenario].obstacles.filter(
+              (obstacle) => obstacle.x !== x || obstacle.y !== y
+            ),
+          },
+          ...prev.maps.slice(currentScenario + 1),
+        ],
+      };
+    });
+  };
+
+  const addScenario = () => {
+    setPendingChanges(true);
+
+    setMapData((prev) => {
+      return {
+        ...prev,
+        maps: [
+          ...prev.maps,
+          {
+            fruits: [],
+            obstacles: [],
+          },
+        ],
+      };
+    });
+  };
+
+  const deleteScenario = (index: number) => {
+    setPendingChanges(true);
+
+    setMapData((prev) => {
+      return {
+        ...prev,
+        maps: [...prev.maps.slice(0, index), ...prev.maps.slice(index + 1)],
+      };
+    });
   };
 
   return (
     <EditorContext.Provider
       value={{
         mapData,
-        setMapData,
-        addGameObject,
-        deleteGameObject,
-        setGameObjectType,
+        currentScenario,
         currentGameObjectType,
+        isDrawing,
+        latestChanges,
+        setGameObjectType,
+        setCurrentScenario,
+        setDrawing,
+        setLatestChanges,
+        setMapData,
+        addGameFruits,
+        addObstacle,
+        deleteObstacle,
+        addScenario,
+        deleteScenario,
+
+        addFutureFruitPositions,
+        deleteGameFruits,
+        deleteFutureFruitPositions,
         pendingChanges,
       }}
     >

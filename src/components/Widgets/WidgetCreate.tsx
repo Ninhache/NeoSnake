@@ -1,5 +1,4 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
 import { useAuth } from "../contexts/AuthContext";
 import { useEditor } from "../contexts/EditorContext";
 import LayoutComponent from "../layouts/LayoutComponent";
@@ -8,10 +7,10 @@ import WidgetEditableOptions from "./WidgetEditableOptions";
 import WidgetLogin from "./WidgetLogin";
 
 import { useEffect, useState } from "react";
-import { SnakeMapData } from "../../@types/MapTypes";
+import { ScenarioData } from "../../@types/Scenario";
 import { getExistingMap } from "../../lib/level";
 import UISuspense from "../UI/UISuspense";
-import WidgetToolSelector from "./WidgetToolSelector";
+import WidgetScenarios from "./WidgetScenarios";
 
 const WidgetCreate: React.FC = () => {
   const { username } = useAuth();
@@ -36,23 +35,26 @@ const WidgetCreate: React.FC = () => {
 
   useEffect(() => {
     if (!uuid) {
-      const newId = uuidv4();
-      navigate(`/create/${newId}`);
+      setLoading(false);
+      return;
     } else {
-      getExistingMap(uuid)
-        .then((data) => data.json())
-        .then((data) => {
-          const { uuid, ...foundData } = JSON.parse(
-            data.data.map_data
-          ) as SnakeMapData & {
-            uuid: string;
-          };
+      try {
+        getExistingMap(uuid)
+          .then((data) => data.json())
+          .then((data) => {
+            const { uuid, ...foundData } = JSON.parse(
+              data.data.map_data
+            ) as ScenarioData & {
+              uuid: string;
+            };
 
-          setMapData(foundData);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+            setMapData(foundData);
+          })
+
+          .finally(() => {
+            setLoading(false);
+          });
+      } catch (error) {}
     }
   }, [uuid, navigate]);
 
@@ -75,8 +77,8 @@ const WidgetCreate: React.FC = () => {
     <LayoutComponent>
       <div className="flex">
         <div>
-          <WidgetToolSelector />
           <WidgetEditableGrid width={800} height={800} />
+          <WidgetScenarios />
         </div>
         <WidgetEditableOptions />
       </div>

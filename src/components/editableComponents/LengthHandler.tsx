@@ -6,8 +6,8 @@ const LengthHandler: React.FC = () => {
   const { mapData, setMapData } = useEditor();
 
   const maxValueLength = 999;
-  const handleLengthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newLength = clamp(parseInt(e.target.value, 10), 0, maxValueLength);
+  const handleLengthChange = (value: number) => {
+    const newLength = clamp(value, 0, maxValueLength);
 
     if (!isNaN(newLength)) {
       setMapData({
@@ -25,7 +25,7 @@ const LengthHandler: React.FC = () => {
       <h3 className="font-bold">Initial Length :</h3>
       <UINumberInput
         value={mapData.snake.length}
-        handleChange={handleLengthChange}
+        onChangeValue={handleLengthChange}
         max={maxValueLength}
         min={1}
       />

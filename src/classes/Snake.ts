@@ -1,8 +1,8 @@
 import { Coordinates } from "../@types/CoordinatesType";
 import { Direction } from "../@types/DirectionType";
 import { Drawable } from "../@types/DrawableType";
+import { ScenarioFruit } from "../@types/Scenario";
 
-import { Food } from "./Entity";
 import { SnakeMap, Tile } from "./Map";
 import { Obstacle } from "./Obstacles";
 
@@ -48,8 +48,9 @@ export class Snake implements Drawable {
     this.cellSize = cellSize;
   }
 
-  public eat(food: Food): void {
+  public eat(food: ScenarioFruit): void {
     food.effect();
+    food.next();
   }
 
   public reset(startTile: Tile): void {

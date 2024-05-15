@@ -25,25 +25,23 @@ There's no particular setup to do, you've access to 2 major commands :
 
 # _History_
 
-## Tech choice
+Considering Cobra's company's ambition to make the game universally accessible, I need a tech stack that can efficiently render the game on the web:
 
-According to the text i've read, the Cobra's company wants to make his game globally accessible, so, I need something to render it on the Internet :
-
-- TypeScript
-- React & Vite
-- WebGL ? (Canvas will be enough imo)
+- TypeScript for its robust and type-safe code, which helps in maintaining large-scale projects.
+- React & Vite to streamline front-end development and ensure a responsive user experience.
+- While Canvas is likely sufficient for our current graphic needs, WebGL remains a consideration for more complex visual effects in the future.
 
 So it will be powered by [**React**](https://fr.react.dev/) & [**TypeScript**](https://www.typescriptlang.org/) with [_Vite_](https://vitejs.dev/)
 
 ## Final Idea
 
-For a V1 :  
-Solo Snake with a Story mode..
-Where you go through the levels 1,2,3... (more and more complicated)
-Every 5 levels, you're against a BOT (Pit's contender) that's also want to eat fruit (money?).. (so you've to be faster or kill him)
+_that will change sometimes..._
 
-UI, A Left menu to show EVERY levels that's are available (Maybe not EVERY, only a part..)  
-\+ special fruits (Thanks @BlueSlime59 for the idea ;))
+This game is a competitive snake game that requires skill to master. It's inspired by [Trackmania](https://www.ubisoft.com/fr-fr/game/trackmania/trackmania) and [Happy Wheels](https://fr.wikipedia.org/wiki/Happy_Wheels), where the primary goal is "speed". In this game, the objective is to be the fastest at consuming all the fruits in various scenarios.
+
+I also encourage players to express their creativity by designing and sharing their own levels with the community.
+
+This is the final concept chosen after considering various ideas from previous brainstorming sessions.
 
 ## Brainstorm Ideas
 
@@ -58,38 +56,5 @@ UI, A Left menu to show EVERY levels that's are available (Maybe not EVERY, only
 **_Vibing_ Ideas :**
 
 - Mods (that you can wrote in random langages to modify the game ?)
-- Score handling (+ anticheat lol)
+- Score handling/Leaderboard (+ anticheat lol)
 - Multiplayer / Multiple Snake ?
-
----
-
-## Bullshit i've to read so modify
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: "latest",
-    sourceType: "module",
-    project: ["./tsconfig.json", "./tsconfig.node.json"],
-    tsconfigRootDir: __dirname,
-  },
-};
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list

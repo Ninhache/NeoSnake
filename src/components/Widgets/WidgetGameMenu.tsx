@@ -1,7 +1,5 @@
 import UISpeedButtons from "../UI/UISpeedButtons";
 import { useGame } from "../contexts/GameContext";
-import DEVCacheButtons from "../devComponents/DEVCacheButtons";
-import WidgetListOfLevel from "./WidgetListOfLevel";
 
 type Props = {};
 const WidgetGameMenu: React.FC<Props> = ({}) => {
@@ -18,11 +16,7 @@ const WidgetGameMenu: React.FC<Props> = ({}) => {
         <br></br>
 
         <UISpeedButtons />
-
-        <WidgetListOfLevel />
       </div>
-
-      <DEVCacheButtons />
     </div>
   );
 };

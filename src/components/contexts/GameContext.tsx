@@ -1,21 +1,21 @@
 import React, { createContext, useContext, useReducer } from "react";
-import { Food } from "../../classes/Entity";
-import { saveLevelProgress } from "../../lib/localstorage";
+import { ScenarioFruit } from "../../@types/Scenario";
 
 interface GameState {
   score: number;
+
   level: number;
   name: string;
   speed: number;
 }
 
 type GameAction =
-  | { type: "GAME_EAT_FRUIT"; fruit: Food }
-  | { type: "GAME_NEXT_LEVEL" }
+  | { type: "GAME_EAT_FRUIT"; fruit: ScenarioFruit }
   | { type: "GAME_SET_LEVEL"; payload: number }
   | { type: "GAME_SET_NAME"; payload: string }
   | { type: "GAME_SET_SPEED"; payload: number }
-  | { type: "GAME_LOOSE" };
+  | { type: "GAME_LOOSE" }
+  | { type: "GAME_WIN" };
 
 function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
@@ -23,13 +23,6 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       return {
         ...state,
         score: state.score + action.fruit.getValue(),
-      };
-    case "GAME_NEXT_LEVEL":
-      saveLevelProgress(state.level + 1);
-      return {
-        ...state,
-        score: 0,
-        level: state.level + 1,
       };
     case "GAME_LOOSE":
       return {
