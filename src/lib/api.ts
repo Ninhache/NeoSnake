@@ -1,4 +1,3 @@
-import { ApiResponse } from "../@types/ApiType";
 import { LocalStorageToken, fetchNewAccessToken } from "./auth";
 import { isTokenExpired } from "./time";
 
@@ -64,7 +63,7 @@ export const post = async ({
   path,
   data = {},
   headers = {},
-}: PostParams): Promise<ApiResponse> => {
+}: PostParams): Promise<any> => {
   const url = `${import.meta.env.VITE_SNAKE_API_ROUTE}${path}`;
 
   const response = await fetch(url, {

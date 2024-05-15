@@ -32,6 +32,17 @@ export interface NumberOfLevelSuccessResponse extends ApiResponse {
   data: number;
 }
 
+export interface ScenariosName {
+  id: string;
+  name: string;
+  completed: boolean;
+}
+
+export interface PreviewLevelSuccessResponse extends ApiResponse {
+  success: true;
+  data: ScenariosName[];
+}
+
 export interface OnlineMapSuccessResponse extends ApiResponse {
   success: true;
   data: SnakeMapData;
