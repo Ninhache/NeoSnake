@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 
+import { useNavigate, useParams } from "react-router-dom";
 import { Direction } from "../@types/DirectionType";
 import { Nullable } from "../@types/NullableType";
-import {
-  ScenarioData,
-  ScenarioFruit,
-  exampleScenario,
-} from "../@types/Scenario";
+import { ScenarioData, ScenarioFruit } from "../@types/Scenario";
 import { SnakeMap } from "../classes/Map";
+import { getCampaignLevel, uploadCampaignCompletion } from "../lib/level";
+
+import { timestampToChrono } from "../lib/time";
 import UISuspense from "./UI/UISuspense";
 import { useGame } from "./contexts/GameContext";
 
@@ -21,14 +21,94 @@ const GameCanvas: React.FC<Props> = ({ width, height }) => {
   const stateRef = useRef(state);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [json, setJson] = useState<Nullable<ScenarioData>>(null);
+  const [finalTime, setFinalTime] = useState<number>(-1);
+  const [playState, setPlayState] = useState<"PLAYING" | "PAUSED" | "STOPPED">(
+    "PAUSED"
+  );
+  const [resetToggle, setResetToggle] = useState<boolean>(false);
+
+  useEffect(() => {
+    const restartGame = (event: KeyboardEvent) => {
+      if (event.key === "r" || event.key === "R") {
+        setResetToggle((prev) => !prev);
+      }
+    };
+
+    window.addEventListener("keydown", restartGame);
+    return () => {
+      window.removeEventListener("keydown", restartGame);
+    };
+  }, []);
+
+  const playStateRef = useRef(playState);
+  useEffect(() => {
+    playStateRef.current = playState;
+  }, [playState]);
+
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  if (!id) {
+    throw new Error("Missing id in params");
+  }
+
+  useEffect(() => {
+    getCampaignLevel(id).then((response) => {
+      if (response.success) {
+        setJson(JSON.parse(response.data));
+      }
+    });
+  }, [id]);
 
   useEffect(() => {
     stateRef.current = state;
   }, [state]);
 
   useEffect(() => {
-    setJson(exampleScenario);
-  }, []);
+    if (finalTime === -1) return;
+    console.log(timestampToChrono(finalTime));
+
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+
+    if (!canvas || !ctx) {
+      throw new Error("Canvas not found");
+    }
+
+    ctx.fillStyle = "rgba(100, 255, 100, 0.25)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // draw the time at center
+    ctx.font = "30px Arial";
+    ctx.fillStyle = "black";
+    ctx.textAlign = "center";
+    ctx.fillText(
+      `You won in ${timestampToChrono(finalTime)}`,
+      canvas.width / 2,
+      canvas.height / 2
+    );
+
+    ctx.fillText(
+      `Press ESC to go back to the menu`,
+      canvas.width / 2,
+      canvas.height / 2 + 50
+    );
+
+    uploadCampaignCompletion(id, finalTime)
+      .then((response) => response.json())
+      .then((data) => console.log(data));
+
+    const handlePressEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        navigate("/play");
+      }
+    };
+    addEventListener("keydown", handlePressEscape);
+
+    return () => {
+      removeEventListener("keydown", handlePressEscape);
+    };
+  }, [finalTime]);
 
   useEffect(() => {
     if (json === null) return;
@@ -78,8 +158,14 @@ const GameCanvas: React.FC<Props> = ({ width, height }) => {
       let animationFrameId: number;
 
       window.addEventListener("keydown", handleKeyPress);
-
+      const startTime = performance.now();
       const render = () => {
+        if (playStateRef.current === "STOPPED") return;
+        if (playStateRef.current === "PAUSED") {
+          animationFrameId = window.requestAnimationFrame(render);
+          return;
+        }
+
         frameCount++;
         animationFrameId = window.requestAnimationFrame(render);
 
@@ -99,13 +185,14 @@ const GameCanvas: React.FC<Props> = ({ width, height }) => {
             }
           }
 
-          console.log(scenario.scoreNeeded(), scoreMap);
           if (scoreMap >= scenario.scoreNeeded()) {
-            scoreMap = 0;
-            scenario.next();
-
             if (totalScore >= scenario.scoreToWin()) {
-              dispatch({ type: "GAME_WIN" });
+              const winTime = performance.now();
+              setFinalTime(winTime - startTime);
+              setPlayState("STOPPED");
+            } else {
+              scoreMap = 0;
+              scenario.next();
             }
           }
 
@@ -117,7 +204,7 @@ const GameCanvas: React.FC<Props> = ({ width, height }) => {
 
         draw(ctx, frameCount);
       };
-
+      setPlayState("PLAYING");
       render();
 
       return () => {
@@ -125,7 +212,7 @@ const GameCanvas: React.FC<Props> = ({ width, height }) => {
           window.removeEventListener("keydown", handleKeyPress);
       };
     }
-  }, [json, state.speed]);
+  }, [json, state.speed, resetToggle]);
 
   if (json === null) {
     return (

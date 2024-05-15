@@ -1,4 +1,5 @@
 import { SnakeMapData } from "./MapTypes";
+import { OptionsScenarioData, ScenarioMapData } from "./Scenario";
 
 export interface ApiResponse {
   success: boolean;
@@ -24,7 +25,7 @@ export interface SignupSuccessResponse extends ApiResponse {
 
 export interface CampainMapSuccessResponse extends ApiResponse {
   success: true;
-  data: SnakeMapData;
+  data: string;
 }
 
 export interface NumberOfLevelSuccessResponse extends ApiResponse {
@@ -34,8 +35,11 @@ export interface NumberOfLevelSuccessResponse extends ApiResponse {
 
 export interface ScenariosName {
   id: string;
-  name: string;
+  preview: {
+    options: OptionsScenarioData;
+  } & ScenarioMapData;
   completed: boolean;
+  completionTime: Date;
 }
 
 export interface PreviewLevelSuccessResponse extends ApiResponse {

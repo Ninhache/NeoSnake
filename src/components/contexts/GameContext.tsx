@@ -29,12 +29,6 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         score: 0,
       };
-    case "GAME_WIN":
-      return {
-        ...state,
-        level: 0,
-        score: 0,
-      };
     case "GAME_SET_LEVEL":
       return {
         ...state,

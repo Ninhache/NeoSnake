@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import { useStoreLastRoute } from "./components/hooks/useStoreLastRoute";
 import "./styles/App.css";
 import WidgetHome from "./components/Widgets/WidgetLandingPage";
-import WidgetGame from "./components/Widgets/WidgetGame";
+import WidgetCampaignExplorer from "./components/Widgets/WidgetCampaignExplorer";
 import WidgetCreate from "./components/Widgets/WidgetCreate";
 import WidgetFaq from "./components/Widgets/WidgetFaq";
 import WidgetLogin from "./components/Widgets/WidgetLogin";
@@ -10,6 +10,7 @@ import WidgetSignup from "./components/Widgets/WidgetSignup";
 import WidgetArticle from "./components/Widgets/WidgetArticle";
 import WidgetLogout from "./components/Widgets/WidgetLogout";
 import { EditorContextProvider } from "./components/contexts/EditorContext";
+import WidgetGame from "./components/Widgets/WidgetGame";
 
 const RouterContent: React.FC<{}> = ({}) => {
   useStoreLastRoute();
@@ -18,7 +19,8 @@ const RouterContent: React.FC<{}> = ({}) => {
     <>
       <Routes>
         <Route path="/" element={<WidgetHome />} />
-        <Route path="/play" element={<WidgetGame />} />
+        <Route path="/play" element={<WidgetCampaignExplorer />} />
+        <Route path="/game/:id?" element={<WidgetGame />} />
         <Route
           path="/create/:uuid?"
           element={

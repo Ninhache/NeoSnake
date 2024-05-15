@@ -39,11 +39,30 @@ export const getPreviewLevels = async (): Promise<
 };
 
 export const getCampaignLevel = async (
-  id: number
+  id: string
 ): Promise<CampainMapSuccessResponse | ApiErrorResponse> => {
   return await get({
     path: `/level/${id}`,
   });
+};
+
+export const uploadCampaignCompletion = async (
+  campaignId: string,
+  time: number
+): Promise<any> => {
+  const request = requestWithAuthorization(
+    `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/campaign/completion`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        mapId: campaignId,
+        completionTime: time,
+        completionDate: Date.now(),
+      }),
+    }
+  );
+
+  return await customFetch(request);
 };
 
 export const uploadMap = async (

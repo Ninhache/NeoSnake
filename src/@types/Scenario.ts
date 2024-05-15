@@ -73,13 +73,21 @@ export interface ScenarioFruits {
   type: foodType;
 }
 
+export interface ScenarioObstacles {
+  x: number;
+  y: number;
+  type: obstacleType;
+}
+
+export interface OptionsScenarioData {
+  width: number;
+  height: number;
+  cellSize: number;
+  name: string;
+}
+
 export interface ScenarioData {
-  options: {
-    width: 800;
-    height: 800;
-    cellSize: number;
-    name: string;
-  };
+  options: OptionsScenarioData;
   snake: {
     startPosition: Coordinates;
     direction: DirectionType;
@@ -90,11 +98,7 @@ export interface ScenarioData {
 
 export interface ScenarioMapData {
   fruits: ScenarioFruits[];
-  obstacles: {
-    x: number;
-    y: number;
-    type: obstacleType;
-  }[];
+  obstacles: ScenarioObstacles[];
 }
 
 export const exampleScenario: ScenarioData = {

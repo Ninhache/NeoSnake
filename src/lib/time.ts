@@ -16,6 +16,18 @@ export function isTokenExpired(token: string): boolean {
   return decoded.exp < currentTime;
 }
 
+export function timestampToChrono(timestamp: number): string {
+  const minutes = Math.floor(timestamp / 60000);
+  const seconds = Math.floor((timestamp % 60000) / 1000);
+  const milliseconds = timestamp % 1000;
+
+  return `${padZero(minutes)}:${padZero(seconds)}.${padZero(milliseconds, 3)}`;
+}
+
+function padZero(num: number, length: number = 2): string {
+  return num.toString().padStart(length, "0");
+}
+
 export function parseDateTime(
   dateTimeString: string,
   intl: string = "fr-FR"
