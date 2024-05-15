@@ -2,9 +2,9 @@ import "../../styles/UINumberInput.css";
 
 interface NumberInputProps {
   value: number;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  min: number;
+  onChangeValue: (newValue: number) => void;
   max: number;
+  min?: number;
   step?: number;
   style?: React.CSSProperties;
   className?: string;
@@ -12,28 +12,40 @@ interface NumberInputProps {
 
 const UINumberInput: React.FC<NumberInputProps> = ({
   value,
-  handleChange,
-  min,
+  onChangeValue,
+  min = 0,
   max,
   step = 1,
 }) => {
-  const numericValue = Number(value);
+  const handleIncrement = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+    if (value < max) {
+      onChangeValue(value + step);
+    }
+  };
+
+  const handleDecrement = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+    if (value > min) {
+      onChangeValue(value - step);
+    }
+  };
 
   return (
     <div className="flex">
       <button
         aria-label="Decrease value"
         className={`border-2 w-8 h-8  transition-colors duration-300 rounded-l-lg ${
-          numericValue <= min
-            ? "bg-gray-400 cursor-not-allowed text-gray-600"
-            : "bg-gray-100 cursor-pointer text-black"
+          value <= min
+            ? "bg-gray-400 cursor-not-allowed text-gray-600 "
+            : "bg-gray-100 cursor-pointer text-black hover:bg-red-500"
         } font-bold text-center`}
-        onClick={() => {
-          handleChange({
-            target: { value: String(numericValue - step) },
-          } as React.ChangeEvent<HTMLInputElement>);
-        }}
-        disabled={numericValue <= min}
+        onClick={handleDecrement}
+        disabled={value <= min}
         style={{
           borderTopLeftRadius: "0.5rem",
           borderBottomLeftRadius: "0.5rem",
@@ -45,26 +57,22 @@ const UINumberInput: React.FC<NumberInputProps> = ({
       <input
         type="number"
         value={value}
-        onChange={handleChange}
+        onChange={(e) => onChangeValue(parseFloat(e.target.value))}
         min={min}
         max={max}
         step={step}
         className="text-black w-8 h-8 text-center "
-      />
+      ></input>
 
       <button
         aria-label="Increase value"
         className={`border-2 w-8 h-8 transition-colors duration-300 rounded-r-lg ${
-          numericValue >= max
+          value >= max
             ? "bg-gray-400 cursor-not-allowed text-gray-600"
-            : "bg-gray-100 cursor-pointer text-black"
+            : "bg-gray-100 cursor-pointer text-black hover:bg-green-500"
         } font-bold text-center`}
-        onClick={() => {
-          handleChange({
-            target: { value: String(numericValue + step) },
-          } as React.ChangeEvent<HTMLInputElement>);
-        }}
-        disabled={numericValue >= max}
+        onClick={handleIncrement}
+        disabled={value >= max}
       >
         +
       </button>
