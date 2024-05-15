@@ -10,6 +10,7 @@ import { getCampaignLevel, uploadCampaignCompletion } from "../lib/level";
 import { timestampToChrono } from "../lib/time";
 import UISuspense from "./UI/UISuspense";
 import { useGame } from "./contexts/GameContext";
+import { useAuth } from "./contexts/AuthContext";
 
 type Props = {
   width: number;
@@ -26,6 +27,7 @@ const GameCanvas: React.FC<Props> = ({ width, height }) => {
     "PAUSED"
   );
   const [resetToggle, setResetToggle] = useState<boolean>(false);
+  const { username } = useAuth();
 
   useEffect(() => {
     const restartGame = (event: KeyboardEvent) => {
@@ -66,7 +68,6 @@ const GameCanvas: React.FC<Props> = ({ width, height }) => {
 
   useEffect(() => {
     if (finalTime === -1) return;
-    console.log(timestampToChrono(finalTime));
 
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
@@ -94,21 +95,25 @@ const GameCanvas: React.FC<Props> = ({ width, height }) => {
       canvas.height / 2 + 50
     );
 
-    uploadCampaignCompletion(id, finalTime)
-      .then((response) => response.json())
-      .then((data) => console.log(data));
+    if (username) {
+      uploadCampaignCompletion(id, finalTime);
+    } else {
+      // save to the local storage instead
+      localStorage.setItem(`campaign_${id}`, `${finalTime}`);
+    }
 
     const handlePressEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         navigate("/play");
       }
     };
+
     addEventListener("keydown", handlePressEscape);
 
     return () => {
       removeEventListener("keydown", handlePressEscape);
     };
-  }, [finalTime]);
+  }, [finalTime, username, id]);
 
   useEffect(() => {
     if (json === null) return;

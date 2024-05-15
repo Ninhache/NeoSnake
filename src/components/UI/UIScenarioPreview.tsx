@@ -2,12 +2,14 @@ import { useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import { ScenariosName } from "../../@types/ApiType";
 import { timestampToChrono } from "../../lib/time";
+import { useAuth } from "../contexts/AuthContext";
 
 type Props = {
   scenario: ScenariosName;
 };
 const UIScenarioPreview: React.FC<Props> = ({ scenario }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { username } = useAuth();
 
   const drawCanvas = (ctx: CanvasRenderingContext2D) => {
     const width = ctx.canvas.width;
@@ -22,16 +24,8 @@ const UIScenarioPreview: React.FC<Props> = ({ scenario }) => {
     const sizeY =
       (height * scenario.preview.options.cellSize) /
       scenario.preview.options.height;
-    console.log(scenario);
-    console.log(
-      "width * scenario.preview.cellSize) / scenario.preview.width",
-      width,
-      scenario.preview.options.cellSize,
-      scenario.preview.options.width
-    );
 
     scenario.preview.fruits.forEach((fruit) => {
-      console.log(fruit);
       ctx.fillStyle = "red";
       ctx.fillRect(
         fruit.actualPosition.x * sizeX,
@@ -60,13 +54,23 @@ const UIScenarioPreview: React.FC<Props> = ({ scenario }) => {
   useEffect(() => {
     const ctx = canvasRef.current?.getContext("2d");
     if (!ctx) return;
-    console.log("ça dessine");
     drawCanvas(ctx);
   }, [scenario]);
 
-  const completionTime = timestampToChrono(
-    new Date(scenario.completionTime).getTime()
-  );
+  let completionTime = "";
+  if (!username) {
+    const time = localStorage.getItem(`campaign_${scenario.id}`);
+    if (time) {
+      completionTime = timestampToChrono(parseInt(time, 10));
+      scenario.completed = true;
+    } else {
+      completionTime = "Not Attempted";
+    }
+  } else {
+    completionTime = timestampToChrono(
+      new Date(scenario.completionTime).getTime()
+    );
+  }
 
   return (
     <div
