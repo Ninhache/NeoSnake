@@ -22,7 +22,7 @@ const WidgetListAllDevScenarios: React.FC<Props> = ({}) => {
   }
 
   return (
-    <div className="flex">
+    <div className="flex gap-2 flex-wrap justify-center">
       {scenariosName.map((scenario) => (
         <UIScenarioPreview key={scenario.id} scenario={scenario} />
       ))}

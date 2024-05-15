@@ -1,31 +1,29 @@
 import { useEffect } from "react";
-import UINotification from "../UI/UINotification";
+import GameCanvas from "../GameCanvas";
 import { useAuth } from "../contexts/AuthContext";
 import { GameProvider } from "../contexts/GameContext";
 import LayoutComponent from "../layouts/LayoutComponent";
-import WidgetListAllDevScenarios from "./WidgetListAllDevScenarios";
+import WidgetGameMenu from "./WidgetGameMenu";
+import { useNavigate, useParams } from "react-router-dom";
 
 const WidgetGame: React.FC = () => {
-  const { username } = useAuth();
+  const { id } = useParams();
+  const navigate = useNavigate();
 
+  if (!id) {
+    navigate("/play");
+  }
+
+  const { username } = useAuth();
   useEffect(() => {}, [username]);
 
   return (
     <LayoutComponent>
       <GameProvider>
         <div className="flex w-full justify-center">
-          {!username && (
-            <UINotification type="warning">
-              Without being logged in, your progress will be saved locally.
-            </UINotification>
-          )}
+          <GameCanvas width={800} height={800} />
+          <WidgetGameMenu />
         </div>
-
-        <h1 className=" m-4 text-3xl text-center">
-          Scenario's created by devs
-        </h1>
-
-        <WidgetListAllDevScenarios />
       </GameProvider>
     </LayoutComponent>
   );
