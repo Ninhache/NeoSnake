@@ -19,11 +19,11 @@ const UIDropdown: React.FC<DropdownProps> = ({ items, onSelect }) => {
   };
 
   return (
-    <div className="w-1/5">
+    <div className="w-full">
       <select
         value={selectedItem}
         onChange={handleChange}
-        className="text-black text-center w-full h-8 rounded-lg"
+        className="text-black bg-white hover:bg-gray-200 text-center w-full h-8 rounded-lg"
       >
         {items.map((item, index) => (
           <option key={index} value={item}>

@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useEditor } from "../contexts/EditorContext";
+import { Nullable } from "../../@types/NullableType";
+import { Coordinates } from "../../@types/CoordinatesType";
 
 type Props = {
   width: number;
@@ -13,6 +15,10 @@ const WidgetEditableGrid: React.FC<Props> = ({ width, height }) => {
   const [dragOperation, setDragOperation] = useState<"ADD" | "DELETE" | null>(
     null
   );
+  const [lastPosition, setLastPosition] = useState({
+    x: -1,
+    y: -1,
+  });
 
   const { cellSize } = mapData.options;
 
@@ -91,6 +97,7 @@ const WidgetEditableGrid: React.FC<Props> = ({ width, height }) => {
     if (event.button === 0) {
       setDragOperation("ADD");
       addObstacle({ x, y, type: "OBa" });
+      setLastPosition({ x, y });
     } else if (event.button === 2) {
       setDragOperation("DELETE");
       deleteObstacle({ x, y });
@@ -106,11 +113,14 @@ const WidgetEditableGrid: React.FC<Props> = ({ width, height }) => {
 
     drawOverlay(x, y);
     if (!isDragging) return;
+    if (x === lastPosition.x && y === lastPosition.y) return;
 
     if (dragOperation === "ADD") {
       addObstacle({ x, y, type: "OBa" });
+      setLastPosition({ x, y });
     } else if (dragOperation === "DELETE") {
       deleteObstacle({ x, y });
+      setLastPosition({ x, y });
     }
   };
 

@@ -75,7 +75,7 @@ const WidgetCreate: React.FC = () => {
 
   return (
     <LayoutComponent>
-      <div className="flex">
+      <div className="flex gap-4">
         <div>
           <WidgetEditableGrid width={800} height={800} />
           <WidgetScenarios />

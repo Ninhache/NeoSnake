@@ -15,15 +15,12 @@ const NameHandler: React.FC = () => {
   };
 
   return (
-    <>
-      <h3 className="font-bold">Name :</h3>
-      <UITextInput
-        value={mapData.options.name}
-        handleChange={handleNameChange}
-        placeholder="Map name"
-        maxLength={20}
-      />
-    </>
+    <UITextInput
+      value={mapData.options.name}
+      handleChange={handleNameChange}
+      placeholder="Map name"
+      maxLength={20}
+    />
   );
 };
 

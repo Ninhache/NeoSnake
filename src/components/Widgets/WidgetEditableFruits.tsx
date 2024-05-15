@@ -17,8 +17,8 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
   useEffect(() => {}, [mapData.maps[currentScenario].fruits]);
 
   return (
-    <div className="bg-gray-800 bg-opacity-40 h-4/6 overflow-scroll flex flex-col justify-between min-w-96">
-      <div className="flex-grow overflow-auto">
+    <div className="bg-gray-800 bg-opacity-40 h-4/6 overflow-y-scroll overflow-x-hidden flex flex-col justify-between min-w-96">
+      <div className="flex-grow overflow-y-auto overflow-x-hidden">
         {mapData.maps[currentScenario].fruits.map((fruit, index) => (
           <UIFruits
             index={index}

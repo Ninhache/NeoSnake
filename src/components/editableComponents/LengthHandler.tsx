@@ -21,15 +21,12 @@ const LengthHandler: React.FC = () => {
   };
 
   return (
-    <>
-      <h3 className="font-bold">Initial Length :</h3>
-      <UINumberInput
-        value={mapData.snake.length}
-        onChangeValue={handleLengthChange}
-        max={maxValueLength}
-        min={1}
-      />
-    </>
+    <UINumberInput
+      value={mapData.snake.length}
+      onChangeValue={handleLengthChange}
+      max={maxValueLength}
+      min={1}
+    />
   );
 };
 

@@ -36,10 +36,10 @@ const UINumberInput: React.FC<NumberInputProps> = ({
   };
 
   return (
-    <div className="flex">
+    <div className="flex w-full">
       <button
         aria-label="Decrease value"
-        className={`border-2 w-8 h-8  transition-colors duration-300 rounded-l-lg ${
+        className={`border-2 w-12 h-8  transition-colors duration-300 rounded-l-lg ${
           value <= min
             ? "bg-gray-400 cursor-not-allowed text-gray-600 "
             : "bg-gray-100 cursor-pointer text-black hover:bg-red-500"
@@ -61,12 +61,12 @@ const UINumberInput: React.FC<NumberInputProps> = ({
         min={min}
         max={max}
         step={step}
-        className="text-black w-8 h-8 text-center "
+        className="text-black w-full h-8 text-center "
       ></input>
 
       <button
         aria-label="Increase value"
-        className={`border-2 w-8 h-8 transition-colors duration-300 rounded-r-lg ${
+        className={`border-2 w-12 h-8 transition-colors duration-300 rounded-r-lg ${
           value >= max
             ? "bg-gray-400 cursor-not-allowed text-gray-600"
             : "bg-gray-100 cursor-pointer text-black hover:bg-green-500"
