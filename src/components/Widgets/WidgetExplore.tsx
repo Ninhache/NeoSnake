@@ -18,11 +18,17 @@ const WidgetExplore: React.FC<Props> = ({}) => {
 
   return (
     <LayoutComponent>
-      <h1 className="text-3xl text-center font-bold">Explore</h1>
+      <h1 className="text-3xl text-center font-bold mb-4">Explore</h1>
       <div className="flex flex-wrap gap-2">
-        {levels.map((level) => (
-          <UIScenarioExplorePreview key={level.id} scenario={level} />
-        ))}
+        {levels.length === 0 ? (
+          <div className="text-center w-full text-gray-500 italic">
+            <p>No levels found</p>
+          </div>
+        ) : (
+          levels.map((level) => (
+            <UIScenarioExplorePreview key={level.id} scenario={level} />
+          ))
+        )}
       </div>
     </LayoutComponent>
   );

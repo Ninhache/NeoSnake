@@ -28,7 +28,7 @@ const WidgetCampaignList: React.FC<Props> = ({}) => {
   return (
     <div className="flex gap-2 flex-wrap justify-center">
       {scenariosName.length === 0 && (
-        <div className="text-center w-full">
+        <div className="text-center w-full text-gray-500 italic">
           <p>No scenarios found</p>
         </div>
       )}
