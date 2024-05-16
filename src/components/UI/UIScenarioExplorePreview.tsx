@@ -89,15 +89,15 @@ const UIScenarioExplorePreview: React.FC<Props> = ({ scenario }) => {
           className={`border-2 border-transparent`}
         />
       </NavLink>
-
       <p className="text-center font-bold m-1">
         {scenario.preview.options.name}
       </p>
-
-      <p className="text-gray-500 italic">
+      <div className="flex justify-end gap-1 text-gray-500">
+        By <p className="font-bold text-white">{`${scenario.creatorName}`}</p>
+      </div>
+      <p className="text-gray-500 italic text-right">
         Difficulty {scenario.preview.options.difficulty}
       </p>
-
       {scenario.completed ? (
         <div>
           <h1 className="text-gray-400 text-sm text-right">
@@ -105,7 +105,7 @@ const UIScenarioExplorePreview: React.FC<Props> = ({ scenario }) => {
           </h1>
         </div>
       ) : (
-        <h1 className="italic text-gray-400 text-center">Not Attempted</h1>
+        <h1 className="italic text-gray-400 text-center">Not Attempted Yet</h1>
       )}
     </div>
   );
