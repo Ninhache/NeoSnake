@@ -66,6 +66,7 @@ const WidgetArticle: React.FC<Props> = ({}) => {
           pour vous finir le meilleur résultat possible
         </UINotification>
       )}
+      <div ref={(r) => r?.scrollIntoView({ behavior: "smooth" })}></div>
       <ReactMarkdown
         className={`markdown`}
         skipHtml={false}

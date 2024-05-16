@@ -12,7 +12,7 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
     setDrawing,
     isDrawing,
   } = useEditor();
-  const [openedIndex, setOpenedIndex] = useState<number>(-1);
+  const [openedIndex, setOpenedIndex] = useState<number>(0);
 
   useEffect(() => {}, [mapData.maps[currentScenario].fruits]);
 
@@ -46,10 +46,10 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
             setDrawing((prev) => !prev);
           }}
         >
-          Obstacles {isDrawing ? "on" : "off"}
+          Draw Obstacles {isDrawing ? "on" : "off"}
         </button>
         <button
-          className={`bg-red-500 p-2 border-2 border-transparent hover:bg-red-400 transition-colors ${
+          className={`bg-red-500 p-2 border-2 border-transparent hover:bg-red-400 transition-colors transition-opacity ${
             openedIndex === -1 && "cursor-not-allowed opacity-50"
           }`}
           disabled={openedIndex === -1}
@@ -63,6 +63,7 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
           className="bg-red-500 p-2 hover:bg-red-400 transition-colors"
           onClick={() => {
             addGameFruits({ x: 5, y: 5, type: "FBa" });
+            setOpenedIndex(mapData.maps[currentScenario].fruits.length);
           }}
         >
           Add fruit

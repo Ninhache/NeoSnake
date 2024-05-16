@@ -6,6 +6,7 @@ import UIScenarioPersonnalPreview from "../UI/UIScenarioPersonnalPreview";
 import UISuspense from "../UI/UISuspense";
 import { useAuth } from "../contexts/AuthContext";
 import LayoutComponent from "../layouts/LayoutComponent";
+import { NavLink } from "react-router-dom";
 
 type Props = {};
 const WidgetAccount: React.FC<Props> = ({}) => {
@@ -36,17 +37,27 @@ const WidgetAccount: React.FC<Props> = ({}) => {
         <UISuspense />
       ) : (
         <div className="flex gap-2 mb-4">
-          {previewMap.map((map) => (
-            <div key={map.id}>
-              <UIScenarioPersonnalPreview
-                key={map.id}
-                scenario={map}
-                onDelete={(uuid: string) => {
-                  setPreviewMap((prev) => prev.filter((p) => p.id !== uuid));
-                }}
-              />
+          {previewMap.length === 0 ? (
+            <div className="text-center">
+              You don't have created levels yet, go to the{" "}
+              <NavLink to={"/create"} className={`text-blue-500 font-bold`}>
+                Create section
+              </NavLink>{" "}
+              to create one !
             </div>
-          ))}
+          ) : (
+            previewMap.map((map) => (
+              <div key={map.id}>
+                <UIScenarioPersonnalPreview
+                  key={map.id}
+                  scenario={map}
+                  onDelete={(uuid: string) => {
+                    setPreviewMap((prev) => prev.filter((p) => p.id !== uuid));
+                  }}
+                />
+              </div>
+            ))
+          )}
         </div>
       )}
 
