@@ -109,6 +109,11 @@ const WidgetEditableGrid: React.FC<Props> = ({ width, height }) => {
     const x = Math.floor((event.clientX - rect.left) / cellSize);
     const y = Math.floor((event.clientY - rect.top) / cellSize);
 
+    if (x < 0 || x >= width / cellSize || y < 0 || y >= height / cellSize) {
+      setIsDragging(false);
+      return;
+    }
+
     drawOverlay(x, y);
     if (!isDragging) return;
     if (x === lastPosition.x && y === lastPosition.y) return;
@@ -130,6 +135,10 @@ const WidgetEditableGrid: React.FC<Props> = ({ width, height }) => {
   return (
     <div
       onContextMenu={(e) => e.preventDefault()}
+      onMouseLeave={() => {
+        setIsDragging(false);
+        setDragOperation(null);
+      }}
       style={{ position: "relative" }}
     >
       {isDrawing && (
