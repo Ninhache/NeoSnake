@@ -10,7 +10,7 @@ export function useStoreLastRoute() {
       location.pathname !== "/signup" &&
       location.pathname !== "/logout" &&
       location.pathname !== "/account" &&
-      !location.pathname.startsWith("/game") &&
+      !location.pathname.startsWith("/campaign") &&
       !location.pathname.startsWith("/online")
     ) {
       localStorage.setItem("lastPath", location.pathname);

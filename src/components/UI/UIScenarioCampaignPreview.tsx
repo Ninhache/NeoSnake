@@ -80,7 +80,7 @@ const UIScenarioCampaignPreview: React.FC<Props> = ({ scenario }) => {
           : "border-black bg-gray-800 bg-opacity-60"
       }`}
     >
-      <NavLink to={`/game/${scenario.id}`}>
+      <NavLink to={`/campaign/${scenario.id}`}>
         <canvas
           width={150}
           height={150}

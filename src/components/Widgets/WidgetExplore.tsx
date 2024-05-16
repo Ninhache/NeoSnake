@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getCreatedLevels } from "../../lib/level";
+import { getOnlineCreatedLevels } from "../../lib/level";
 import UIScenarioExplorePreview from "../UI/UIScenarioExplorePreview";
 import LayoutComponent from "../layouts/LayoutComponent";
 import { OnlinePreview } from "../../@types/ApiType";
@@ -9,7 +9,7 @@ const WidgetExplore: React.FC<Props> = ({}) => {
   const [levels, setLevels] = useState<OnlinePreview[]>([]);
 
   useEffect(() => {
-    getCreatedLevels().then((response) => {
+    getOnlineCreatedLevels().then((response) => {
       if (response.success) {
         setLevels(response.data);
       }

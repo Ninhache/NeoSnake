@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ScenariosName } from "../../@types/ApiType";
-import { getPreviewLevels } from "../../lib/level";
+import { getCampaignPreviewLevels } from "../../lib/level";
 import UIScenarioCampaignPreview from "../UI/UIScenarioCampaignPreview";
 import UISuspense from "../UI/UISuspense";
 
@@ -10,7 +10,7 @@ const WidgetCampaignList: React.FC<Props> = ({}) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getPreviewLevels()
+    getCampaignPreviewLevels()
       .then((response) => {
         if (response.success) {
           setScenariosName(response.data);

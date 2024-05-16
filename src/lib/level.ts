@@ -19,7 +19,7 @@ export const getNumberOfLevels = async (): Promise<
   });
 };
 
-export const getPreviewLevels = async (): Promise<
+export const getCampaignPreviewLevels = async (): Promise<
   PreviewLevelSuccessResponse | ApiErrorResponse
 > => {
   if (
@@ -27,7 +27,7 @@ export const getPreviewLevels = async (): Promise<
     localStorage.getItem(LocalStorageToken.refreshToken)
   ) {
     const request = requestWithAuthorization(
-      `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/preview`,
+      `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/campaign/preview`,
       {
         method: "GET",
       }
@@ -36,7 +36,7 @@ export const getPreviewLevels = async (): Promise<
     return await customFetch(request).then((response) => response.json());
   } else {
     return await get({
-      path: `/level/preview`,
+      path: `/level/campaign/preview`,
     });
   }
 };
@@ -49,7 +49,7 @@ export const getCampaignLevel = async (
   });
 };
 
-export const getCreatedLevels = async ({
+export const getOnlineCreatedLevels = async ({
   page = 1,
   limit = 10,
   difficulty = -1,
@@ -58,24 +58,29 @@ export const getCreatedLevels = async ({
   limit?: number;
   difficulty?: number;
 } = {}): Promise<OnlineMapSuccessResponse | ApiErrorResponse> => {
-  const request = requestWithAuthorization(
-    `${
-      import.meta.env.VITE_SNAKE_API_ROUTE
-    }/level/upload?page=${page}&limit=${limit}${
-      difficulty > 0 && `&difficulty=${difficulty}`
-    }`,
-    {
-      method: "GET",
-    }
-  );
+  if (
+    localStorage.getItem(LocalStorageToken.accessToken) ||
+    localStorage.getItem(LocalStorageToken.refreshToken)
+  ) {
+    const request = requestWithAuthorization(
+      `${
+        import.meta.env.VITE_SNAKE_API_ROUTE
+      }/level/upload?page=${page}&limit=${limit}${
+        difficulty > 0 && `&difficulty=${difficulty}`
+      }`,
+      {
+        method: "GET",
+      }
+    );
 
-  return await customFetch(request).then((response) => response.json());
-
-  // return await get({
-  //   path: `/level/upload?page=${page}&limit=${limit}${
-  //     difficulty > 0 && `&difficulty=${difficulty}`
-  //   }`,
-  // });
+    return await customFetch(request).then((response) => response.json());
+  } else {
+    return await get({
+      path: `/level/upload?page=${page}&limit=${limit}${
+        difficulty > 0 && `&difficulty=${difficulty}`
+      }`,
+    });
+  }
 };
 
 export const deleteCreatedLevel = async (id: string): Promise<any> => {
@@ -105,14 +110,18 @@ export const getCreatedLevel = async (): Promise<
 export const getCreatedLevelById = async (
   uuid: string
 ): Promise<GetLevelSuccessResponse | ApiErrorResponse> => {
-  const request = requestWithAuthorization(
-    `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/online/${uuid}`,
-    {
-      method: "GET",
-    }
-  );
+  return await get({
+    path: `/level/online/${uuid}`,
+  });
 
-  return await customFetch(request).then((response) => response.json());
+  // const request = requestWithAuthorization(
+  //   `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/online/${uuid}`,
+  //   {
+  //     method: "GET",
+  //   }
+  // );
+
+  // return await customFetch(request).then((response) => response.json());
 };
 
 export const uploadOnlineCompletion = async (
