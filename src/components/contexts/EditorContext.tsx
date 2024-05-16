@@ -32,6 +32,7 @@ const defaultScenario: ScenarioData = {
     height: 800,
     cellSize: 20,
     name: "Example Scenario",
+    difficulty: 3,
   },
   snake: {
     startPosition: { x: 10, y: 10 },
@@ -44,7 +45,7 @@ const defaultScenario: ScenarioData = {
         {
           actualPosition: { x: 10, y: 15 },
           futurePosition: [
-            { x: 10, y: 10 },
+            { x: 16, y: 10 },
             { x: 15, y: 5 },
           ],
           type: "FBa",
@@ -52,54 +53,96 @@ const defaultScenario: ScenarioData = {
         {
           actualPosition: { x: 15, y: 10 },
           futurePosition: [
-            { x: 10, y: 10 },
-            { x: 15, y: 5 },
-            { x: 15, y: 15 },
-            { x: 10, y: 10 },
-            { x: 15, y: 5 },
-            { x: 15, y: 15 },
-            { x: 10, y: 10 },
-            { x: 15, y: 5 },
-            { x: 15, y: 15 },
-            { x: 10, y: 10 },
-            { x: 15, y: 5 },
-            { x: 15, y: 15 },
-            { x: 10, y: 10 },
-            { x: 15, y: 5 },
-            { x: 15, y: 15 },
+            { x: 20, y: 10 },
+            { x: 25, y: 15 },
           ],
           type: "FBa",
         },
       ],
       obstacles: [
         {
-          x: 0,
-          y: 0,
-          type: "OBa",
-        },
-        {
-          x: 1,
-          y: 0,
-          type: "OBa",
-        },
-        {
-          x: 2,
-          y: 0,
-          type: "OBa",
-        },
-        {
-          x: 3,
-          y: 0,
-          type: "OBa",
-        },
-        {
-          x: 4,
-          y: 0,
+          x: 5,
+          y: 3,
           type: "OBa",
         },
         {
           x: 5,
-          y: 0,
+          y: 4,
+          type: "OBa",
+        },
+        {
+          x: 5,
+          y: 5,
+          type: "OBa",
+        },
+        {
+          x: 5,
+          y: 6,
+          type: "OBa",
+        },
+        {
+          x: 5,
+          y: 7,
+          type: "OBa",
+        },
+        {
+          x: 5,
+          y: 8,
+          type: "OBa",
+        },
+        {
+          x: 5,
+          y: 9,
+          type: "OBa",
+        },
+        {
+          x: 5,
+          y: 10,
+          type: "OBa",
+        },
+        {
+          x: 5,
+          y: 11,
+          type: "OBa",
+        },
+        {
+          x: 5,
+          y: 12,
+          type: "OBa",
+        },
+        {
+          x: 5,
+          y: 13,
+          type: "OBa",
+        },
+        {
+          x: 5,
+          y: 14,
+          type: "OBa",
+        },
+        {
+          x: 5,
+          y: 15,
+          type: "OBa",
+        },
+        {
+          x: 5,
+          y: 16,
+          type: "OBa",
+        },
+        {
+          x: 5,
+          y: 17,
+          type: "OBa",
+        },
+        {
+          x: 5,
+          y: 18,
+          type: "OBa",
+        },
+        {
+          x: 5,
+          y: 19,
           type: "OBa",
         },
       ],
@@ -279,17 +322,16 @@ const EditorContextProvider: React.FC<ProviderProps> = ({ children }) => {
     setPendingChanges(true);
 
     setMapData((prev) => {
-      const newObstacles = [...prev.maps[currentScenario].obstacles];
-
-      newObstacles.push({ x, y, type });
-
       return {
         ...prev,
         maps: [
           ...prev.maps.slice(0, currentScenario),
           {
             ...prev.maps[currentScenario],
-            obstacles: newObstacles,
+            obstacles: [
+              ...prev.maps[currentScenario].obstacles,
+              { x, y, type },
+            ],
           },
           ...prev.maps.slice(currentScenario + 1),
         ],

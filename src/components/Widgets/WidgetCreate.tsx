@@ -7,6 +7,7 @@ import WidgetEditableOptions from "./WidgetEditableOptions";
 import WidgetLogin from "./WidgetLogin";
 
 import { useEffect, useState } from "react";
+
 import { ScenarioData } from "../../@types/Scenario";
 import { getExistingMap } from "../../lib/level";
 import UISuspense from "../UI/UISuspense";
@@ -22,8 +23,8 @@ const WidgetCreate: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    if (!pendingChanges) return;
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      if (!pendingChanges) return;
       event.preventDefault();
       event.returnValue = "";
     };
@@ -75,7 +76,7 @@ const WidgetCreate: React.FC = () => {
 
   return (
     <LayoutComponent>
-      <div className="flex">
+      <div className="flex gap-4">
         <div>
           <WidgetEditableGrid width={800} height={800} />
           <WidgetScenarios />

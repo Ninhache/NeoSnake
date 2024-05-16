@@ -61,7 +61,7 @@ const WidgetScenarios: React.FC<Props> = ({}) => {
         drawCanvas(canvasRef.ctx, map);
       }
     });
-  }, [mapData.maps]);
+  }, [mapData, canvasRefs]);
 
   return (
     <>
@@ -102,6 +102,7 @@ const WidgetScenarios: React.FC<Props> = ({}) => {
               stroke="currentColor"
               className="w-5 h-5 absolute top-1 right-1 text-lg font-bold text-black opacity-0 transition-opacity transition-transform group-hover:opacity-70 hover:scale-110 cursor-pointer "
               onClick={() => {
+                canvasRefs.current.splice(index, 1);
                 deleteScenario(index);
                 const newIndex =
                   index <= currentScenario

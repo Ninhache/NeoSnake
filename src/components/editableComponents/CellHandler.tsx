@@ -28,15 +28,12 @@ const CellSizeHandler: React.FC = () => {
   };
 
   return (
-    <>
-      <h3 className="font-bold">Cell size :</h3>
-      <UINumberInput
-        value={mapData.options.cellSize}
-        onChangeValue={handleCellSizeChange}
-        max={maxValueCellSize}
-        min={minValueCellSize}
-      />
-    </>
+    <UINumberInput
+      value={mapData.options.cellSize}
+      onChangeValue={handleCellSizeChange}
+      max={maxValueCellSize}
+      min={minValueCellSize}
+    />
   );
 };
 

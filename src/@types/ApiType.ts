@@ -1,4 +1,3 @@
-import { SnakeMapData } from "./MapTypes";
 import { OptionsScenarioData, ScenarioMapData } from "./Scenario";
 
 export interface ApiResponse {
@@ -28,6 +27,36 @@ export interface CampainMapSuccessResponse extends ApiResponse {
   data: string;
 }
 
+export interface OnlinePreview extends ScenarioMapData {
+  id: string;
+  creatorName: string;
+  preview: {
+    options: OptionsScenarioData;
+  } & ScenarioMapData;
+  completed: boolean;
+  completionTime?: Date;
+}
+
+export interface OnlineMapSuccessResponse extends ApiResponse {
+  success: true;
+  data: OnlinePreview[];
+}
+
+export interface Preview extends ScenarioMapData {
+  id: string;
+  options: OptionsScenarioData;
+}
+
+export interface GetCreateSuccessResponse extends ApiResponse {
+  success: true;
+  data: Preview[];
+}
+
+export interface GetLevelSuccessResponse extends ApiResponse {
+  success: true;
+  data: string;
+}
+
 export interface NumberOfLevelSuccessResponse extends ApiResponse {
   success: true;
   data: number;
@@ -39,17 +68,12 @@ export interface ScenariosName {
     options: OptionsScenarioData;
   } & ScenarioMapData;
   completed: boolean;
-  completionTime: Date;
+  completionTime?: Date;
 }
 
 export interface PreviewLevelSuccessResponse extends ApiResponse {
   success: true;
   data: ScenariosName[];
-}
-
-export interface OnlineMapSuccessResponse extends ApiResponse {
-  success: true;
-  data: SnakeMapData;
 }
 
 export interface RefreshResponse extends ApiResponse {

@@ -11,6 +11,7 @@ import LayoutComponent from "../layouts/LayoutComponent";
 
 import "../../styles/markdown.css";
 import UISuspense from "../UI/UISuspense";
+import rehypeRaw from "rehype-raw";
 
 type Props = {};
 const WidgetArticle: React.FC<Props> = ({}) => {
@@ -67,7 +68,19 @@ const WidgetArticle: React.FC<Props> = ({}) => {
       )}
       <ReactMarkdown
         className={`markdown`}
-        rehypePlugins={[rehypeSlug, rehypeAutolinkHeadings, rehypeHighlight]}
+        skipHtml={false}
+        urlTransform={(url) => {
+          if (url.startsWith("http")) {
+            return url;
+          }
+          return `${import.meta.env.VITE_SNAKE_API_ROUTE}/${url}`;
+        }}
+        rehypePlugins={[
+          rehypeSlug,
+          rehypeAutolinkHeadings,
+          rehypeHighlight,
+          rehypeRaw,
+        ]}
       >
         {data.content}
       </ReactMarkdown>

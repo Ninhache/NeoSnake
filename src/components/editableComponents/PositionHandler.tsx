@@ -35,17 +35,12 @@ const PositionHandler: React.FC<Props> = ({ axis }) => {
   };
 
   return (
-    <>
-      <label className="flex gap-2">
-        <h3 className="font-bold">{axis.toUpperCase()} :</h3>
-        <UINumberInput
-          value={mapData.snake.startPosition[axis]}
-          onChangeValue={handleChange(axis)}
-          max={maxValue}
-          min={0}
-        />
-      </label>
-    </>
+    <UINumberInput
+      value={mapData.snake.startPosition[axis]}
+      onChangeValue={handleChange(axis)}
+      max={maxValue}
+      min={0}
+    />
   );
 };
 

@@ -33,7 +33,7 @@ const UIFruits: React.FC<Props> = ({
 
   return (
     <>
-      <div className="bg-gray-800 bg-opacity-60 text-white">
+      <div className="bg-gray-800 bg-opacity-60 border-b-2 border-gray-800 text-white">
         <div
           className="cursor-pointer flex justify-between p-2 font-bold group"
           onClick={onClick}
@@ -43,9 +43,13 @@ const UIFruits: React.FC<Props> = ({
             <h2>{fruit.type}</h2>
             <h3 className="flex gap-2">
               <span className="text-gray-500"> x </span>
-              <FruitPositionHandler index={index} fruit={fruit} axis="x" />
+              <div className="w-24">
+                <FruitPositionHandler index={index} fruit={fruit} axis="x" />
+              </div>
               <span className="text-gray-500"> y </span>
-              <FruitPositionHandler index={index} fruit={fruit} axis="y" />
+              <div className="w-24">
+                <FruitPositionHandler index={index} fruit={fruit} axis="y" />
+              </div>
             </h3>
             <h3 className="text-gray-500">({fruit.futurePosition.length})</h3>
           </div>
@@ -99,22 +103,26 @@ const UIFruits: React.FC<Props> = ({
                   <div className="flex font-bold gap-2">
                     <span className="flex gap-2 items-center">
                       X{" "}
-                      <FuturePositionHandler
-                        fruitIndex={index}
-                        futureIndex={futureIndex}
-                        fruit={fruit}
-                        axis="x"
-                      />
+                      <div className="w-24">
+                        <FuturePositionHandler
+                          fruitIndex={index}
+                          futureIndex={futureIndex}
+                          fruit={fruit}
+                          axis="x"
+                        />
+                      </div>
                     </span>
 
                     <span className="flex gap-2 items-center">
                       Y{" "}
-                      <FuturePositionHandler
-                        fruitIndex={index}
-                        futureIndex={futureIndex}
-                        fruit={fruit}
-                        axis="y"
-                      />
+                      <div className="w-24">
+                        <FuturePositionHandler
+                          fruitIndex={index}
+                          futureIndex={futureIndex}
+                          fruit={fruit}
+                          axis="y"
+                        />
+                      </div>
                     </span>
                   </div>
                 </div>
@@ -141,7 +149,7 @@ const UIFruits: React.FC<Props> = ({
           <div
             className="flex gap-4 h-8 text-gray-500 italic border-gray-700 border-opacity-20 justify-around items-center cursor-pointer hover:bg-gray-800 hover:bg-opacity-60 transition-opacity"
             onClick={() => {
-              addFutureFruitPositions(index, { x: 0, y: 0 });
+              addFutureFruitPositions(index, { x: 5, y: 5 });
             }}
           >
             add future position

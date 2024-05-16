@@ -19,6 +19,9 @@ const NavBar: React.FC = () => {
             <UINavLink path="/play" text="Jouer" />
           </li>
           <li>
+            <UINavLink path="/explore" text="Explorer" />
+          </li>
+          <li>
             <UINavLink path="/create" text="Créer" />
           </li>
           <li>
@@ -27,7 +30,7 @@ const NavBar: React.FC = () => {
         </ul>
         <div className="mr-2">
           <UINavLink
-            path={username ? "/logout" : "/login"}
+            path={username ? "/account" : "/login"}
             text={username ? `${username}` : "Se connecter"}
           />
         </div>

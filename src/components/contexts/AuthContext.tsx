@@ -24,6 +24,7 @@ interface AuthContextProps extends AuthState {
   signup: (username: string, password: string) => Promise<void>;
   logout: () => void;
   refreshAccessToken: () => Promise<void>;
+  isAuthenticated: () => boolean;
 }
 
 const AuthContext = createContext<AuthContextProps>({
@@ -33,6 +34,7 @@ const AuthContext = createContext<AuthContextProps>({
   signup: async () => {},
   logout: () => {},
   refreshAccessToken: async () => {},
+  isAuthenticated: () => false,
 });
 
 interface ProviderProps {
@@ -109,6 +111,29 @@ const AuthContextProvider: React.FC<ProviderProps> = ({ children }) => {
     setAuthState({ accessToken, username });
   };
 
+  const isAuthenticated = (): boolean => {
+    if (
+      !localStorage.getItem(LocalStorageToken.accessToken) ||
+      !localStorage.getItem(LocalStorageToken.refreshToken)
+    ) {
+      return false;
+    }
+
+    try {
+      const decodedToken = jwtDecode(
+        localStorage.getItem(LocalStorageToken.accessToken) as string
+      ) as {
+        username: string;
+        accessToken: string;
+        refreshToken: string;
+      };
+
+      return !!decodedToken.username;
+    } catch (_) {
+      return false;
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem(LocalStorageToken.accessToken);
     localStorage.removeItem(LocalStorageToken.refreshToken);
@@ -117,7 +142,14 @@ const AuthContextProvider: React.FC<ProviderProps> = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ ...authState, login, signup, logout, refreshAccessToken }}
+      value={{
+        ...authState,
+        login,
+        signup,
+        logout,
+        refreshAccessToken,
+        isAuthenticated,
+      }}
     >
       {children}
     </AuthContext.Provider>

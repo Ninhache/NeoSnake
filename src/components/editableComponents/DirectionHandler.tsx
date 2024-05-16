@@ -16,14 +16,11 @@ const DirectionHandler: React.FC = () => {
   };
 
   return (
-    <>
-      <h3 className="font-bold">Direction</h3>
-      <UIDropdown
-        items={["Right", "Left", "Down", "Up"]}
-        label="Test"
-        onSelect={handleDirectionChange}
-      />
-    </>
+    <UIDropdown
+      items={["Right", "Left", "Down", "Up"]}
+      label="Test"
+      onSelect={handleDirectionChange}
+    />
   );
 };
 

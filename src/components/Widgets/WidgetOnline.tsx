@@ -1,12 +1,12 @@
 import { useEffect } from "react";
-import GameCanvas from "../GameCanvas";
+import { useNavigate, useParams } from "react-router-dom";
+import OnlineCanvas from "../OnlineCanvas";
 import { useAuth } from "../contexts/AuthContext";
 import { GameProvider } from "../contexts/GameContext";
 import LayoutComponent from "../layouts/LayoutComponent";
 import WidgetGameMenu from "./WidgetGameMenu";
-import { useNavigate, useParams } from "react-router-dom";
 
-const WidgetGame: React.FC = () => {
+const WidgetOnline: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -15,13 +15,14 @@ const WidgetGame: React.FC = () => {
   }
 
   const { username } = useAuth();
+
   useEffect(() => {}, [username]);
 
   return (
     <LayoutComponent>
       <GameProvider>
         <div className="flex w-full justify-center">
-          <GameCanvas width={800} height={800} />
+          <OnlineCanvas width={800} height={800} />
           <WidgetGameMenu />
         </div>
       </GameProvider>
@@ -29,4 +30,4 @@ const WidgetGame: React.FC = () => {
   );
 };
 
-export default WidgetGame;
+export default WidgetOnline;

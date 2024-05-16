@@ -9,15 +9,15 @@ import { getCampaignLevel, uploadCampaignCompletion } from "../lib/level";
 
 import { timestampToChrono } from "../lib/time";
 import UISuspense from "./UI/UISuspense";
-import { useGame } from "./contexts/GameContext";
 import { useAuth } from "./contexts/AuthContext";
+import { useGame } from "./contexts/GameContext";
 
 type Props = {
   width: number;
   height: number;
 };
 
-const GameCanvas: React.FC<Props> = ({ width, height }) => {
+const CampaignCanvas: React.FC<Props> = ({ width, height }) => {
   const { state, dispatch } = useGame();
   const stateRef = useRef(state);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -243,4 +243,4 @@ const GameCanvas: React.FC<Props> = ({ width, height }) => {
   return <canvas ref={canvasRef} width={width} height={height} />;
 };
 
-export default GameCanvas;
+export default CampaignCanvas;
