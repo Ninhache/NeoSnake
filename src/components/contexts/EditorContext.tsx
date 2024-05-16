@@ -4,24 +4,37 @@ import { foodType, gameObjectType, obstacleType } from "../../@types/MapTypes";
 import { Nullable } from "../../@types/NullableType";
 import { ScenarioData } from "../../@types/Scenario";
 
+export type DrawingType = "OBSTACLE" | "FRUIT" | "NONE";
+
 interface ScenarioDataContextProps {
   currentScenario: number;
+  currentFruitIndex: number;
   currentGameObjectType: Nullable<gameObjectType>;
   latestChanges: Coordinates[];
   mapData: ScenarioData;
-  isDrawing: boolean;
+  isDrawing: DrawingType;
   pendingChanges: boolean;
   addFutureFruitPositions: (index: number, newCoordinates: Coordinates) => void;
   addGameFruits: (data: { x: number; y: number; type: foodType }) => void;
   addObstacle: (data: { x: number; y: number; type: obstacleType }) => void;
   addScenario: () => void;
-  deleteFutureFruitPositions: (fruitIndex: number, futureIndex: number) => void;
+  deleteFutureFruitPositionsByIndex: (
+    fruitIndex: number,
+    futureIndex: number
+  ) => void;
+  deleteFutureFruitPositionsByCoordinates: (
+    fruitIndex: number,
+    data: { x: number; y: number }
+  ) => void;
   deleteGameFruits: (index: number) => void;
   deleteObstacle: (data: { x: number; y: number }) => void;
   deleteScenario: (index: number) => void;
   duplicateScenario: (index: number) => void;
   setCurrentScenario: (index: number) => void;
-  setDrawing: (value: boolean | ((prev: boolean) => boolean)) => void;
+  setCurrentFruitIndex: (index: number | ((prev: number) => number)) => void;
+  setDrawing: (
+    value: DrawingType | ((prev: DrawingType) => DrawingType)
+  ) => void;
   setGameObjectType: (type: Nullable<gameObjectType>) => void;
   setLatestChanges: (data: Coordinates[]) => void;
   setMapData: (data: ScenarioData) => void;
@@ -59,21 +72,24 @@ const defaultScenario: ScenarioData = {
 
 const EditorContext = createContext<ScenarioDataContextProps>({
   currentScenario: 0,
+  currentFruitIndex: -1,
   currentGameObjectType: null,
   latestChanges: [],
   mapData: defaultScenario,
-  isDrawing: false,
+  isDrawing: "NONE",
   pendingChanges: false,
   addFutureFruitPositions: () => {},
   addGameFruits: () => {},
   addObstacle: () => {},
   addScenario: () => {},
-  deleteFutureFruitPositions: () => {},
+  deleteFutureFruitPositionsByIndex: () => {},
+  deleteFutureFruitPositionsByCoordinates: () => {},
   deleteGameFruits: () => {},
   deleteObstacle: () => {},
   deleteScenario: () => {},
   duplicateScenario: () => {},
   setCurrentScenario: () => {},
+  setCurrentFruitIndex: () => {},
   setDrawing: () => {},
   setGameObjectType: () => {},
   setLatestChanges: () => {},
@@ -87,13 +103,14 @@ interface ProviderProps {
 const EditorContextProvider: React.FC<ProviderProps> = ({ children }) => {
   const [mapData, setMapData] = useState<ScenarioData>(defaultScenario);
   const [latestChanges, setLatestChanges] = useState<Coordinates[]>([]);
-  const [isDrawing, setDrawing] = useState<boolean>(false);
+  const [isDrawing, setDrawing] = useState<DrawingType>("NONE");
   const [pendingChanges, setPendingChanges] = useState<boolean>(false);
 
   const [currentGameObjectType, setGameObjectType] =
     useState<Nullable<gameObjectType>>("FBa");
 
   const [currentScenario, setCurrentScenario] = useState<number>(0);
+  const [currentFruitIndex, setCurrentFruitIndex] = useState<number>(-1);
 
   const addGameFruits = ({
     x,
@@ -184,7 +201,41 @@ const EditorContextProvider: React.FC<ProviderProps> = ({ children }) => {
     });
   };
 
-  const deleteFutureFruitPositions = (
+  const deleteFutureFruitPositionsByCoordinates = (
+    fruitIndex: number,
+    { x, y }: Coordinates
+  ) => {
+    setPendingChanges(true);
+
+    setMapData((prev) => {
+      const newPositions = [
+        ...prev.maps[currentScenario].fruits[fruitIndex].futurePosition,
+      ];
+
+      return {
+        ...prev,
+        maps: [
+          ...prev.maps.slice(0, currentScenario),
+          {
+            ...prev.maps[currentScenario],
+            fruits: [
+              ...prev.maps[currentScenario].fruits.slice(0, fruitIndex),
+              {
+                ...prev.maps[currentScenario].fruits[fruitIndex],
+                futurePosition: newPositions.filter(
+                  (position) => position.x !== x || position.y !== y
+                ),
+              },
+              ...prev.maps[currentScenario].fruits.slice(fruitIndex + 1),
+            ],
+          },
+          ...prev.maps.slice(currentScenario + 1),
+        ],
+      };
+    });
+  };
+
+  const deleteFutureFruitPositionsByIndex = (
     fruitIndex: number,
     futureIndex: number
   ) => {
@@ -237,7 +288,9 @@ const EditorContextProvider: React.FC<ProviderProps> = ({ children }) => {
           {
             ...prev.maps[currentScenario],
             obstacles: [
-              ...prev.maps[currentScenario].obstacles,
+              ...prev.maps[currentScenario].obstacles.filter(
+                (obstacle) => obstacle.x !== x || obstacle.y !== y
+              ),
               { x, y, type },
             ],
           },
@@ -276,7 +329,13 @@ const EditorContextProvider: React.FC<ProviderProps> = ({ children }) => {
         maps: [
           ...prev.maps,
           {
-            fruits: [],
+            fruits: [
+              {
+                actualPosition: { x: 10, y: 15 },
+                futurePosition: [],
+                type: "FBa",
+              },
+            ],
             obstacles: [],
           },
         ],
@@ -316,11 +375,13 @@ const EditorContextProvider: React.FC<ProviderProps> = ({ children }) => {
       value={{
         mapData,
         currentScenario,
+        currentFruitIndex,
         currentGameObjectType,
         isDrawing,
         latestChanges,
         setGameObjectType,
         setCurrentScenario,
+        setCurrentFruitIndex,
         setDrawing,
         setLatestChanges,
         setMapData,
@@ -333,7 +394,8 @@ const EditorContextProvider: React.FC<ProviderProps> = ({ children }) => {
 
         addFutureFruitPositions,
         deleteGameFruits,
-        deleteFutureFruitPositions,
+        deleteFutureFruitPositionsByIndex,
+        deleteFutureFruitPositionsByCoordinates,
         pendingChanges,
       }}
     >

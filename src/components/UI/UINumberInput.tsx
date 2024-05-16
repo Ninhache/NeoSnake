@@ -1,3 +1,4 @@
+import { clamp } from "../../lib/math";
 import "../../styles/UINumberInput.css";
 
 interface NumberInputProps {
@@ -57,7 +58,7 @@ const UINumberInput: React.FC<NumberInputProps> = ({
       <input
         type="number"
         value={value}
-        onChange={(e) => onChangeValue(parseFloat(e.target.value))}
+        onChange={(e) => onChangeValue(clamp(+e.target.value, min, max))}
         min={min}
         max={max}
         step={step}

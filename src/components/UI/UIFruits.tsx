@@ -21,7 +21,7 @@ const UIFruits: React.FC<Props> = ({
 }) => {
   const {
     addFutureFruitPositions,
-    deleteFutureFruitPositions,
+    deleteFutureFruitPositionsByIndex: deleteFutureFruitPositions,
     deleteGameFruits,
   } = useEditor();
   useEffect(() => {}, [fruit.actualPosition, fruit.futurePosition]);
@@ -38,7 +38,7 @@ const UIFruits: React.FC<Props> = ({
           className="cursor-pointer flex justify-between p-2 font-bold group"
           onClick={onClick}
         >
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <h3 className="text-gray-500">{index + 1}</h3>
             <h2>{fruit.type}</h2>
             <h3 className="flex gap-2">
@@ -59,7 +59,7 @@ const UIFruits: React.FC<Props> = ({
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-5 h-5 opacity-0 group-hover:opacity-70 transition-opacity transition-transform hover:scale-110 hover:cursor-pointer "
+            className="w-5 h-5 self-center opacity-0 group-hover:opacity-70 transition-opacity transition-transform hover:scale-110 hover:cursor-pointer "
             onClick={(e) => {
               e.stopPropagation();
               deleteGameFruits(index);

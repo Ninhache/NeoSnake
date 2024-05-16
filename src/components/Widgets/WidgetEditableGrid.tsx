@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { useEditor } from "../contexts/EditorContext";
 import { isVisible } from "../../lib/visible";
+import { useEditor } from "../contexts/EditorContext";
 
 type Props = {
   width: number;
@@ -8,8 +8,17 @@ type Props = {
 };
 
 const WidgetEditableGrid: React.FC<Props> = ({ width, height }) => {
-  const { mapData, currentScenario, isDrawing, addObstacle, deleteObstacle } =
-    useEditor();
+  const {
+    mapData,
+    currentScenario,
+    isDrawing,
+    addObstacle,
+    deleteObstacle,
+    addFutureFruitPositions,
+    currentFruitIndex,
+
+    deleteFutureFruitPositionsByCoordinates,
+  } = useEditor();
   const [isDragging, setIsDragging] = useState(false);
   const [dragOperation, setDragOperation] = useState<"ADD" | "DELETE" | null>(
     null
@@ -23,6 +32,7 @@ const WidgetEditableGrid: React.FC<Props> = ({ width, height }) => {
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const overlayRef = useRef<HTMLCanvasElement>(null);
+  // const currentFruitIndexRef = useRef(currentFruitIndex);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -48,7 +58,19 @@ const WidgetEditableGrid: React.FC<Props> = ({ width, height }) => {
         );
       });
 
-      mapData.maps[currentScenario].fruits.forEach((fruit) => {
+      if (currentScenario - 1 >= 0) {
+        mapData.maps[currentScenario - 1].obstacles.forEach((fruit) => {
+          ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+          ctx.fillRect(
+            fruit.x * cellSize,
+            fruit.y * cellSize,
+            cellSize,
+            cellSize
+          );
+        });
+      }
+
+      mapData.maps[currentScenario].fruits.forEach((fruit, index) => {
         ctx.fillStyle = "red";
         ctx.fillRect(
           fruit.actualPosition.x * cellSize,
@@ -66,6 +88,16 @@ const WidgetEditableGrid: React.FC<Props> = ({ width, height }) => {
             cellSize,
             cellSize
           );
+
+          if (currentFruitIndex === index) {
+            ctx.strokeStyle = "black";
+            ctx.strokeRect(
+              futurePosition.x * cellSize,
+              futurePosition.y * cellSize,
+              cellSize,
+              cellSize
+            );
+          }
         });
       });
 
@@ -75,7 +107,7 @@ const WidgetEditableGrid: React.FC<Props> = ({ width, height }) => {
         ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
       }
     }
-  }, [currentScenario, mapData, cellSize]);
+  }, [currentScenario, mapData, cellSize, currentFruitIndex]);
 
   const drawOverlay = (x: number, y: number) => {
     const ctx = overlayRef.current?.getContext("2d");
@@ -98,7 +130,13 @@ const WidgetEditableGrid: React.FC<Props> = ({ width, height }) => {
 
     if (event.button === 0) {
       setDragOperation("ADD");
-      addObstacle({ x, y, type: "OBa" });
+
+      if (isDrawing === "OBSTACLE") {
+        addObstacle({ x, y, type: "OBa" });
+      } else if (isDrawing === "FRUIT") {
+        addFutureFruitPositions(currentFruitIndex, { x, y });
+      }
+
       setLastPosition({ x, y });
     } else if (event.button === 2) {
       setDragOperation("DELETE");
@@ -123,10 +161,19 @@ const WidgetEditableGrid: React.FC<Props> = ({ width, height }) => {
     if (x === lastPosition.x && y === lastPosition.y) return;
 
     if (dragOperation === "ADD") {
-      addObstacle({ x, y, type: "OBa" });
+      if (isDrawing === "OBSTACLE") {
+        addObstacle({ x, y, type: "OBa" });
+      } else if (isDrawing === "FRUIT") {
+        addFutureFruitPositions(currentFruitIndex, { x, y });
+      }
+
       setLastPosition({ x, y });
     } else if (dragOperation === "DELETE") {
-      deleteObstacle({ x, y });
+      if (isDrawing === "OBSTACLE") {
+        deleteObstacle({ x, y });
+      } else if (isDrawing === "FRUIT") {
+        deleteFutureFruitPositionsByCoordinates(currentFruitIndex, { x, y });
+      }
       setLastPosition({ x, y });
     }
   };
@@ -145,7 +192,7 @@ const WidgetEditableGrid: React.FC<Props> = ({ width, height }) => {
       }}
       style={{ position: "relative" }}
     >
-      {isDrawing && (
+      {isDrawing !== "NONE" && (
         <canvas
           width={width}
           height={height}
@@ -156,12 +203,7 @@ const WidgetEditableGrid: React.FC<Props> = ({ width, height }) => {
           className="absolute top-0 left-0"
         />
       )}
-      <canvas
-        width={width}
-        height={height}
-        ref={canvasRef}
-        className={`${isDrawing ? "cursor-pointer" : ""}`}
-      />
+      <canvas width={width} height={height} ref={canvasRef} />
     </div>
   );
 };

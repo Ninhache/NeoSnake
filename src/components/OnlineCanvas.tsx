@@ -215,7 +215,8 @@ const OnlineCanvas: React.FC<Props> = ({ width, height }) => {
             scoreMap = 0;
             totalScore = 0;
             scenario.reset();
-            dispatch({ type: "GAME_LOOSE" });
+            dispatch({ type: "GAME_RESET" });
+            setResetToggle((prev) => !prev);
           }
         }
 
