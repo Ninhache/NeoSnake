@@ -123,7 +123,7 @@ const WidgetScenarios: React.FC<Props> = ({}) => {
       />
       <div>Steps</div>
       <div className="flex flex-row gap-2 w-auto">
-        {mapData.maps.map((map, index) => (
+        {mapData.maps.map((_, index) => (
           <div className="relative group" key={index}>
             <canvas
               className={` w-20 h-20 border-2 hover:border-blue-500 transition-colors ${
