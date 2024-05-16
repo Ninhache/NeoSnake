@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, createBrowserRouter } from "react-router-dom";
 import { useStoreLastRoute } from "./components/hooks/useStoreLastRoute";
 import "./styles/App.css";
 import WidgetHome from "./components/Widgets/WidgetLandingPage";
@@ -11,6 +11,21 @@ import WidgetArticle from "./components/Widgets/WidgetArticle";
 import WidgetLogout from "./components/Widgets/WidgetLogout";
 import { EditorContextProvider } from "./components/contexts/EditorContext";
 import WidgetGame from "./components/Widgets/WidgetGame";
+import WidgetAccount from "./components/Widgets/WidgetAccount";
+
+import React, { ReactNode } from "react";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "./components/contexts/AuthContext";
+import WidgetExplore from "./components/Widgets/WidgetExplore";
+
+interface ProtectedRouteProps {
+  children: ReactNode;
+}
+
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated() ? <>{children}</> : <Navigate to="/login" replace />;
+};
 
 const RouterContent: React.FC<{}> = ({}) => {
   useStoreLastRoute();
@@ -20,6 +35,15 @@ const RouterContent: React.FC<{}> = ({}) => {
       <Routes>
         <Route path="/" element={<WidgetHome />} />
         <Route path="/play" element={<WidgetCampaignExplorer />} />
+        <Route
+          path="/account"
+          element={
+            <ProtectedRoute>
+              <WidgetAccount />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/explore" element={<WidgetExplore />} />
         <Route path="/game/:id?" element={<WidgetGame />} />
         <Route
           path="/create/:uuid?"
