@@ -1,7 +1,9 @@
 import {
   ApiErrorResponse,
   CampainMapSuccessResponse,
+  GetCreateSuccessResponse,
   NumberOfLevelSuccessResponse,
+  OnlineMapSuccessResponse,
   PreviewLevelSuccessResponse,
 } from "../@types/ApiType";
 import { ScenarioData } from "../@types/Scenario";
@@ -44,6 +46,59 @@ export const getCampaignLevel = async (
   return await get({
     path: `/level/${id}`,
   });
+};
+
+export const getCreatedLevels = async ({
+  page = 1,
+  limit = 10,
+  difficulty = -1,
+}: {
+  page?: number;
+  limit?: number;
+  difficulty?: number;
+} = {}): Promise<OnlineMapSuccessResponse | ApiErrorResponse> => {
+  const request = requestWithAuthorization(
+    `${
+      import.meta.env.VITE_SNAKE_API_ROUTE
+    }/level/upload?page=${page}&limit=${limit}${
+      difficulty > 0 && `&difficulty=${difficulty}`
+    }`,
+    {
+      method: "GET",
+    }
+  );
+
+  return await customFetch(request).then((response) => response.json());
+
+  // return await get({
+  //   path: `/level/upload?page=${page}&limit=${limit}${
+  //     difficulty > 0 && `&difficulty=${difficulty}`
+  //   }`,
+  // });
+};
+
+export const deleteCreatedLevel = async (id: string): Promise<any> => {
+  const request = requestWithAuthorization(
+    `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/upload/${id}`,
+    {
+      method: "DELETE",
+    }
+  );
+
+  return await customFetch(request).then((response) => response.json());
+};
+
+export const getCreatedLevel = async (): Promise<
+  GetCreateSuccessResponse | ApiErrorResponse
+> => {
+  const request = requestWithAuthorization(
+    `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/create`,
+    {
+      method: "GET",
+    }
+  );
+
+  return await customFetch(request).then((response) => response.json());
 };
 
 export const uploadCampaignCompletion = async (

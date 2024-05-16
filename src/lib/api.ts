@@ -78,15 +78,28 @@ export const post = async ({
   return response.json();
 };
 
-export const get = async ({
-  path,
+export const get = async ({ path, headers = {} }: GetParams): Promise<any> => {
+  const url = `${import.meta.env.VITE_SNAKE_API_ROUTE}${path}`;
 
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      ...headers,
+    },
+  });
+
+  return response.json();
+};
+
+export const deleteRequest = async ({
+  path,
   headers = {},
 }: GetParams): Promise<any> => {
   const url = `${import.meta.env.VITE_SNAKE_API_ROUTE}${path}`;
 
   const response = await fetch(url, {
-    method: "GET",
+    method: "DELETE",
     headers: {
       "Content-Type": "application/json",
       ...headers,
