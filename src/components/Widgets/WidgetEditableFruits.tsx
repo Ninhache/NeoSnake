@@ -8,7 +8,6 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
     mapData,
     currentScenario,
     addGameFruits,
-    addFutureFruitPositions,
     setDrawing,
     currentFruitIndex,
     setCurrentFruitIndex,
