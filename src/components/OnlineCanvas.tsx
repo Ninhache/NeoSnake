@@ -11,6 +11,7 @@ import { timestampToChrono } from "../lib/time";
 import UISuspense from "./UI/UISuspense";
 import { useAuth } from "./contexts/AuthContext";
 import { useGame } from "./contexts/GameContext";
+import { isVisible } from "../lib/visible";
 
 type Props = {
   width: number;
@@ -133,6 +134,10 @@ const OnlineCanvas: React.FC<Props> = ({ width, height }) => {
     let totalScore = 0;
 
     if (!canvas || !ctx) return;
+    if (!isVisible(canvas)) {
+      canvas.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+    canvas.focus();
 
     const handleKeyPress = (event: KeyboardEvent) => {
       // Keep all the events unless they are arrow keys

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useEditor } from "../contexts/EditorContext";
+import { isVisible } from "../../lib/visible";
 
 type Props = {
   width: number;
@@ -28,6 +29,10 @@ const WidgetEditableGrid: React.FC<Props> = ({ width, height }) => {
     const ctx = canvas?.getContext("2d");
 
     if (!canvas || !ctx) return;
+    if (!isVisible(canvas)) {
+      canvas.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+    canvas.focus();
 
     if (ctx && canvas) {
       ctx.fillStyle = "white";
@@ -53,7 +58,6 @@ const WidgetEditableGrid: React.FC<Props> = ({ width, height }) => {
         );
 
         fruit.futurePosition.forEach((futurePosition) => {
-          //ctx.fillStyle = "pink"
           ctx.fillStyle = "rgb(255, 193, 203, 0.5)";
 
           ctx.fillRect(
