@@ -19,6 +19,7 @@ interface ScenarioDataContextProps {
   deleteGameFruits: (index: number) => void;
   deleteObstacle: (data: { x: number; y: number }) => void;
   deleteScenario: (index: number) => void;
+  duplicateScenario: (index: number) => void;
   setCurrentScenario: (index: number) => void;
   setDrawing: (value: boolean | ((prev: boolean) => boolean)) => void;
   setGameObjectType: (type: Nullable<gameObjectType>) => void;
@@ -45,107 +46,13 @@ const defaultScenario: ScenarioData = {
         {
           actualPosition: { x: 10, y: 15 },
           futurePosition: [
-            { x: 16, y: 10 },
+            { x: 15, y: 10 },
             { x: 15, y: 5 },
           ],
           type: "FBa",
         },
-        {
-          actualPosition: { x: 15, y: 10 },
-          futurePosition: [
-            { x: 20, y: 10 },
-            { x: 25, y: 15 },
-          ],
-          type: "FBa",
-        },
       ],
-      obstacles: [
-        {
-          x: 5,
-          y: 3,
-          type: "OBa",
-        },
-        {
-          x: 5,
-          y: 4,
-          type: "OBa",
-        },
-        {
-          x: 5,
-          y: 5,
-          type: "OBa",
-        },
-        {
-          x: 5,
-          y: 6,
-          type: "OBa",
-        },
-        {
-          x: 5,
-          y: 7,
-          type: "OBa",
-        },
-        {
-          x: 5,
-          y: 8,
-          type: "OBa",
-        },
-        {
-          x: 5,
-          y: 9,
-          type: "OBa",
-        },
-        {
-          x: 5,
-          y: 10,
-          type: "OBa",
-        },
-        {
-          x: 5,
-          y: 11,
-          type: "OBa",
-        },
-        {
-          x: 5,
-          y: 12,
-          type: "OBa",
-        },
-        {
-          x: 5,
-          y: 13,
-          type: "OBa",
-        },
-        {
-          x: 5,
-          y: 14,
-          type: "OBa",
-        },
-        {
-          x: 5,
-          y: 15,
-          type: "OBa",
-        },
-        {
-          x: 5,
-          y: 16,
-          type: "OBa",
-        },
-        {
-          x: 5,
-          y: 17,
-          type: "OBa",
-        },
-        {
-          x: 5,
-          y: 18,
-          type: "OBa",
-        },
-        {
-          x: 5,
-          y: 19,
-          type: "OBa",
-        },
-      ],
+      obstacles: [],
     },
   ],
 };
@@ -165,6 +72,7 @@ const EditorContext = createContext<ScenarioDataContextProps>({
   deleteGameFruits: () => {},
   deleteObstacle: () => {},
   deleteScenario: () => {},
+  duplicateScenario: () => {},
   setCurrentScenario: () => {},
   setDrawing: () => {},
   setGameObjectType: () => {},
@@ -376,6 +284,22 @@ const EditorContextProvider: React.FC<ProviderProps> = ({ children }) => {
     });
   };
 
+  const duplicateScenario = (index: number) => {
+    setPendingChanges(true);
+
+    setMapData((prev) => {
+      return {
+        ...prev,
+        maps: [
+          ...prev.maps,
+          {
+            ...prev.maps[index],
+          },
+        ],
+      };
+    });
+  };
+
   const deleteScenario = (index: number) => {
     setPendingChanges(true);
 
@@ -405,6 +329,7 @@ const EditorContextProvider: React.FC<ProviderProps> = ({ children }) => {
         deleteObstacle,
         addScenario,
         deleteScenario,
+        duplicateScenario,
 
         addFutureFruitPositions,
         deleteGameFruits,
