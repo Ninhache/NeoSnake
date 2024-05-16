@@ -1,4 +1,4 @@
-import { useBlocker, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useEditor } from "../contexts/EditorContext";
 import LayoutComponent from "../layouts/LayoutComponent";

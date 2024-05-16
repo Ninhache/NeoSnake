@@ -57,19 +57,17 @@ const UIScenarioCampaignPreview: React.FC<Props> = ({ scenario }) => {
     drawCanvas(ctx);
   }, [scenario]);
 
-  let completionTime = "";
+  let completionTime = "Not Attempted";
   if (!username) {
     const time = localStorage.getItem(`campaign_${scenario.id}`);
     if (time) {
       completionTime = timestampToChrono(parseInt(time, 10));
       scenario.completed = true;
-    } else {
-      completionTime = "Not Attempted";
     }
   } else {
-    completionTime = timestampToChrono(
-      new Date(scenario.completionTime).getTime()
-    );
+    if (scenario.completionTime) {
+      completionTime = timestampToChrono(scenario.completionTime.getTime());
+    }
   }
 
   return (

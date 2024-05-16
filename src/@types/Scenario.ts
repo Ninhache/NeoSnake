@@ -108,6 +108,7 @@ export const exampleScenario: ScenarioData = {
     height: 800,
     cellSize: 20,
     name: "Example Scenario",
+    difficulty: 3,
   },
   snake: {
     startPosition: { x: 10, y: 10 },

@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { useEditor } from "../contexts/EditorContext";
-import { Nullable } from "../../@types/NullableType";
-import { Coordinates } from "../../@types/CoordinatesType";
 
 type Props = {
   width: number;

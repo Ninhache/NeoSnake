@@ -1,4 +1,3 @@
-import { SnakeMapData } from "./MapTypes";
 import { OptionsScenarioData, ScenarioMapData } from "./Scenario";
 
 export interface ApiResponse {

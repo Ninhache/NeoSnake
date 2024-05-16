@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { OnlinePreview } from "../../@types/ApiType";
 
 type Props = {
@@ -53,8 +53,6 @@ const UIScenarioExplorePreview: React.FC<Props> = ({ scenario }) => {
     if (!ctx) return;
     drawCanvas(ctx);
   }, [scenario]);
-
-  const navigate = useNavigate();
 
   return (
     <div
