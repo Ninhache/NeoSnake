@@ -66,7 +66,9 @@ const UIScenarioCampaignPreview: React.FC<Props> = ({ scenario }) => {
     }
   } else {
     if (scenario.completionTime) {
-      completionTime = timestampToChrono(scenario.completionTime.getTime());
+      completionTime = timestampToChrono(
+        new Date(scenario.completionTime).getTime()
+      );
     }
   }
 
