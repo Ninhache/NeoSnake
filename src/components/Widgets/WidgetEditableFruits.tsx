@@ -24,6 +24,26 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
   };
 
   useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const { key } = e;
+
+      const upperCaseKey = key.toLocaleUpperCase();
+      if (upperCaseKey === "A") {
+        enableDrawing("OBSTACLE");
+      } else if (upperCaseKey === "Z") {
+        if (currentFruitIndex === -1) return;
+        enableDrawing("FRUIT");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isDrawing]);
+
+  useEffect(() => {
     if (isDrawing === "FRUIT" && currentFruitIndex === -1) {
       setDrawing("NONE");
     }
@@ -54,7 +74,7 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
           />
         ))}
       </div>
-      <div className="flex gap-2 justify-center">
+      <div className="flex gap-2 justify-center py-2">
         <button
           className={`relative  bg-black border-2 p-6 hover:bg-gray-900 transition-colors ${
             isDrawing === "OBSTACLE" ? " border-blue-500" : "border-transparent"
@@ -63,6 +83,9 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
             enableDrawing("OBSTACLE");
           }}
         >
+          <p className="absolute bottom-0 left-1 white stroke-black font-bold text-2xl">
+            A
+          </p>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -88,6 +111,9 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
             enableDrawing("FRUIT");
           }}
         >
+          <p className="absolute bottom-0 left-1 white stroke-black font-bold text-2xl">
+            Z
+          </p>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

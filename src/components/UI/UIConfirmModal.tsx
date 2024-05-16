@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -13,6 +13,20 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   onConfirm,
   itemName,
 }) => {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   if (!isOpen) return null;
 
   return (
@@ -27,6 +41,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
           <button
             onClick={onConfirm}
             className="bg-red-700 bg-opacity-70 text-white py-3 px-12 rounded-lg"
+            ref={(ref) => ref?.focus()}
           >
             Delete
           </button>
