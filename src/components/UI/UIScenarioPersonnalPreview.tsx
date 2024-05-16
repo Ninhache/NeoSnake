@@ -120,7 +120,9 @@ const UIScenarioPersonnalPreview: React.FC<Props> = ({
         }
         onClick={(e) => {
           e.stopPropagation();
-          console.log("to add: play");
+          // force lastPath to be account to redirect here when the user finished to play
+          localStorage.setItem("lastPath", "/account");
+          navigate(`/online/${scenario.id}`);
         }}
       >
         <svg

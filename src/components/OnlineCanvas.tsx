@@ -108,7 +108,7 @@ const OnlineCanvas: React.FC<Props> = ({ width, height }) => {
 
     const handlePressEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        navigate("/play");
+        navigate(localStorage.getItem("lastPath") || "/explore");
       }
     };
 

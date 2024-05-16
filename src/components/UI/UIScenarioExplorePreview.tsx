@@ -92,10 +92,10 @@ const UIScenarioExplorePreview: React.FC<Props> = ({ scenario }) => {
 
       <p className="text-center font-bold m-1">
         {scenario.preview.options.name}
+      </p>
 
-        <p className="text-gray-500 italic">
-          Difficulty {scenario.preview.options.difficulty}
-        </p>
+      <p className="text-gray-500 italic">
+        Difficulty {scenario.preview.options.difficulty}
       </p>
 
       {scenario.completed ? (
