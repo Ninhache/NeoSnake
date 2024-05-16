@@ -26,7 +26,7 @@ const WidgetEditableOptions: React.FC = () => {
       return;
     }
 
-    if (!isValidData(mapData)) {
+    if (!isValidData(mapData).success) {
       console.error("mapData is invalid");
       return;
     }
@@ -52,7 +52,9 @@ const WidgetEditableOptions: React.FC = () => {
         <div className="flex flex-wrap w-auto">
           <DEVLogButton obj={mapData} className="w-1/2" />
           <button
-            className="border-4 border-green-500 w-1/2 rounded-lg p-2 hover:bg-green-400 transition-colors duration-300 font-bold text-xl"
+            className={`border-4 border-green-500 rounded-lg p-2 hover:bg-green-400 transition-colors duration-300 font-bold text-xl ${
+              import.meta.env.DEV ? "w-1/2" : "w-full"
+            }`}
             onClick={handleSave}
           >
             {loading ? <UISuspense /> : "Save"}
