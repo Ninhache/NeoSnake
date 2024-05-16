@@ -16,7 +16,10 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-10 ">
+    <div
+      className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-10 "
+      onClick={onClose}
+    >
       <div className="bg-gray-800 bg-opacity-95 p-4 rounded-lg">
         <h2>Confirm Deletion</h2>
         <p>Are you sure you want to delete "{itemName}"?</p>
