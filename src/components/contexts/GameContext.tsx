@@ -14,6 +14,7 @@ type GameAction =
   | { type: "GAME_SET_LEVEL"; payload: number }
   | { type: "GAME_SET_NAME"; payload: string }
   | { type: "GAME_SET_SPEED"; payload: number }
+  | { type: "GAME_RESET" }
   | { type: "GAME_LOOSE" }
   | { type: "GAME_WIN" };
 
@@ -23,6 +24,11 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       return {
         ...state,
         score: state.score + action.fruit.getValue(),
+      };
+    case "GAME_RESET":
+      return {
+        ...state,
+        score: 0,
       };
     case "GAME_LOOSE":
       return {

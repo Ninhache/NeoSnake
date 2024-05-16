@@ -40,6 +40,7 @@ const OnlineCanvas: React.FC<Props> = ({ width, height }) => {
   useEffect(() => {
     const restartGame = (event: KeyboardEvent) => {
       if (event.key === "r" || event.key === "R") {
+        dispatch({ type: "GAME_RESET" });
         setResetToggle((prev) => !prev);
       }
     };
@@ -206,6 +207,8 @@ const OnlineCanvas: React.FC<Props> = ({ width, height }) => {
           }
 
           if (!snakeHasMoved) {
+            scoreMap = 0;
+            totalScore = 0;
             scenario.reset();
             dispatch({ type: "GAME_LOOSE" });
           }
