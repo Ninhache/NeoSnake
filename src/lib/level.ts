@@ -2,6 +2,7 @@ import {
   ApiErrorResponse,
   CampainMapSuccessResponse,
   GetCreateSuccessResponse,
+  GetLevelSuccessResponse,
   NumberOfLevelSuccessResponse,
   OnlineMapSuccessResponse,
   PreviewLevelSuccessResponse,
@@ -99,6 +100,38 @@ export const getCreatedLevel = async (): Promise<
   );
 
   return await customFetch(request).then((response) => response.json());
+};
+
+export const getCreatedLevelById = async (
+  uuid: string
+): Promise<GetLevelSuccessResponse | ApiErrorResponse> => {
+  const request = requestWithAuthorization(
+    `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/online/${uuid}`,
+    {
+      method: "GET",
+    }
+  );
+
+  return await customFetch(request).then((response) => response.json());
+};
+
+export const uploadOnlineCompletion = async (
+  onlineId: string,
+  time: number
+): Promise<any> => {
+  const request = requestWithAuthorization(
+    `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/online/completion`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        mapId: onlineId,
+        completionTime: time,
+        completionDate: Date.now(),
+      }),
+    }
+  );
+
+  return await customFetch(request);
 };
 
 export const uploadCampaignCompletion = async (

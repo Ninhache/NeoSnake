@@ -1,12 +1,16 @@
 import { useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import { OnlinePreview } from "../../@types/ApiType";
+import { timestampToChrono } from "../../lib/time";
+import { useAuth } from "../contexts/AuthContext";
 
 type Props = {
   scenario: OnlinePreview;
 };
 const UIScenarioExplorePreview: React.FC<Props> = ({ scenario }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const { isAuthenticated } = useAuth();
 
   const drawCanvas = (ctx: CanvasRenderingContext2D) => {
     const width = ctx.canvas.width;
@@ -54,9 +58,28 @@ const UIScenarioExplorePreview: React.FC<Props> = ({ scenario }) => {
     drawCanvas(ctx);
   }, [scenario]);
 
+  let completionTime = "Not Attempted";
+  if (!isAuthenticated()) {
+    const time = localStorage.getItem(`online_${scenario.id}`);
+    if (time) {
+      completionTime = timestampToChrono(parseInt(time, 10));
+      scenario.completed = true;
+    }
+  } else {
+    if (scenario.completionTime) {
+      completionTime = timestampToChrono(
+        new Date(scenario.completionTime).getTime()
+      );
+    }
+  }
+
   return (
     <div
-      className={`group border-2 border-opacity-70 p-2 rounded-lg transition-transform border-black bg-gray-800 bg-opacity-60 relative`}
+      className={`border-2 border-opacity-70 p-4   rounded-lg hover:scale-105 transition-transform ${
+        scenario.completed
+          ? "border-amber-400 bg-amber-300 bg-opacity-10 "
+          : "border-black bg-gray-800 bg-opacity-60"
+      }`}
     >
       <NavLink to={`/online/${scenario.id}`}>
         <canvas
@@ -69,8 +92,21 @@ const UIScenarioExplorePreview: React.FC<Props> = ({ scenario }) => {
 
       <p className="text-center font-bold m-1">
         {scenario.preview.options.name}
+
+        <p className="text-gray-500 italic">
+          Difficulty {scenario.preview.options.difficulty}
+        </p>
       </p>
-      <p>{scenario.preview.options.difficulty}</p>
+
+      {scenario.completed ? (
+        <div>
+          <h1 className="text-gray-400 text-sm text-right">
+            <p className="text-white font-bold">{completionTime}</p>
+          </h1>
+        </div>
+      ) : (
+        <h1 className="italic text-gray-400 text-center">Not Attempted</h1>
+      )}
     </div>
   );
 };

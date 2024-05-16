@@ -52,6 +52,11 @@ export interface GetCreateSuccessResponse extends ApiResponse {
   data: Preview[];
 }
 
+export interface GetLevelSuccessResponse extends ApiResponse {
+  success: true;
+  data: string;
+}
+
 export interface NumberOfLevelSuccessResponse extends ApiResponse {
   success: true;
   data: number;

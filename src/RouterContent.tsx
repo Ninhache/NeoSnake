@@ -1,10 +1,10 @@
 import { Route, Routes } from "react-router-dom";
 import WidgetAccount from "./components/Widgets/WidgetAccount";
 import WidgetArticle from "./components/Widgets/WidgetArticle";
+import WidgetCampaign from "./components/Widgets/WidgetCampaign";
 import WidgetCampaignExplorer from "./components/Widgets/WidgetCampaignExplorer";
 import WidgetCreate from "./components/Widgets/WidgetCreate";
 import WidgetFaq from "./components/Widgets/WidgetFaq";
-import WidgetGame from "./components/Widgets/WidgetGame";
 import WidgetHome from "./components/Widgets/WidgetLandingPage";
 import WidgetLogin from "./components/Widgets/WidgetLogin";
 import WidgetLogout from "./components/Widgets/WidgetLogout";
@@ -16,6 +16,7 @@ import "./styles/App.css";
 import React, { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 import WidgetExplore from "./components/Widgets/WidgetExplore";
+import WidgetOnline from "./components/Widgets/WidgetOnline";
 import { useAuth } from "./components/contexts/AuthContext";
 
 interface ProtectedRouteProps {
@@ -44,7 +45,8 @@ const RouterContent: React.FC<{}> = ({}) => {
           }
         />
         <Route path="/explore" element={<WidgetExplore />} />
-        <Route path="/game/:id?" element={<WidgetGame />} />
+        <Route path="/campaign/:id?" element={<WidgetCampaign />} />
+        <Route path="/online/:id?" element={<WidgetOnline />} />
         <Route
           path="/create/:uuid?"
           element={
