@@ -18,7 +18,6 @@ const WidgetAccount: React.FC<Props> = ({}) => {
   useEffect(() => {
     getCreatedLevel()
       .then((response) => {
-        console.log(response);
         if (response.success) {
           setPreviewMap(response.data);
         }

@@ -18,7 +18,6 @@ const UIScenarioPersonnalPreview: React.FC<Props> = ({
 
   const handleDelete = () => {
     deleteCreatedLevel(scenario.id).then((response) => {
-      console.log(response);
       if (response.success) {
         onDelete(scenario.id);
       }
@@ -121,7 +120,7 @@ const UIScenarioPersonnalPreview: React.FC<Props> = ({
         }
         onClick={(e) => {
           e.stopPropagation();
-          console.log("play");
+          console.log("to add: play");
         }}
       >
         <svg
