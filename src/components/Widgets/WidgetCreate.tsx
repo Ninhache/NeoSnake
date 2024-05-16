@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useBlocker, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useEditor } from "../contexts/EditorContext";
 import LayoutComponent from "../layouts/LayoutComponent";
@@ -7,6 +7,7 @@ import WidgetEditableOptions from "./WidgetEditableOptions";
 import WidgetLogin from "./WidgetLogin";
 
 import { useEffect, useState } from "react";
+
 import { ScenarioData } from "../../@types/Scenario";
 import { getExistingMap } from "../../lib/level";
 import UISuspense from "../UI/UISuspense";
@@ -22,8 +23,8 @@ const WidgetCreate: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    if (!pendingChanges) return;
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      if (!pendingChanges) return;
       event.preventDefault();
       event.returnValue = "";
     };
