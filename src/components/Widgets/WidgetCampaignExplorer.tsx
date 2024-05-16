@@ -3,7 +3,7 @@ import UINotification from "../UI/UINotification";
 import { useAuth } from "../contexts/AuthContext";
 import { GameProvider } from "../contexts/GameContext";
 import LayoutComponent from "../layouts/LayoutComponent";
-import WidgetCampaign from "./WidgetCampaign";
+import WidgetCampaignList from "./WidgetCampaignList";
 
 const WidgetCampaignExplorer: React.FC = () => {
   const { username } = useAuth();
@@ -23,7 +23,7 @@ const WidgetCampaignExplorer: React.FC = () => {
 
         <h1 className=" m-4 text-3xl text-center">Campaign</h1>
 
-        <WidgetCampaign />
+        <WidgetCampaignList />
       </GameProvider>
     </LayoutComponent>
   );
