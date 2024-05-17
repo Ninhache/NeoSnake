@@ -13,16 +13,16 @@ const NavBar: React.FC = () => {
         <br></br>
         <ul className="flex gap-10 items-center justify-center">
           <li>
-            <UINavLink path="/" text="Accueil" />
+            <UINavLink path="/" text="Home" />
           </li>
           <li>
-            <UINavLink path="/play" text="Jouer" />
+            <UINavLink path="/play" text="Play" />
           </li>
           <li>
-            <UINavLink path="/explore" text="Explorer" />
+            <UINavLink path="/explore" text="Explore" />
           </li>
           <li>
-            <UINavLink path="/create" text="Créer" />
+            <UINavLink path="/create" text="Create" />
           </li>
           <li>
             <UINavLink path="/faq" text="FAQ" />

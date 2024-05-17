@@ -45,7 +45,7 @@ const WidgetEditableOptions: React.FC = () => {
 
   return (
     <div className="flex flex-col w-full">
-      <div className="flex flex-col w-full  gap-4" style={{ height: "800px" }}>
+      <div className="flex flex-col w-full h-full gap-4">
         <WidgetDefaultOptions />
 
         <WidgetEditableFruits />

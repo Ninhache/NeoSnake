@@ -5,9 +5,11 @@ type Props = {};
 const WidgetFaq: React.FC<Props> = ({}) => {
   return (
     <LayoutComponent>
-      <h1 className="faq-title text-amber-400 font-bold text-3xl">
+      <h1 className="text-3xl text-center font-bold my-8 text-amber-400">
         Frequently Asked Questions
       </h1>
+      <div className="border-2 mx-16 mb-8 border-opacity-45 border-gray-500"></div>
+
       <UIFaqQuestion title="Que pensez-vous de la situation d'alternant">
         <p>
           I don't think there is a good or bad situation. There are situations

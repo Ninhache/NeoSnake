@@ -54,7 +54,7 @@ const UIPersonalLevelPreview: React.FC<Props> = ({ scenario, onDelete }) => {
     });
 
     scenario.obstacles.forEach((obstacle) => {
-      ctx.fillStyle = "black";
+      ctx.fillStyle = obstacle.color;
       ctx.fillRect(obstacle.x * sizeX, obstacle.y * sizeY, sizeX, sizeY);
     });
   };

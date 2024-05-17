@@ -73,6 +73,12 @@ export class Tile {
   isOccupied(): boolean {
     return this._data !== null;
   }
+
+  public draw(ctx: CanvasRenderingContext2D): void {
+    if (this._data !== null) {
+      this._data.draw(ctx);
+    }
+  }
 }
 
 export class SnakeMap {
@@ -175,12 +181,12 @@ export class SnakeMap {
     });
 
     mapData.obstacles.forEach((obstacle) => {
-      const { x, y } = obstacle;
+      const { x, y, color } = obstacle;
       const cell = this.getTile({ x, y });
       if (!cell) {
         throw new Error(`Invalid obstacle position at ${x}, ${y}`);
       }
-      cell.occupy(new BasicObstacle(cell));
+      cell.occupy(new BasicObstacle(cell, color));
     });
   }
 
@@ -201,11 +207,9 @@ export class SnakeMap {
     }
   }
 
-  draw(ctx: CanvasRenderingContext2D, alpha: number = 0): void {
+  public draw(ctx: CanvasRenderingContext2D, alpha: number = 0): void {
     this.tiles.forEach((tile) => {
-      if (tile.data) {
-        tile.data.draw(ctx);
-      }
+      tile.draw(ctx);
     });
 
     this.snake.draw(ctx, alpha);

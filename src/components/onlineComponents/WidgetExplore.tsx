@@ -18,8 +18,9 @@ const WidgetExplore: React.FC<Props> = ({}) => {
 
   return (
     <LayoutComponent>
-      <h1 className="text-3xl text-center font-bold mb-4">Explore</h1>
-      <div className="flex flex-wrap gap-2">
+      <h1 className="text-3xl text-center font-bold my-8">Explore</h1>
+      <div className="border-2 mx-16 mb-8 border-opacity-45 border-gray-500"></div>
+      <div className="flex flex-wrap gap-2 justify-center">
         {levels.length === 0 ? (
           <div className="text-center w-full text-gray-500 italic">
             <p>No levels found</p>
