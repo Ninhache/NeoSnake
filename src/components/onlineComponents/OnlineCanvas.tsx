@@ -62,9 +62,10 @@ const OnlineCanvas: React.FC<Props> = ({ width, height }) => {
 
   useEffect(() => {
     getCreatedLevelById(id).then((response) => {
-      console.log(response);
       if (response.success) {
         setJson(JSON.parse(response.data.map_data));
+      } else {
+        throw new Error("Error fetching level");
       }
     });
   }, [id]);

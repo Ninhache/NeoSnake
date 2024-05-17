@@ -8,7 +8,6 @@ type Props = {
   scenario: OnlinePreview;
 };
 const UIScenarioExplorePreview: React.FC<Props> = ({ scenario }) => {
-  console.log(scenario);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const { isAuthenticated } = useAuth();

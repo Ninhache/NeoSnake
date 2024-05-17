@@ -1,17 +1,17 @@
-import {useEffect, useRef, useState} from "react";
+import { useEffect, useRef, useState } from "react";
 
-import {useNavigate, useParams} from "react-router-dom";
-import {Direction} from "../../@types/DirectionType";
-import {Nullable} from "../../@types/NullableType";
-import {ScenarioData, ScenarioFruit} from "../../@types/Scenario";
-import {SnakeMap} from "../../classes/Map";
-import {getCampaignLevel, uploadCampaignCompletion} from "../../lib/level";
+import { useNavigate, useParams } from "react-router-dom";
+import { Direction } from "../../@types/DirectionType";
+import { Nullable } from "../../@types/NullableType";
+import { ScenarioData, ScenarioFruit } from "../../@types/Scenario";
+import { SnakeMap } from "../../classes/Map";
+import { getCampaignLevel, uploadCampaignCompletion } from "../../lib/level";
 
-import {timestampToChrono} from "../../lib/time";
+import { timestampToChrono } from "../../lib/time";
 import UISuspense from "../UI/UISuspense";
-import {useAuth} from "../contexts/AuthContext";
-import {useGame} from "../contexts/GameContext";
-import {isVisible} from "../../lib/visible";
+import { useAuth } from "../contexts/AuthContext";
+import { useGame } from "../contexts/GameContext";
+import { isVisible } from "../../lib/visible";
 
 type Props = {
   width: number;
@@ -60,6 +60,8 @@ const CampaignCanvas: React.FC<Props> = ({ width, height }) => {
     getCampaignLevel(id).then((response) => {
       if (response.success) {
         setJson(JSON.parse(response.data));
+      } else {
+        throw new Error("Failed to fetch the level");
       }
     });
   }, [id]);
@@ -97,13 +99,14 @@ const CampaignCanvas: React.FC<Props> = ({ width, height }) => {
       canvas.height / 2 + 50
     );
 
-
-
     if (username) {
-      uploadCampaignCompletion(id, finalTime)
-          .then(() => {
-            ctx.fillText(`Time saved...`, canvas.width / 2, canvas.height / 2 + 100);
-          });
+      uploadCampaignCompletion(id, finalTime).then(() => {
+        ctx.fillText(
+          `Time saved...`,
+          canvas.width / 2,
+          canvas.height / 2 + 100
+        );
+      });
     } else {
       // save to the local storage instead
       localStorage.setItem(`campaign_${id}`, `${finalTime}`);
