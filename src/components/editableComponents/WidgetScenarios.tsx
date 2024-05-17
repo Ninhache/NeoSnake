@@ -114,7 +114,7 @@ const WidgetScenarios: React.FC<Props> = ({}) => {
           const newIndex =
             toDelete <= currentScenario ? currentScenario - 1 : currentScenario;
 
-          setCurrentScenario(newIndex);
+          setCurrentScenario(Math.max(0, newIndex));
           setModalOpen(false);
         }}
         onClose={() => setModalOpen(false)}
