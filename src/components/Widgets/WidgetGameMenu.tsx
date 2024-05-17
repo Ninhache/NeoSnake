@@ -1,5 +1,5 @@
 import UISpeedButtons from "../UI/UISpeedButtons";
-import { useGame } from "../contexts/GameContext";
+import {useGame} from "../contexts/GameContext";
 
 type Props = {};
 const WidgetGameMenu: React.FC<Props> = ({}) => {

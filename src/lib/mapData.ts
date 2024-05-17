@@ -1,4 +1,4 @@
-import { ScenarioData, ScenarioMapData } from "../@types/Scenario";
+import {ScenarioData, ScenarioMapData} from "../@types/Scenario";
 
 export interface Coordinates {
   x: number;
@@ -11,19 +11,19 @@ interface ReturnMessage {
 }
 
 function validateOptions(options: ScenarioData["options"]): ReturnMessage {
-  if (typeof options.width !== "number" || options.width !== 800) {
+  if (options.width !== 800) {
     return { message: "Invalid or missing width in options", success: false };
   }
-  if (typeof options.height !== "number" || options.height !== 800) {
+  if (options.height !== 800) {
     return { message: "Invalid or missing height in options", success: false };
   }
-  if (typeof options.cellSize !== "number" || options.cellSize <= 0) {
+  if (options.cellSize <= 0) {
     return {
       message: "Invalid or missing cellSize in options",
       success: false,
     };
   }
-  if (typeof options.name !== "string" || options.name.trim() === "") {
+  if (options.name.trim() === "") {
     return { message: "Invalid or missing name in options", success: false };
   }
   return { message: "Options are valid", success: true };
@@ -31,9 +31,7 @@ function validateOptions(options: ScenarioData["options"]): ReturnMessage {
 
 function validateSnake(snake: ScenarioData["snake"]): ReturnMessage {
   if (
-    !snake.startPosition ||
-    typeof snake.startPosition.x !== "number" ||
-    typeof snake.startPosition.y !== "number"
+    !snake.startPosition
   ) {
     return {
       message: "Invalid or missing startPosition in snake",
@@ -41,12 +39,11 @@ function validateSnake(snake: ScenarioData["snake"]): ReturnMessage {
     };
   }
   if (
-    typeof snake.direction !== "string" ||
     !["Up", "Down", "Left", "Right"].includes(snake.direction)
   ) {
     return { message: "Invalid or missing direction in snake", success: false };
   }
-  if (typeof snake.length !== "number" || snake.length <= 0) {
+  if (snake.length <= 0) {
     return { message: "Invalid or missing length in snake", success: false };
   }
   return { message: "Snake is valid", success: true };
@@ -118,13 +115,7 @@ function validateMapData(
   }
 
   if (
-    !Array.isArray(mapData.obstacles) ||
-    mapData.obstacles.some(
-      (ob) =>
-        typeof ob.x !== "number" ||
-        typeof ob.y !== "number" ||
-        typeof ob.type !== "string"
-    )
+    !Array.isArray(mapData.obstacles)
   ) {
     return {
       message: `Invalid data in obstacles for step n°${index}`,

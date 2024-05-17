@@ -48,13 +48,13 @@ This is the final concept chosen after considering various ideas from previous b
 **Ideas :**
 
 - a snek...
-- Obstacles / Ennemies
-- Differents skins (+ custom)
+- Obstacles / Enemies
+- Different skins (+ custom)
 - Boosts (Speed / Growth / ?)
 - Solo / Multi
 
 **_Vibing_ Ideas :**
 
-- Mods (that you can wrote in random langages to modify the game ?)
-- Score handling/Leaderboard (+ anticheat lol)
+- Mods (that you can write in random languages to modify the game ?)
+- Score handling/Leaderboard (+ anti cheat lol)
 - Multiplayer / Multiple Snake ?

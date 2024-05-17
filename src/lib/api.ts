@@ -1,5 +1,5 @@
-import { LocalStorageToken, fetchNewAccessToken } from "./auth";
-import { isTokenExpired } from "./time";
+import {fetchNewAccessToken, LocalStorageToken} from "./auth";
+import {isTokenExpired} from "./time";
 
 interface GetParams {
   path: string;

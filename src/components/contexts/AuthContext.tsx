@@ -1,18 +1,7 @@
-import { jwtDecode } from "jwt-decode";
-import React, {
-  ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import { Nullable } from "../../@types/NullableType";
-import {
-  LocalStorageToken,
-  signin as signinRequest,
-  signup as signupRequest,
-  updateStoredTokensFromRefresh,
-} from "../../lib/auth";
+import {jwtDecode} from "jwt-decode";
+import React, {createContext, ReactNode, useContext, useEffect, useState,} from "react";
+import {Nullable} from "../../@types/NullableType";
+import {LocalStorageToken, signInRequest, signUpRequest, updateStoredTokensFromRefresh,} from "../../lib/auth";
 
 interface AuthState {
   accessToken: Nullable<string>;
@@ -52,13 +41,11 @@ const AuthContextProvider: React.FC<ProviderProps> = ({ children }) => {
 
     let user = null;
     try {
-      const decodedToken = jwtDecode(token) as {
+      user = jwtDecode(token) as {
         username: string;
         accessToken: string;
         refreshToken: string;
       };
-
-      user = decodedToken;
     } catch (_) {}
 
     if (token && user) {
@@ -82,25 +69,25 @@ const AuthContextProvider: React.FC<ProviderProps> = ({ children }) => {
   };
 
   const login = async (username: string, password: string) => {
-    const signinInfo = await signinRequest(username, password);
+    const signInInfo = await signInRequest(username, password);
 
-    if (!signinInfo.success) {
-      throw new Error(signinInfo.message);
+    if (!signInInfo.success) {
+      throw new Error(signInInfo.message);
     }
 
-    const { accessToken } = signinInfo;
+    const { accessToken } = signInInfo;
 
     setAuthState({ accessToken, username });
   };
 
   const signup = async (username: string, password: string) => {
-    const signupInfo = await signupRequest(username, password);
+    const signupInfo = await signUpRequest(username, password);
 
     if (!signupInfo.success) {
       throw new Error(signupInfo.message);
     }
 
-    const loginInfo = await signinRequest(username, password);
+    const loginInfo = await signInRequest(username, password);
 
     if (!loginInfo.success) {
       throw new Error(loginInfo.message);

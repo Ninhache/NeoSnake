@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useState} from "react";
 import chevron from "../../assets/svg/chevron-right-solid.svg";
 
 type Props = {

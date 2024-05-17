@@ -1,6 +1,6 @@
-import { Coordinates } from "./CoordinatesType";
-import { DirectionType } from "./DirectionType";
-import { Nullable } from "./NullableType";
+import {Coordinates} from "./CoordinatesType";
+import {DirectionType} from "./DirectionType";
+import {Nullable} from "./NullableType";
 
 export type foodType = "FBa" | "FBi" | "FDe";
 export type obstacleType = "OBa" | "ODi";

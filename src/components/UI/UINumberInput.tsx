@@ -1,4 +1,4 @@
-import { clamp } from "../../lib/math";
+import {clamp} from "../../lib/math";
 import "../../styles/UINumberInput.css";
 
 interface NumberInputProps {

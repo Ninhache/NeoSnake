@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { useGame } from "../contexts/GameContext";
+import React, {useEffect} from "react";
+import {useGame} from "../contexts/GameContext";
 
 interface SpeedButtonProps {}
 

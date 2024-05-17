@@ -1,16 +1,12 @@
-import { Coordinates } from "../@types/CoordinatesType";
-import { Direction, stringToDirectionType } from "../@types/DirectionType";
-import { NextFrameInfo } from "../@types/MapTypes";
-import { Nullable } from "../@types/NullableType";
-import {
-  ScenarioData,
-  ScenarioFruit,
-  ScenarioMapData,
-} from "../@types/Scenario";
+import {Coordinates} from "../@types/CoordinatesType";
+import {Direction, stringToDirectionType} from "../@types/DirectionType";
+import {NextFrameInfo} from "../@types/MapTypes";
+import {Nullable} from "../@types/NullableType";
+import {ScenarioData, ScenarioFruit, ScenarioMapData,} from "../@types/Scenario";
 
-import { Entity } from "./Entity";
-import { BasicObstacle } from "./Obstacles";
-import { Snake } from "./Snake";
+import {Entity} from "./Entity";
+import {BasicObstacle} from "./Obstacles";
+import {Snake} from "./Snake";
 
 export class Tile {
   parent: SnakeMap;
@@ -78,10 +74,10 @@ export class Tile {
 export class SnakeMap {
   tiles: Tile[];
   snake: Snake;
-  private jsonObj: ScenarioData;
+  private readonly jsonObj: ScenarioData;
   private indexCurrentMap: number;
-  private scoreForEachMap: number[];
-  private _scoreToWin: number;
+  private readonly scoreForEachMap: number[];
+  private readonly _scoreToWin: number;
 
   /**
    * The width of the map in pixels (should be always 800)
@@ -111,7 +107,7 @@ export class SnakeMap {
   constructor(serializedMap: string) {
     this.tiles = [];
 
-    const jsonObj = MapSerializer.deserialize(serializedMap) as ScenarioData;
+    const jsonObj = MapSerializer.deserialize(serializedMap);
 
     this.width_px = jsonObj.options.width;
     this.height_px = jsonObj.options.height;

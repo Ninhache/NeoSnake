@@ -6,14 +6,11 @@ const WidgetFaq: React.FC<Props> = ({}) => {
   return (
     <LayoutComponent>
       <h1 className="faq-title text-amber-400 font-bold text-3xl">
-        Foire aux questions
+          Frequently Asked Questions
       </h1>
       <UIFaqQuestion title="Que pensez-vous de la situation d'alternant">
         <p>
-          Je ne pense pas qu'il y ait de bonne ou de mauvaise situation. Il y a
-          des situations qui sont plus ou moins adaptées à chacun. Il est
-          important de se sentir bien dans son environnement de travail pour
-          être épanoui.
+            I don't think there is a good or bad situation. There are situations that are more or less suitable for each person. It is important to feel good in your work environment to be fulfilled.
         </p>
       </UIFaqQuestion>
       <UIFaqQuestion title="Un avis honnête sur la société ?">

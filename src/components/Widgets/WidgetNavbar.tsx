@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import {useEffect} from "react";
 import UINavLink from "../UI/UINavLink";
-import { useAuth } from "../contexts/AuthContext";
+import {useAuth} from "../contexts/AuthContext";
 import LayoutComponent from "../layouts/LayoutComponent";
 
 const NavBar: React.FC = () => {
@@ -31,7 +31,7 @@ const NavBar: React.FC = () => {
         <div className="mr-2">
           <UINavLink
             path={username ? "/account" : "/login"}
-            text={username ? `${username}` : "Se connecter"}
+            text={username ? `${username}` : "Login"}
           />
         </div>
       </nav>

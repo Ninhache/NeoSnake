@@ -1,10 +1,10 @@
-import { Coordinates } from "../@types/CoordinatesType";
-import { Direction } from "../@types/DirectionType";
-import { Drawable } from "../@types/DrawableType";
-import { ScenarioFruit } from "../@types/Scenario";
+import {Coordinates} from "../@types/CoordinatesType";
+import {Direction} from "../@types/DirectionType";
 
-import { SnakeMap, Tile } from "./Map";
-import { Obstacle } from "./Obstacles";
+import {ScenarioFruit} from "../@types/Scenario";
+
+import {SnakeMap, Tile} from "./Map";
+import {Obstacle} from "./Obstacles";
 
 export class SnakeSegment {
   current: Coordinates;
@@ -29,7 +29,7 @@ export class SnakeSegment {
   }
 }
 
-export class Snake implements Drawable {
+export class Snake {
   head: SnakeSegment;
   body: SnakeSegment[];
   directionQueue: Direction[] = [];

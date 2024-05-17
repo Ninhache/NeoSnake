@@ -5,8 +5,8 @@ export type BlogPostPreview = {
   date: string;
   abstract: string;
   image: string;
-  authorname: string;
-  authorimage: string;
+  authorName: string;
+  authorImage: string;
 };
 
 export type BlogPost = BlogPostPreview & {
