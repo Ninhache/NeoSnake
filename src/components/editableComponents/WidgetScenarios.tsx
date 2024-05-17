@@ -52,7 +52,7 @@ const WidgetScenarios: React.FC<Props> = ({}) => {
     });
 
     data.obstacles.forEach((obstacle) => {
-      ctx.fillStyle = "black";
+      ctx.fillStyle = obstacle.color;
       ctx.fillRect(obstacle.x * sizeX, obstacle.y * sizeY, sizeX, sizeY);
     });
   };
@@ -121,7 +121,7 @@ const WidgetScenarios: React.FC<Props> = ({}) => {
         itemName={`Scenario ${toDelete + 1}`}
       />
       <div>Steps</div>
-      <div className="flex flex-row gap-2 w-auto">
+      <div className="flex flex-row gap-2 w-auto flex-wrap">
         {mapData.maps.map((_, index) => (
           <div className="relative group" key={index}>
             <canvas
@@ -141,7 +141,7 @@ const WidgetScenarios: React.FC<Props> = ({}) => {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="w-5 h-5 absolute top-1 right-1 text-lg font-bold text-black opacity-0 transition-opacity transition-transform group-hover:opacity-70 hover:scale-110 cursor-pointer"
+              className="w-7 h-7 absolute top-1 right-1 text-lg font-bold text-black opacity-0 transition group-hover:opacity-100 hover:scale-110 cursor-pointer fill-white"
               onClick={() => {
                 duplicateScenario(index);
               }}
@@ -158,9 +158,10 @@ const WidgetScenarios: React.FC<Props> = ({}) => {
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                strokeWidth={1.5}
+                strokeWidth={2}
                 stroke="currentColor"
-                className="w-5 h-5 absolute top-1 right-6 text-lg font-bold text-black opacity-0 transition-opacity transition-transform group-hover:opacity-70 hover:scale-110 cursor-pointer stroke-red-800
+                className="w-7 h-7 absolute top-1 right-8 text-lg font-bold text-black opacity-0 transition group-hover:opacity-100 hover:scale-110 cursor-pointer stroke-red-600
+                fill-white
                 "
                 onClick={() => {
                   setToDelete(index);
@@ -174,7 +175,10 @@ const WidgetScenarios: React.FC<Props> = ({}) => {
                 />
               </svg>
             )}
-            <div className="absolute bottom-0 right-2 text-lg font-bold text-black">
+            <div
+              className="absolute bottom-0 right-0 text-lg font-bold text-black px-2 py-0 bg-white border-2 border-black cursor-pointer"
+              onClick={() => setCurrentScenario(index)}
+            >
               {index + 1}
             </div>
           </div>

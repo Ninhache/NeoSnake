@@ -1,8 +1,9 @@
 import React, { createContext, ReactNode, useContext, useState } from "react";
 import { Coordinates } from "../../@types/CoordinatesType";
-import { foodType, gameObjectType, obstacleType } from "../../@types/MapTypes";
+import { foodType, gameObjectType } from "../../@types/MapTypes";
 import { Nullable } from "../../@types/NullableType";
 import { ScenarioData } from "../../@types/Scenario";
+import { ObstacleColor } from "../../classes/Obstacles";
 
 export type DrawingType = "OBSTACLE" | "FRUIT" | "NONE";
 
@@ -10,13 +11,14 @@ interface ScenarioDataContextProps {
   currentScenario: number;
   currentFruitIndex: number;
   currentGameObjectType: Nullable<gameObjectType>;
+  currentObstacleColor: ObstacleColor;
   latestChanges: Coordinates[];
   mapData: ScenarioData;
   isDrawing: DrawingType;
   pendingChanges: boolean;
   addFutureFruitPositions: (index: number, newCoordinates: Coordinates) => void;
   addGameFruits: (data: { x: number; y: number; type: foodType }) => void;
-  addObstacle: (data: { x: number; y: number; type: obstacleType }) => void;
+  addObstacle: (data: { x: number; y: number }) => void;
   addScenario: () => void;
   deleteFutureFruitPositionsByIndex: (
     fruitIndex: number,
@@ -38,6 +40,7 @@ interface ScenarioDataContextProps {
   setGameObjectType: (type: Nullable<gameObjectType>) => void;
   setLatestChanges: (data: Coordinates[]) => void;
   setMapData: (data: ScenarioData) => void;
+  setObstacleColors: (color: ObstacleColor) => void;
 }
 
 const defaultScenario: ScenarioData = {
@@ -78,6 +81,7 @@ const EditorContext = createContext<ScenarioDataContextProps>({
   mapData: defaultScenario,
   isDrawing: "NONE",
   pendingChanges: false,
+  currentObstacleColor: "black",
   addFutureFruitPositions: () => {},
   addGameFruits: () => {},
   addObstacle: () => {},
@@ -94,6 +98,7 @@ const EditorContext = createContext<ScenarioDataContextProps>({
   setGameObjectType: () => {},
   setLatestChanges: () => {},
   setMapData: () => {},
+  setObstacleColors: () => {},
 });
 
 interface ProviderProps {
@@ -108,6 +113,8 @@ const EditorContextProvider: React.FC<ProviderProps> = ({ children }) => {
 
   const [currentGameObjectType, setGameObjectType] =
     useState<Nullable<gameObjectType>>("FBa");
+  const [currentObstacleColor, setObstacleColors] =
+    useState<ObstacleColor>("black");
 
   const [currentScenario, setCurrentScenario] = useState<number>(0);
   const [currentFruitIndex, setCurrentFruitIndex] = useState<number>(-1);
@@ -269,15 +276,7 @@ const EditorContextProvider: React.FC<ProviderProps> = ({ children }) => {
     });
   };
 
-  const addObstacle = ({
-    x,
-    y,
-    type,
-  }: {
-    x: number;
-    y: number;
-    type: obstacleType;
-  }) => {
+  const addObstacle = ({ x, y }: { x: number; y: number }) => {
     setPendingChanges(true);
 
     setMapData((prev) => {
@@ -291,7 +290,7 @@ const EditorContextProvider: React.FC<ProviderProps> = ({ children }) => {
               ...prev.maps[currentScenario].obstacles.filter(
                 (obstacle) => obstacle.x !== x || obstacle.y !== y
               ),
-              { x, y, type },
+              { x, y, color: currentObstacleColor },
             ],
           },
           ...prev.maps.slice(currentScenario + 1),
@@ -376,27 +375,28 @@ const EditorContextProvider: React.FC<ProviderProps> = ({ children }) => {
         mapData,
         currentScenario,
         currentFruitIndex,
+        currentObstacleColor,
         currentGameObjectType,
         isDrawing,
         latestChanges,
+        pendingChanges,
         setGameObjectType,
         setCurrentScenario,
         setCurrentFruitIndex,
         setDrawing,
         setLatestChanges,
         setMapData,
+        setObstacleColors,
         addGameFruits,
         addObstacle,
         deleteObstacle,
         addScenario,
         deleteScenario,
         duplicateScenario,
-
         addFutureFruitPositions,
         deleteGameFruits,
         deleteFutureFruitPositionsByIndex,
         deleteFutureFruitPositionsByCoordinates,
-        pendingChanges,
       }}
     >
       {children}

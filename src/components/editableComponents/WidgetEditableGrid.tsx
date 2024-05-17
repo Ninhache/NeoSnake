@@ -49,7 +49,7 @@ const WidgetEditableGrid: React.FC<Props> = ({ width, height }) => {
       ctx.fillRect(0, 0, width, height);
 
       mapData.maps[currentScenario].obstacles.forEach((obstacle) => {
-        ctx.fillStyle = "black";
+        ctx.fillStyle = obstacle.color;
         ctx.fillRect(
           obstacle.x * cellSize,
           obstacle.y * cellSize,
@@ -59,11 +59,11 @@ const WidgetEditableGrid: React.FC<Props> = ({ width, height }) => {
       });
 
       if (currentScenario - 1 >= 0) {
-        mapData.maps[currentScenario - 1].obstacles.forEach((fruit) => {
+        mapData.maps[currentScenario - 1].obstacles.forEach((obstacle) => {
           ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
           ctx.fillRect(
-            fruit.x * cellSize,
-            fruit.y * cellSize,
+            obstacle.x * cellSize,
+            obstacle.y * cellSize,
             cellSize,
             cellSize
           );
@@ -132,7 +132,7 @@ const WidgetEditableGrid: React.FC<Props> = ({ width, height }) => {
       setDragOperation("ADD");
 
       if (isDrawing === "OBSTACLE") {
-        addObstacle({ x, y, type: "OBa" });
+        addObstacle({ x, y });
       } else if (isDrawing === "FRUIT") {
         addFutureFruitPositions(currentFruitIndex, { x, y });
       }
@@ -162,7 +162,7 @@ const WidgetEditableGrid: React.FC<Props> = ({ width, height }) => {
 
     if (dragOperation === "ADD") {
       if (isDrawing === "OBSTACLE") {
-        addObstacle({ x, y, type: "OBa" });
+        addObstacle({ x, y });
       } else if (isDrawing === "FRUIT") {
         addFutureFruitPositions(currentFruitIndex, { x, y });
       }

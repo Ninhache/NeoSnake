@@ -47,7 +47,7 @@ const UIScenarioExplorePreview: React.FC<Props> = ({ scenario }) => {
     });
 
     scenario.preview.obstacles.forEach((obstacle) => {
-      ctx.fillStyle = "black";
+      ctx.fillStyle = obstacle.color;
       ctx.fillRect(obstacle.x * sizeX, obstacle.y * sizeY, sizeX, sizeY);
     });
   };

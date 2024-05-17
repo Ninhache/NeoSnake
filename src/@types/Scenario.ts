@@ -1,8 +1,9 @@
 import { Entity } from "../classes/Entity";
 import { Tile } from "../classes/Map";
+import { ObstacleColor } from "../classes/Obstacles";
 import { Coordinates } from "./CoordinatesType";
 import { DirectionType } from "./DirectionType";
-import { foodType, obstacleType } from "./MapTypes";
+import { foodType } from "./MapTypes";
 
 export class ScenarioFruit extends Entity {
   protected value: number = 1;
@@ -72,7 +73,7 @@ export interface ScenarioFruits {
 export interface ScenarioObstacles {
   x: number;
   y: number;
-  type: obstacleType;
+  color: ObstacleColor;
 }
 
 export interface OptionsScenarioData {

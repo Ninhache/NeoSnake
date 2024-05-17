@@ -1,4 +1,3 @@
-import { getColorFromType } from "../@types/MapTypes";
 import { Entity } from "./Entity";
 import { SnakeMap, Tile } from "./Map";
 import { Snake } from "./Snake";
@@ -12,9 +11,30 @@ export abstract class Obstacle extends Entity {
   abstract draw(ctx: CanvasRenderingContext2D): void;
 }
 
+export type ObstacleColor =
+  | "black"
+  | "gray"
+  | "silver"
+  | "blue"
+  | "teal"
+  | "cyan"
+  | "skyblue"
+  | "indigo"
+  | "purple"
+  | "violet"
+  | "fuchsia"
+  | "pink"
+  | "yellow"
+  | "orange"
+  | "gold"
+  | "lime"
+  | "green";
+
 export class BasicObstacle extends Obstacle {
-  constructor(tile: Tile) {
+  private color: string;
+  constructor(tile: Tile, color: ObstacleColor = "black") {
     super(tile);
+    this.color = color;
   }
 
   public effect(snake: Snake): void {
@@ -22,7 +42,7 @@ export class BasicObstacle extends Obstacle {
   }
 
   public draw(ctx: CanvasRenderingContext2D): void {
-    ctx.fillStyle = getColorFromType("OBa");
+    ctx.fillStyle = this.color;
     ctx.fillRect(
       this.getLocationTile().x * this.locationTile.parent.cellSize,
       this.getLocationTile().y * this.locationTile.parent.cellSize,
