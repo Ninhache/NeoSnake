@@ -29,39 +29,44 @@ const PageAccount: React.FC<Props> = ({}) => {
 
   return (
     <LayoutComponent>
-      <h1 className="text-3xl text-center font-bold">Account</h1>
+      <h1 className="text-3xl text-center font-bold my-8">Account</h1>
+      <div className="border-2 mx-16 mb-8 border-opacity-45 border-gray-500"></div>
 
-      <h1 className="text-3xl font-bold mb-4">My creation</h1>
-      {loading ? (
-        <UISuspense />
-      ) : (
-        <div className="flex gap-2 mb-4">
-          {previewMap.length === 0 ? (
-            <div className="text-center">
-              You don't have created levels yet, go to the{" "}
-              <NavLink to={"/create"} className={`text-blue-500 font-bold`}>
-                Create section
-              </NavLink>{" "}
-              to create one !
-            </div>
-          ) : (
-            previewMap.map((map) => (
-              <div key={map.id}>
-                <UIPersonalLevelPreview
-                  key={map.id}
-                  scenario={map}
-                  onDelete={(uuid: string) => {
-                    setPreviewMap((prev) => prev.filter((p) => p.id !== uuid));
-                  }}
-                />
+      <h1 className="text-3xl font-bold mb-4">My creations</h1>
+      <div className="mb-8">
+        {loading ? (
+          <UISuspense />
+        ) : (
+          <div className="flex gap-2 mb-4 flex-wrap">
+            {previewMap.length === 0 ? (
+              <div className="text-center">
+                You don't have created levels yet, go to the{" "}
+                <NavLink to={"/create"} className={`text-blue-500 font-bold`}>
+                  Create section
+                </NavLink>{" "}
+                to create one !
               </div>
-            ))
-          )}
-        </div>
-      )}
+            ) : (
+              previewMap.map((map) => (
+                <div key={map.id}>
+                  <UIPersonalLevelPreview
+                    key={map.id}
+                    scenario={map}
+                    onDelete={(uuid: string) => {
+                      setPreviewMap((prev) =>
+                        prev.filter((p) => p.id !== uuid)
+                      );
+                    }}
+                  />
+                </div>
+              ))
+            )}
+          </div>
+        )}
+      </div>
 
       <button
-        className="bg-red-700 bg-opacity-70 text-white py-3 px-12 rounded-lg"
+        className="bg-red-700 bg-opacity-70 text-white py-2 px-12 rounded-lg"
         onClick={() => {
           logout();
           navigate(localStorage.getItem("lastPath") || "/");

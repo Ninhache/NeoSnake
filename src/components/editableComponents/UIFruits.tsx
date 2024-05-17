@@ -35,7 +35,7 @@ const UIFruits: React.FC<Props> = ({
           onClick={onClick}
         >
           <div className="flex gap-2 items-center">
-            <h3 className="text-gray-500">{index + 1}</h3>
+            <h3 className="text-gray-500 w-2">{index + 1}</h3>
             <h2>{fruit.type}</h2>
             <h3 className="flex gap-2">
               <span className="text-gray-500"> x </span>

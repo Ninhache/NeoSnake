@@ -8,7 +8,7 @@ import PositionHandler from "./Handler/PositionHandler";
 
 const WidgetDefaultOptions: React.FC = () => {
   return (
-    <div className="relative bg-gray-800 bg-opacity-40 w-full h-3/8 flex flex-col gap-2">
+    <div className="relative bg-gray-800 bg-opacity-40 w-full h-3/8 flex flex-col gap-2 p-2">
       <NavLink
         to="/article/editor-beginners-guide"
         className="absolute top-0 right-0 p-2 text-gray-600 hover:text-gray-400 opacity-40 hover:opacity-100 transition duration-300 ease-in-out"
@@ -77,7 +77,6 @@ const WidgetDefaultOptions: React.FC = () => {
       </div>
 
       <DifficultyHandler />
-      <br></br>
     </div>
   );
 };

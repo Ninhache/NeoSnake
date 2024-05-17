@@ -21,7 +21,8 @@ const PageCampaignExplorer: React.FC = () => {
           )}
         </div>
 
-        <h1 className=" m-4 text-3xl text-center">Campaign</h1>
+        <h1 className="text-3xl text-center font-bold my-8">Campaign</h1>
+        <div className="border-2 mx-16 mb-8 border-opacity-45 border-gray-500"></div>
 
         <WidgetCampaignList />
       </GameProvider>

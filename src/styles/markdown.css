@@ -4,7 +4,26 @@
 
 .markdown p,
 .markdown li {
+  font-size: 1.2em;
   color: #e5e5e5;
+}
+
+.markdown h1 {
+  font-size: 2em;
+}
+
+.markdown h2 {
+  font-size: 1.6em;
+}
+
+.markdown h3 {
+  font-size: 1.4em;
+}
+
+.markdown a,
+.markdown a:visited {
+  color: skyblue;
+  font-weight: bold;
 }
 
 .markdown strong {
