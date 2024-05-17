@@ -1,4 +1,4 @@
-import React, { ReactNode, createContext, useContext, useState } from "react";
+import React, { createContext, ReactNode, useContext, useState } from "react";
 import { Coordinates } from "../../@types/CoordinatesType";
 import { foodType, gameObjectType, obstacleType } from "../../@types/MapTypes";
 import { Nullable } from "../../@types/NullableType";

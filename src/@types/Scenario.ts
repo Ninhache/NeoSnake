@@ -13,10 +13,6 @@ export class ScenarioFruit extends Entity {
     this.futurePosition = futurePosition;
   }
 
-  public addFuturePosition(position: Coordinates): void {
-    this.futurePosition.push(position);
-  }
-
   public next(): void {
     const nextPosition = this.futurePosition.shift();
     if (nextPosition !== undefined) {
@@ -101,42 +97,3 @@ export interface ScenarioMapData {
   fruits: ScenarioFruits[];
   obstacles: ScenarioObstacles[];
 }
-
-export const exampleScenario: ScenarioData = {
-  options: {
-    width: 800,
-    height: 800,
-    cellSize: 20,
-    name: "Example Scenario",
-    difficulty: 3,
-  },
-  snake: {
-    startPosition: { x: 10, y: 10 },
-    direction: "Right",
-    length: 3,
-  },
-  maps: [
-    {
-      fruits: [
-        {
-          actualPosition: { x: 5, y: 5 },
-          futurePosition: [],
-          type: "FBa",
-        },
-        {
-          actualPosition: { x: 20, y: 5 },
-          futurePosition: [],
-          type: "FBi",
-        },
-      ],
-      obstacles: [
-        { x: 0, y: 0, type: "OBa" },
-        { x: 0, y: 1, type: "OBa" },
-        { x: 0, y: 2, type: "OBa" },
-        { x: 0, y: 3, type: "OBa" },
-        { x: 0, y: 4, type: "OBa" },
-        { x: 0, y: 5, type: "OBa" },
-      ],
-    },
-  ],
-};

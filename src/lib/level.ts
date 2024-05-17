@@ -1,23 +1,15 @@
 import {
   ApiErrorResponse,
-  CampainMapSuccessResponse,
+  CampaignMapSuccessResponse,
+  ExistingCreateLevelSuccessResponse,
   GetCreateSuccessResponse,
   GetLevelSuccessResponse,
-  NumberOfLevelSuccessResponse,
   OnlineMapSuccessResponse,
   PreviewLevelSuccessResponse,
 } from "../@types/ApiType";
 import { ScenarioData } from "../@types/Scenario";
 import { customFetch, get, requestWithAuthorization } from "./api";
 import { LocalStorageToken } from "./auth";
-
-export const getNumberOfLevels = async (): Promise<
-  NumberOfLevelSuccessResponse | ApiErrorResponse
-> => {
-  return await get({
-    path: `/level`,
-  });
-};
 
 export const getCampaignPreviewLevels = async (): Promise<
   PreviewLevelSuccessResponse | ApiErrorResponse
@@ -43,7 +35,7 @@ export const getCampaignPreviewLevels = async (): Promise<
 
 export const getCampaignLevel = async (
   id: string
-): Promise<CampainMapSuccessResponse | ApiErrorResponse> => {
+): Promise<CampaignMapSuccessResponse | ApiErrorResponse> => {
   return await get({
     path: `/level/${id}`,
   });
@@ -177,7 +169,9 @@ export const uploadMap = async (
   return await customFetch(request);
 };
 
-export const getExistingMap = async (uuid: string): Promise<any> => {
+export const getExistingMap = async (
+  uuid: string
+): Promise<ExistingCreateLevelSuccessResponse | ApiErrorResponse> => {
   const request = requestWithAuthorization(
     `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/upload/${uuid}`,
     {
@@ -185,5 +179,5 @@ export const getExistingMap = async (uuid: string): Promise<any> => {
     }
   );
 
-  return await customFetch(request);
+  return await customFetch(request).then((res) => res.json());
 };

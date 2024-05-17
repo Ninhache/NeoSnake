@@ -7,7 +7,7 @@ import WidgetFooter from "./components/Widgets/WidgetFooter";
 import "./styles/App.css";
 import { AuthContextProvider } from "./components/contexts/AuthContext";
 
-const App: React.FC<{}> = ({}) => {
+const App: React.FC = () => {
   return (
     <>
       <AuthContextProvider>

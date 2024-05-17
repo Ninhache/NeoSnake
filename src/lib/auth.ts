@@ -32,15 +32,13 @@ const signupWithCredentials = async (
   username: string,
   password: string
 ): Promise<SignupSuccessResponse | ApiErrorResponse> => {
-  const response = await post({
+  return await post({
     path: "/auth/signup",
     data: { username, password },
   });
-
-  return response;
 };
 
-const signup = async (
+const signUpRequest = async (
   username: string,
   password: string
 ): Promise<SignupSuccessResponse | ApiErrorResponse> => {
@@ -70,7 +68,7 @@ const signup = async (
   };
 };
 
-const signin = async (
+const signInRequest = async (
   username: string,
   password: string
 ): Promise<LoginSuccessResponse | ApiErrorResponse> => {
@@ -136,4 +134,4 @@ const logout = async () => {
   localStorage.removeItem(`${LocalStorageToken.refreshToken}`);
 };
 
-export { logout, signin, signup };
+export { logout, signInRequest, signUpRequest };

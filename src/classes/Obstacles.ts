@@ -4,7 +4,7 @@ import { SnakeMap, Tile } from "./Map";
 import { Snake } from "./Snake";
 
 export abstract class Obstacle extends Entity {
-  constructor(tile: Tile) {
+  protected constructor(tile: Tile) {
     super(tile);
   }
 
@@ -12,49 +12,17 @@ export abstract class Obstacle extends Entity {
   abstract draw(ctx: CanvasRenderingContext2D): void;
 }
 
-abstract class ObstacleDecorator extends Obstacle {
-  protected obstacle: Obstacle;
-
-  constructor(obstacle: Obstacle) {
-    super(obstacle.getLocationTile());
-    this.obstacle = obstacle;
-  }
-
-  public effect(snake: Snake, map: SnakeMap): void {
-    this.obstacle.effect(snake, map);
-  }
-
-  public abstract draw(ctx: CanvasRenderingContext2D): void;
-}
-
 export class BasicObstacle extends Obstacle {
+  constructor(tile: Tile) {
+    super(tile);
+  }
+
   public effect(snake: Snake): void {
     snake.hasToDie = true;
   }
 
   public draw(ctx: CanvasRenderingContext2D): void {
     ctx.fillStyle = getColorFromType("OBa");
-    ctx.fillRect(
-      this.getLocationTile().x * this.locationTile.parent.cellSize,
-      this.getLocationTile().y * this.locationTile.parent.cellSize,
-      this.locationTile.parent.cellSize,
-      this.locationTile.parent.cellSize
-    );
-  }
-}
-
-export class DifferentObstacle extends ObstacleDecorator {
-  constructor(obstacle: Obstacle) {
-    super(obstacle);
-  }
-
-  public effect(snake: Snake, map: SnakeMap): void {
-    super.effect(snake, map);
-    snake.hasToDie = true;
-  }
-
-  public draw(ctx: CanvasRenderingContext2D): void {
-    ctx.fillStyle = getColorFromType("ODi");
     ctx.fillRect(
       this.getLocationTile().x * this.locationTile.parent.cellSize,
       this.getLocationTile().y * this.locationTile.parent.cellSize,

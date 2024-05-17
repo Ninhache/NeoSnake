@@ -22,7 +22,7 @@ export interface SignupSuccessResponse extends ApiResponse {
   success: true;
 }
 
-export interface CampainMapSuccessResponse extends ApiResponse {
+export interface CampaignMapSuccessResponse extends ApiResponse {
   success: true;
   data: string;
 }
@@ -54,12 +54,21 @@ export interface GetCreateSuccessResponse extends ApiResponse {
 
 export interface GetLevelSuccessResponse extends ApiResponse {
   success: true;
-  data: string;
+  data: {
+    id: string;
+    map_data: string;
+    creator_id: number;
+    difficulty: number;
+    created_at: Date;
+    updated_at: Date;
+  };
 }
 
-export interface NumberOfLevelSuccessResponse extends ApiResponse {
+export interface ExistingCreateLevelSuccessResponse extends ApiResponse {
   success: true;
-  data: number;
+  data: {
+    map_data: string;
+  };
 }
 
 export interface ScenariosName {

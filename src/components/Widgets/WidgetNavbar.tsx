@@ -31,7 +31,7 @@ const NavBar: React.FC = () => {
         <div className="mr-2">
           <UINavLink
             path={username ? "/account" : "/login"}
-            text={username ? `${username}` : "Se connecter"}
+            text={username ? `${username}` : "Login"}
           />
         </div>
       </nav>

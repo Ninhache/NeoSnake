@@ -78,10 +78,10 @@ export class Tile {
 export class SnakeMap {
   tiles: Tile[];
   snake: Snake;
-  private jsonObj: ScenarioData;
+  private readonly jsonObj: ScenarioData;
   private indexCurrentMap: number;
-  private scoreForEachMap: number[];
-  private _scoreToWin: number;
+  private readonly scoreForEachMap: number[];
+  private readonly _scoreToWin: number;
 
   /**
    * The width of the map in pixels (should be always 800)
@@ -111,7 +111,7 @@ export class SnakeMap {
   constructor(serializedMap: string) {
     this.tiles = [];
 
-    const jsonObj = MapSerializer.deserialize(serializedMap) as ScenarioData;
+    const jsonObj = MapSerializer.deserialize(serializedMap);
 
     this.width_px = jsonObj.options.width;
     this.height_px = jsonObj.options.height;
