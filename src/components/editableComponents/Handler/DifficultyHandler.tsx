@@ -1,5 +1,5 @@
-import {useEffect, useState} from "react";
-import {useEditor} from "../../contexts/EditorContext";
+import { useEffect, useState } from "react";
+import { useEditor } from "../../contexts/EditorContext";
 
 type DifficultyButtonProps = {
   difficulty: number;

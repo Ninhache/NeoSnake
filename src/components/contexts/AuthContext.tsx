@@ -1,7 +1,18 @@
-import {jwtDecode} from "jwt-decode";
-import React, {createContext, ReactNode, useContext, useEffect, useState,} from "react";
-import {Nullable} from "../../@types/NullableType";
-import {LocalStorageToken, signInRequest, signUpRequest, updateStoredTokensFromRefresh,} from "../../lib/auth";
+import { jwtDecode } from "jwt-decode";
+import React, {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { Nullable } from "../../@types/NullableType";
+import {
+  LocalStorageToken,
+  signInRequest,
+  signUpRequest,
+  updateStoredTokensFromRefresh,
+} from "../../lib/auth";
 
 interface AuthState {
   accessToken: Nullable<string>;

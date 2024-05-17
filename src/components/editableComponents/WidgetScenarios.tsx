@@ -1,6 +1,6 @@
-import React, {useEffect, useRef, useState} from "react";
-import {useEditor} from "../contexts/EditorContext";
-import {ScenarioMapData} from "../../@types/Scenario";
+import React, { useEffect, useRef, useState } from "react";
+import { useEditor } from "../contexts/EditorContext";
+import { ScenarioMapData } from "../../@types/Scenario";
 import ConfirmModal from "../UI/UIConfirmModal";
 
 interface Props {}

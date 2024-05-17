@@ -1,6 +1,6 @@
-import {NavLink} from "react-router-dom";
-import {BlogPostPreview} from "../../@types/BlogPosts";
-import {parseDateTime} from "../../lib/time";
+import { NavLink } from "react-router-dom";
+import { BlogPostPreview } from "../../@types/BlogPosts";
+import { parseDateTime } from "../../lib/time";
 
 type Props = {
   article: BlogPostPreview;

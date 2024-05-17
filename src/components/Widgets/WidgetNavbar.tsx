@@ -1,6 +1,6 @@
-import {useEffect} from "react";
+import { useEffect } from "react";
 import UINavLink from "../UI/UINavLink";
-import {useAuth} from "../contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 import LayoutComponent from "../layouts/LayoutComponent";
 
 const NavBar: React.FC = () => {

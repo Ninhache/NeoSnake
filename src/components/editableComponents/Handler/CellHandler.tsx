@@ -1,6 +1,6 @@
-import {clamp} from "../../../lib/math";
+import { clamp } from "../../../lib/math";
 import UINumberInput from "../../UI/UINumberInput";
-import {useEditor} from "../../contexts/EditorContext";
+import { useEditor } from "../../contexts/EditorContext";
 
 const CellSizeHandler: React.FC = () => {
   const { mapData, setMapData } = useEditor();

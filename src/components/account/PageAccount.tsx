@@ -1,10 +1,10 @@
-import {useEffect, useState} from "react";
-import {NavLink, useNavigate} from "react-router-dom";
-import {Preview} from "../../@types/ApiType";
-import {getCreatedLevel} from "../../lib/level";
+import { useEffect, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { Preview } from "../../@types/ApiType";
+import { getCreatedLevel } from "../../lib/level";
 import UIPersonalLevelPreview from "./UIPersonalLevelPreview.tsx";
 import UISuspense from "../UI/UISuspense";
-import {useAuth} from "../contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 import LayoutComponent from "../layouts/LayoutComponent";
 
 type Props = {};

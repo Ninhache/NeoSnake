@@ -1,8 +1,8 @@
-import {useEffect} from "react";
-import {useNavigate, useParams} from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import OnlineCanvas from "./OnlineCanvas";
-import {useAuth} from "../contexts/AuthContext";
-import {GameProvider} from "../contexts/GameContext";
+import { useAuth } from "../contexts/AuthContext";
+import { GameProvider } from "../contexts/GameContext";
 import LayoutComponent from "../layouts/LayoutComponent";
 import WidgetGameMenu from "../Widgets/WidgetGameMenu";
 

@@ -1,8 +1,8 @@
-import {Entity} from "../classes/Entity";
-import {Tile} from "../classes/Map";
-import {Coordinates} from "./CoordinatesType";
-import {DirectionType} from "./DirectionType";
-import {foodType, obstacleType} from "./MapTypes";
+import { Entity } from "../classes/Entity";
+import { Tile } from "../classes/Map";
+import { Coordinates } from "./CoordinatesType";
+import { DirectionType } from "./DirectionType";
+import { foodType, obstacleType } from "./MapTypes";
 
 export class ScenarioFruit extends Entity {
   protected value: number = 1;

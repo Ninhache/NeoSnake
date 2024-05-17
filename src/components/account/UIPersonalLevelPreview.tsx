@@ -1,17 +1,14 @@
-import {useEffect, useRef, useState} from "react";
-import {NavLink, useNavigate} from "react-router-dom";
-import {Preview} from "../../@types/ApiType";
+import { useEffect, useRef, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { Preview } from "../../@types/ApiType";
 import ConfirmModal from "../UI/UIConfirmModal";
-import {deleteCreatedLevel} from "../../lib/level";
+import { deleteCreatedLevel } from "../../lib/level";
 
 type Props = {
   scenario: Preview;
   onDelete: (uuid: string) => void;
 };
-const UIPersonalLevelPreview: React.FC<Props> = ({
-  scenario,
-  onDelete,
-}) => {
+const UIPersonalLevelPreview: React.FC<Props> = ({ scenario, onDelete }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const [isModalOpen, setModalOpen] = useState(false);

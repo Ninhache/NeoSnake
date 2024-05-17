@@ -1,5 +1,5 @@
-import {ScenarioFruits} from "../../@types/Scenario";
-import {useEditor} from "../contexts/EditorContext";
+import { ScenarioFruits } from "../../@types/Scenario";
+import { useEditor } from "../contexts/EditorContext";
 import FuturePositionHandler from "./fruitSectionComponents/FuturePositionHandler";
 
 type Props = {

@@ -1,6 +1,6 @@
-import {DirectionType} from "../../../@types/DirectionType";
+import { DirectionType } from "../../../@types/DirectionType";
 import UIDropdown from "../../UI/UIDropdown";
-import {useEditor} from "../../contexts/EditorContext";
+import { useEditor } from "../../contexts/EditorContext";
 
 const DirectionHandler: React.FC = () => {
   const { mapData, setMapData } = useEditor();

@@ -1,8 +1,8 @@
-import {useEffect, useState} from "react";
-import {getOnlineCreatedLevels} from "../../lib/level";
+import { useEffect, useState } from "react";
+import { getOnlineCreatedLevels } from "../../lib/level";
 import UIScenarioExplorePreview from "./UIScenarioExplorePreview";
 import LayoutComponent from "../layouts/LayoutComponent";
-import {OnlinePreview} from "../../@types/ApiType";
+import { OnlinePreview } from "../../@types/ApiType";
 
 type Props = {};
 const WidgetExplore: React.FC<Props> = ({}) => {

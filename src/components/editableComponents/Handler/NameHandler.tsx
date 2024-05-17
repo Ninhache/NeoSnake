@@ -1,5 +1,5 @@
 import UITextInput from "../../UI/UITextInput";
-import {useEditor} from "../../contexts/EditorContext";
+import { useEditor } from "../../contexts/EditorContext";
 
 const NameHandler: React.FC = () => {
   const { mapData, setMapData } = useEditor();

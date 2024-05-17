@@ -1,10 +1,10 @@
-import {Coordinates} from "../@types/CoordinatesType";
-import {Direction} from "../@types/DirectionType";
+import { Coordinates } from "../@types/CoordinatesType";
+import { Direction } from "../@types/DirectionType";
 
-import {ScenarioFruit} from "../@types/Scenario";
+import { ScenarioFruit } from "../@types/Scenario";
 
-import {SnakeMap, Tile} from "./Map";
-import {Obstacle} from "./Obstacles";
+import { SnakeMap, Tile } from "./Map";
+import { Obstacle } from "./Obstacles";
 
 export class SnakeSegment {
   current: Coordinates;

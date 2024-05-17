@@ -1,4 +1,4 @@
-import {NavLink} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import CellSizeHandler from "./Handler/CellHandler";
 import DifficultyHandler from "./Handler/DifficultyHandler";
 import DirectionHandler from "./Handler/DirectionHandler";

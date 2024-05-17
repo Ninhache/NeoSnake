@@ -1,6 +1,6 @@
-import {useEffect, useRef, useState} from "react";
-import {isVisible} from "../../lib/visible";
-import {useEditor} from "../contexts/EditorContext";
+import { useEffect, useRef, useState } from "react";
+import { isVisible } from "../../lib/visible";
+import { useEditor } from "../contexts/EditorContext";
 
 type Props = {
   width: number;

@@ -1,11 +1,11 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import {useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeHighlight from "rehype-highlight";
 import rehypeSlug from "rehype-slug";
-import {BlogPost} from "../../@types/BlogPosts";
-import {Nullable} from "../../@types/NullableType";
+import { BlogPost } from "../../@types/BlogPosts";
+import { Nullable } from "../../@types/NullableType";
 import UINotification from "../UI/UINotification";
 import LayoutComponent from "../layouts/LayoutComponent";
 
@@ -52,7 +52,8 @@ const WidgetArticle: React.FC<Props> = ({}) => {
   if (!data) {
     return (
       <LayoutComponent>
-          The article you are looking for was not found, please contact the site administrator if you think this is an error.
+        The article you are looking for was not found, please contact the site
+        administrator if you think this is an error.
       </LayoutComponent>
     );
   }
@@ -61,7 +62,8 @@ const WidgetArticle: React.FC<Props> = ({}) => {
     <LayoutComponent>
       {wrongId && (
         <UINotification type="info">
-            The requested article was not found, we did our best to provide you with the best possible result.
+          The requested article was not found, we did our best to provide you
+          with the best possible result.
         </UINotification>
       )}
       <div ref={(r) => r?.scrollIntoView({ behavior: "smooth" })}></div>

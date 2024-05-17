@@ -1,7 +1,7 @@
-import {getColorFromType} from "../@types/MapTypes";
-import {Entity} from "./Entity";
-import {SnakeMap, Tile} from "./Map";
-import {Snake} from "./Snake";
+import { getColorFromType } from "../@types/MapTypes";
+import { Entity } from "./Entity";
+import { SnakeMap, Tile } from "./Map";
+import { Snake } from "./Snake";
 
 export abstract class Obstacle extends Entity {
   protected constructor(tile: Tile) {
@@ -27,4 +27,3 @@ export class BasicObstacle extends Obstacle {
     );
   }
 }
-

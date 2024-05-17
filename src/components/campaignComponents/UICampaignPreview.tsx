@@ -1,8 +1,8 @@
-import {useEffect, useRef} from "react";
-import {NavLink} from "react-router-dom";
-import {ScenariosName} from "../../@types/ApiType";
-import {timestampToChrono} from "../../lib/time";
-import {useAuth} from "../contexts/AuthContext";
+import { useEffect, useRef } from "react";
+import { NavLink } from "react-router-dom";
+import { ScenariosName } from "../../@types/ApiType";
+import { timestampToChrono } from "../../lib/time";
+import { useAuth } from "../contexts/AuthContext";
 
 type Props = {
   scenario: ScenariosName;

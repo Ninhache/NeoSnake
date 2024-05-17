@@ -1,7 +1,7 @@
-import {useMemo} from "react";
-import {clamp} from "../../../lib/math";
+import { useMemo } from "react";
+import { clamp } from "../../../lib/math";
 import UINumberInput from "../../UI/UINumberInput";
-import {useEditor} from "../../contexts/EditorContext";
+import { useEditor } from "../../contexts/EditorContext";
 
 interface Props {
   axis: "x" | "y";

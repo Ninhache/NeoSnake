@@ -1,6 +1,6 @@
-import {useMemo} from "react";
-import {ScenarioFruits} from "../../../@types/Scenario";
-import {useEditor} from "../../contexts/EditorContext";
+import { useMemo } from "react";
+import { ScenarioFruits } from "../../../@types/Scenario";
+import { useEditor } from "../../contexts/EditorContext";
 import UINumberInput from "../../UI/UINumberInput";
 
 type Props = {

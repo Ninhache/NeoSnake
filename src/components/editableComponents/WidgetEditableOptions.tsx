@@ -1,15 +1,15 @@
-import {useEffect, useState} from "react";
-import {useNavigate, useParams} from "react-router-dom";
-import {v4 as uuidv4} from "uuid";
-import {Nullable} from "../../@types/NullableType";
-import {uploadMap} from "../../lib/level";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
+import { Nullable } from "../../@types/NullableType";
+import { uploadMap } from "../../lib/level";
 import UINotification from "../UI/UINotification";
 import UISuspense from "../UI/UISuspense";
-import {useEditor} from "../contexts/EditorContext";
+import { useEditor } from "../contexts/EditorContext";
 import DEVLogButton from "../devComponents/DEVLogButton";
 import WidgetDefaultOptions from "./WidgetDefaultOptions";
 import WidgetEditableFruits from "./WidgetEditableFruits";
-import {isValidData} from "../../lib/mapData";
+import { isValidData } from "../../lib/mapData";
 
 const WidgetEditableOptions: React.FC = () => {
   const { mapData } = useEditor();

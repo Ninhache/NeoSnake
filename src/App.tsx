@@ -1,11 +1,11 @@
-import {BrowserRouter as Router} from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 import WidgetHeader from "./components/Widgets/WidgetHeader";
 import NavBar from "./components/Widgets/WidgetNavbar";
 
 import RouterContent from "./RouterContent";
 import WidgetFooter from "./components/Widgets/WidgetFooter";
 import "./styles/App.css";
-import {AuthContextProvider} from "./components/contexts/AuthContext";
+import { AuthContextProvider } from "./components/contexts/AuthContext";
 
 const App: React.FC = () => {
   return (

@@ -1,7 +1,7 @@
-import {useEffect} from "react";
-import {ScenarioFruits} from "../../@types/Scenario";
+import { useEffect } from "react";
+import { ScenarioFruits } from "../../@types/Scenario";
 import chevron from "../../assets/svg/chevron-right-solid.svg";
-import {useEditor} from "../contexts/EditorContext";
+import { useEditor } from "../contexts/EditorContext";
 import FruitPositionHandler from "./fruitSectionComponents/FruitPositionHandler";
 import UIFutureFruits from "./UIFutureFruits";
 

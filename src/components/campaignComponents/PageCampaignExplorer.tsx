@@ -1,7 +1,7 @@
-import {useEffect} from "react";
+import { useEffect } from "react";
 import UINotification from "../UI/UINotification";
-import {useAuth} from "../contexts/AuthContext";
-import {GameProvider} from "../contexts/GameContext";
+import { useAuth } from "../contexts/AuthContext";
+import { GameProvider } from "../contexts/GameContext";
 import LayoutComponent from "../layouts/LayoutComponent";
 import WidgetCampaignList from "./WidgetCampaignList";
 

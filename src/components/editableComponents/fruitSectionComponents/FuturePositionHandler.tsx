@@ -1,7 +1,7 @@
-import {useMemo} from "react";
-import {ScenarioFruits} from "../../../@types/Scenario";
+import { useMemo } from "react";
+import { ScenarioFruits } from "../../../@types/Scenario";
 import UINumberInput from "../../UI/UINumberInput";
-import {useEditor} from "../../contexts/EditorContext";
+import { useEditor } from "../../contexts/EditorContext";
 
 type FuturePositionHandlerProps = {
   fruitIndex: number;

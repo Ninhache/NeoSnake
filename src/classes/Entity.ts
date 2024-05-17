@@ -1,4 +1,3 @@
-
 import { Tile } from "./Map";
 
 export abstract class Entity {
@@ -33,6 +32,3 @@ export abstract class Entity {
 
   public abstract draw(ctx: CanvasRenderingContext2D): void;
 }
-
-
-

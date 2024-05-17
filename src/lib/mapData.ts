@@ -1,4 +1,4 @@
-import {ScenarioData, ScenarioMapData} from "../@types/Scenario";
+import { ScenarioData, ScenarioMapData } from "../@types/Scenario";
 
 export interface Coordinates {
   x: number;
@@ -30,17 +30,13 @@ function validateOptions(options: ScenarioData["options"]): ReturnMessage {
 }
 
 function validateSnake(snake: ScenarioData["snake"]): ReturnMessage {
-  if (
-    !snake.startPosition
-  ) {
+  if (!snake.startPosition) {
     return {
       message: "Invalid or missing startPosition in snake",
       success: false,
     };
   }
-  if (
-    !["Up", "Down", "Left", "Right"].includes(snake.direction)
-  ) {
+  if (!["Up", "Down", "Left", "Right"].includes(snake.direction)) {
     return { message: "Invalid or missing direction in snake", success: false };
   }
   if (snake.length <= 0) {
@@ -114,9 +110,7 @@ function validateMapData(
     };
   }
 
-  if (
-    !Array.isArray(mapData.obstacles)
-  ) {
+  if (!Array.isArray(mapData.obstacles)) {
     return {
       message: `Invalid data in obstacles for step n°${index}`,
       success: false,

@@ -1,4 +1,4 @@
-import {useState} from "react";
+import { useState } from "react";
 import closeIcon from "../../assets/svg/close_icon.svg";
 import infoIcon from "../../assets/svg/info_icon.svg";
 

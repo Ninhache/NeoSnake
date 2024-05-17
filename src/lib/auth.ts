@@ -5,7 +5,7 @@ import {
   RefreshResponse,
   SignupSuccessResponse,
 } from "../@types/ApiType";
-import {get, post} from "./api";
+import { get, post } from "./api";
 
 export enum LocalStorageToken {
   accessToken = "accessToken",

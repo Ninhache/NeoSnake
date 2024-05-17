@@ -1,5 +1,5 @@
-import {useEffect, useState} from "react";
-import {BlogPostPreview} from "../../@types/BlogPosts";
+import { useEffect, useState } from "react";
+import { BlogPostPreview } from "../../@types/BlogPosts";
 import UIArticlePreview from "./UIArticlePreview";
 import LayoutComponent from "../layouts/LayoutComponent";
 import UISuspense from "../UI/UISuspense";
@@ -11,21 +11,21 @@ const WidgetHome: React.FC<Props> = ({}) => {
   const [error, setError] = useState<number | null>(null);
 
   useEffect(() => {
-      fetch(`${import.meta.env.VITE_SNAKE_API_ROUTE}/article`)
-        .then((response) => {
-          if (!response.ok) {
-            throw response;
-          }
-          return response;
-        })
-        .then((response) => response.json())
-        .then((data) => {
-          setData(data);
-          setLoading(false);
-        })
-        .catch((error: Response) => {
-          setError(error.status);
-        });
+    fetch(`${import.meta.env.VITE_SNAKE_API_ROUTE}/article`)
+      .then((response) => {
+        if (!response.ok) {
+          throw response;
+        }
+        return response;
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        setData(data);
+        setLoading(false);
+      })
+      .catch((error: Response) => {
+        setError(error.status);
+      });
   }, []);
 
   if (error !== null) {

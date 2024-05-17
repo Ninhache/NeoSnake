@@ -1,6 +1,6 @@
-import {useEffect} from "react";
+import { useEffect } from "react";
 import UIFruits from "./UIFruits";
-import {DrawingType, useEditor} from "../contexts/EditorContext";
+import { DrawingType, useEditor } from "../contexts/EditorContext";
 
 type Props = {};
 const WidgetEditableFruits: React.FC<Props> = ({}) => {
