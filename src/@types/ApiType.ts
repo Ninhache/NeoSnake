@@ -1,4 +1,4 @@
-import { OptionsScenarioData, ScenarioData, ScenarioMapData } from "./Scenario";
+import { OptionsScenarioData, ScenarioMapData } from "./Scenario";
 
 export interface ApiResponse {
   success: boolean;

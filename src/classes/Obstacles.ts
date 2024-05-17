@@ -13,6 +13,10 @@ export abstract class Obstacle extends Entity {
 }
 
 export class BasicObstacle extends Obstacle {
+  constructor(tile: Tile) {
+    super(tile);
+  }
+
   public effect(snake: Snake): void {
     snake.hasToDie = true;
   }

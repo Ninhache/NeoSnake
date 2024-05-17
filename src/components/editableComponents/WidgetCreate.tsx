@@ -1,14 +1,13 @@
 import { useNavigate, useParams } from "react-router-dom";
+import WidgetLogin from "../account/WidgetLogin";
 import { useAuth } from "../contexts/AuthContext";
 import { useEditor } from "../contexts/EditorContext";
 import LayoutComponent from "../layouts/LayoutComponent";
 import WidgetEditableGrid from "./WidgetEditableGrid";
 import WidgetEditableOptions from "./WidgetEditableOptions";
-import WidgetLogin from "../account/WidgetLogin";
 
 import { useEffect, useState } from "react";
 
-import { ScenarioData } from "../../@types/Scenario";
 import { getExistingMap } from "../../lib/level";
 import UISuspense from "../UI/UISuspense";
 import WidgetScenarios from "./WidgetScenarios";
