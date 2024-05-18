@@ -9,11 +9,9 @@ import { useAuth } from "../contexts/AuthContext";
 import LayoutComponent from "../layouts/LayoutComponent";
 import UIPersonalLevelPreview from "./UIPersonalLevelPreview.tsx";
 
-type Props = {};
-const PageAccount: React.FC<Props> = ({}) => {
+const PageAccount: React.FC = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
-
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(12);
   const [totalPages, setTotalPages] = useState(0);
