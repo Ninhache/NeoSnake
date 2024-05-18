@@ -1,5 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ObstacleColor } from "../../classes/Obstacles";
+import { capitalize } from "../../lib/text";
 
 interface ColorModalProps {
   isOpen: boolean;
@@ -12,7 +13,9 @@ const ColorModal: React.FC<ColorModalProps> = ({
   onClose,
   onSelectColor,
 }) => {
+  const [hoveredColor, setHoveredColor] = useState<ObstacleColor | null>(null);
   useEffect(() => {
+    setHoveredColor(null);
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         onClose();
@@ -24,28 +27,32 @@ const ColorModal: React.FC<ColorModalProps> = ({
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
   const colors: ObstacleColor[] = [
     "black",
+    "dimgray",
     "gray",
     "silver",
-    "blue",
-    "teal",
-    "cyan",
     "skyblue",
+    "cyan",
+    "teal",
+    "blue",
+    "darkblue",
     "indigo",
     "purple",
-    "violet",
     "fuchsia",
+    "violet",
     "pink",
-    "lime",
-    "green",
-    "orange",
-    "gold",
     "yellow",
+    "gold",
+    "orange",
+    "chartreuse",
+    "lime",
+    "springgreen",
+    "green",
   ];
 
   return (
@@ -55,7 +62,7 @@ const ColorModal: React.FC<ColorModalProps> = ({
     >
       <div className="bg-gray-800 bg-opacity-95 p-4 rounded-lg flex justify-center flex-col">
         <h2 className="font-bold text-xl mb-4 text-center">Select a Color</h2>
-        <div className="flex flex-wrap gap-4 max-w-96 justify-center mb-8">
+        <div className="flex flex-wrap gap-4 max-w-96 justify-center mb-4">
           {colors.map((color) => (
             <button
               key={color}
@@ -65,9 +72,19 @@ const ColorModal: React.FC<ColorModalProps> = ({
                 onSelectColor(color);
                 onClose();
               }}
+              onMouseEnter={(_) => {
+                setHoveredColor(color);
+              }}
             ></button>
           ))}
+          <div>
+            <div className="border-2 w-64 border-opacity-45 border-gray-500 mb-2"></div>
+            <h2 className="text-center h-8">
+              {capitalize(hoveredColor || "")}
+            </h2>
+          </div>
         </div>
+
         <button
           onClick={onClose}
           className="bg-gray-700 bg-opacity-70 text-white py-3 px-12 rounded-lg"

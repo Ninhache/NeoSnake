@@ -15,10 +15,12 @@ export type ObstacleColor =
   | "black"
   | "gray"
   | "silver"
+  | "dimgray"
   | "blue"
   | "teal"
   | "cyan"
   | "skyblue"
+  | "darkblue"
   | "indigo"
   | "purple"
   | "violet"
@@ -28,7 +30,9 @@ export type ObstacleColor =
   | "orange"
   | "gold"
   | "lime"
-  | "green";
+  | "green"
+  | "chartreuse"
+  | "springgreen";
 
 export class BasicObstacle extends Obstacle {
   private color: string;
