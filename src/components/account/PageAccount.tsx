@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { OnlinePreview } from "../../@types/ApiType";
-import { getCreatedLevel } from "../../lib/level";
+import { getCreatedLevel } from "../../lib/services/level.ts";
 import UIDropdown from "../UI/UIDropdown.tsx";
 import UIPagination from "../UI/UIPagination.tsx";
 import UISuspense from "../UI/UISuspense";
@@ -66,42 +66,47 @@ const PageAccount: React.FC = () => {
             </div>
           )}
 
-          <div className="w-36">
-            <p className="text-gray-400 italic mb-2">Sort by date</p>
-            <UIDropdown
-              items={["Ascend", "Descend"]}
-              onSelect={(str) => {
-                setSortDate(str === "Ascend" ? "asc" : "desc");
-              }}
-            />
-          </div>
-
-          <div className="w-36">
-            <p className="text-gray-400 italic mb-2">Difficulty</p>
-            <UIDropdown
-              items={["None", "1", "2", "3", "4", "5"]}
-              onSelect={(str) => {
-                if (str === "None") {
-                  setDifficulty(-1);
-                } else {
-                  setDifficulty(parseInt(str, 10));
-                }
-              }}
-            />
-          </div>
+          {previewMap.length > 0 && (
+            <>
+              <div className="w-36">
+                <p className="text-gray-400 italic mb-2">Sort by date</p>
+                <UIDropdown
+                  items={["Latest Update", "Oldest Update"]}
+                  onSelect={(str) => {
+                    setSortDate(str === "Oldest Update" ? "asc" : "desc");
+                  }}
+                />
+              </div>
+              <div className="w-36">
+                <p className="text-gray-400 italic mb-2">Difficulty</p>
+                <UIDropdown
+                  items={["All", "1", "2", "3", "4", "5"]}
+                  onSelect={(str) => {
+                    if (str === "All") {
+                      setDifficulty(-1);
+                    } else {
+                      setDifficulty(parseInt(str, 10));
+                    }
+                  }}
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
 
       <h1 className="text-3xl font-bold mb-4">My creations</h1>
-      <div className="flex justify-end items-center mr-16 mb-4">
-        <p className="mr-2 text-gray-400">{totalItems} maps in total</p>
-        <UIPagination
-          page={page}
-          totalPages={totalPages}
-          onNext={handleNextPage}
-          onPrev={handlePrevPage}
-        />
-      </div>
+      {totalItems > limit && (
+        <div className="flex justify-end items-center mr-16 mb-4">
+          <p className="mr-2 text-gray-400">{totalItems} maps in total</p>
+          <UIPagination
+            page={page}
+            totalPages={totalPages}
+            onNext={handleNextPage}
+            onPrev={handlePrevPage}
+          />
+        </div>
+      )}
       <div className="mb-8">
         {loading ? (
           <UISuspense />

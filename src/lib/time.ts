@@ -34,7 +34,7 @@ export function parseDateTime(
 ): string {
   return new Date(dateTimeString).toLocaleString(intl, {
     year: "numeric",
-    month: "numeric",
-    day: "numeric",
+    month: "2-digit",
+    day: "2-digit",
   });
 }

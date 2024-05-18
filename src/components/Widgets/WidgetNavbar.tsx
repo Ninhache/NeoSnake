@@ -37,8 +37,10 @@ const NavBar: React.FC = () => {
         <div className="mr-2">
           {!isMobile && (
             <div className="flex gap-4 items-center">
-              <UINavLink path="/profile" text={username || ""} />
-              <UINavLink path="/logout" text="Logout" />
+              <UINavLink
+                path={username ? "/account" : "/login"}
+                text={username ? `${username}` : "Login"}
+              />
             </div>
           )}
         </div>

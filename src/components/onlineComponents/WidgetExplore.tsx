@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { OnlinePreview } from "../../@types/ApiType";
 import { Nullable } from "../../@types/NullableType";
-import { getOnlineCreatedLevels } from "../../lib/level";
+import { getOnlineCreatedLevels } from "../../lib/services/level";
 import UIDropdown from "../UI/UIDropdown";
 import UIPagination from "../UI/UIPagination";
 import UITextInput from "../UI/UITextInput";
@@ -73,9 +73,9 @@ const WidgetExplore: React.FC = () => {
           <div className="w-36">
             <p className="text-gray-400 italic mb-2">Sort by date</p>
             <UIDropdown
-              items={["Ascend", "Descend"]}
+              items={["Latest Update", "Oldest Update"]}
               onSelect={(str) => {
-                setSortDate(str === "Ascend" ? "asc" : "desc");
+                setSortDate(str === "Oldest Update" ? "asc" : "desc");
               }}
             />
           </div>
@@ -83,9 +83,9 @@ const WidgetExplore: React.FC = () => {
           <div className="w-36">
             <p className="text-gray-400 italic mb-2">Difficulty</p>
             <UIDropdown
-              items={["None", "1", "2", "3", "4", "5"]}
+              items={["All", "1", "2", "3", "4", "5"]}
               onSelect={(str) => {
-                if (str === "None") {
+                if (str === "All") {
                   setDifficulty(-1);
                 } else {
                   setDifficulty(parseInt(str, 10));
@@ -124,28 +124,22 @@ const WidgetExplore: React.FC = () => {
           </div>
         ) : (
           <>
-            <div className="flex justify-end items-center mr-16 mb-4">
-              <p className="mr-2 text-gray-400">{totalItems} maps in total</p>
-              <UIPagination
-                page={page}
-                totalPages={totalPages}
-                onNext={handleNextPage}
-                onPrev={handlePrevPage}
-              />
-            </div>
+            {totalItems > limit && (
+              <div className="flex justify-end items-center mr-16 mb-4">
+                <p className="mr-2 text-gray-400">{totalItems} maps in total</p>
+                <UIPagination
+                  page={page}
+                  totalPages={totalPages}
+                  onNext={handleNextPage}
+                  onPrev={handlePrevPage}
+                />
+              </div>
+            )}
+
             <div className="flex flex-wrap gap-2 justify-center">
               {levels.map((level) => (
                 <UIScenarioExplorePreview key={level.id} scenario={level} />
               ))}
-            </div>
-            <div className="flex justify-end mr-16 mt-4">
-              <p className="mr-2 text-gray-400">{totalItems} maps in total</p>
-              <UIPagination
-                page={page}
-                totalPages={totalPages}
-                onNext={handleNextPage}
-                onPrev={handlePrevPage}
-              />
             </div>
           </>
         )}

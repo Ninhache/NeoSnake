@@ -3,6 +3,9 @@ import { BlogPostPreview } from "../../@types/BlogPosts";
 import UIArticlePreview from "./UIArticlePreview";
 import LayoutComponent from "../layouts/LayoutComponent";
 import UISuspense from "../UI/UISuspense";
+import { getArticles, getArticlesTags } from "../../lib/services/article";
+import UITagSelector from "../UI/UITagSelector";
+import UIPagination from "../UI/UIPagination";
 
 type Props = {};
 const WidgetHome: React.FC<Props> = ({}) => {
@@ -10,23 +13,46 @@ const WidgetHome: React.FC<Props> = ({}) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<number | null>(null);
 
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(10);
+  const [totalItems, setTotalItems] = useState<number>(0);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  // const [sortDate, setSortDate] = useState<"asc" | "desc">("desc");
+  // const [title, setTitle] = useState<string>("");
+
+  const [articlesTags, setArticlesTags] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_SNAKE_API_ROUTE}/article`)
-      .then((response) => {
-        if (!response.ok) {
-          throw response;
-        }
-        return response;
-      })
-      .then((response) => response.json())
-      .then((data) => {
-        setData(data);
-        setLoading(false);
-      })
-      .catch((error: Response) => {
-        setError(error.status);
-      });
+    Promise.all([
+      getArticles({ page, limit, tag: selectedTags })
+        .then((response) => {
+          setData(response.data);
+
+          setPage(response.pagination.page);
+          setLimit(response.pagination.limit);
+          setTotalItems(response.pagination.totalItems);
+          setTotalPages(response.pagination.totalPages);
+        })
+        .catch((error: Response) => {
+          setError(error.status);
+        }),
+      getArticlesTags().then((data) => {
+        setArticlesTags(data);
+      }),
+    ]).finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    getArticles({ page, limit, tag: selectedTags }).then((response) => {
+      setData(response.data);
+
+      setPage(response.pagination.page);
+      setLimit(response.pagination.limit);
+      setTotalItems(response.pagination.totalItems);
+      setTotalPages(response.pagination.totalPages);
+    });
+  }, [selectedTags, page, limit]);
 
   if (error !== null) {
     return <LayoutComponent>Error</LayoutComponent>;
@@ -40,8 +66,44 @@ const WidgetHome: React.FC<Props> = ({}) => {
     );
   }
 
+  const handleTagChange = (tag: string) => {
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+  };
+
+  const handleNextPage = () => {
+    setPage((currentPage) => Math.min(totalPages, currentPage + 1));
+  };
+
+  const handlePrevPage = () => {
+    setPage((currentPage) => Math.max(1, currentPage - 1));
+  };
+
   return (
     <LayoutComponent>
+      <div className="flex justify-between mb-4">
+        <UITagSelector
+          tags={articlesTags}
+          selectedTags={selectedTags}
+          onTagChange={handleTagChange}
+        />
+        {totalItems > limit && (
+          <div className="flex items-center gap-2">
+            <p className="mr-2 text-gray-400">
+              {totalItems} article{totalItems > 0 ? "s" : ""} in total
+            </p>
+            <div>
+              <UIPagination
+                page={page}
+                totalPages={totalPages}
+                onNext={handleNextPage}
+                onPrev={handlePrevPage}
+              />
+            </div>
+          </div>
+        )}
+      </div>
       <div className="flex flex-wrap justify-center -mx-2">
         {data.map((article) => (
           <UIArticlePreview
