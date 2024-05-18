@@ -45,10 +45,14 @@ export const getOnlineCreatedLevels = async ({
   page = 1,
   limit = 10,
   difficulty = -1,
+  creatorName = "",
+  sortDate = "desc",
 }: {
   page?: number;
   limit?: number;
   difficulty?: number;
+  creatorName?: string;
+  sortDate?: "asc" | "desc";
 } = {}): Promise<OnlineMapSuccessResponse | ApiErrorResponse> => {
   if (
     localStorage.getItem(LocalStorageToken.accessToken) ||
@@ -58,19 +62,40 @@ export const getOnlineCreatedLevels = async ({
       `${
         import.meta.env.VITE_SNAKE_API_ROUTE
       }/level/upload?page=${page}&limit=${limit}${
-        difficulty > 0 && `&difficulty=${difficulty}`
+        difficulty > 0 ? `&difficulty=${difficulty}` : ""
+      }${creatorName.length > 2 ? `&name=${creatorName}` : ""}${
+        sortDate ? `&sortDate=${sortDate}` : ""
       }`,
       {
         method: "GET",
       }
     );
 
-    return await customFetch(request).then((response) => response.json());
+    return await customFetch(request).then((response) => {
+      if (response.status === 204) {
+        return {
+          success: true,
+          data: [],
+          pagination: {
+            currentPage: 1,
+            pageSize: 10,
+            totalItems: 0,
+            totalPages: 0,
+          },
+        };
+      } else {
+        return response.json();
+      }
+    });
   } else {
     return await get({
       path: `/level/upload?page=${page}&limit=${limit}${
-        difficulty > 0 && `&difficulty=${difficulty}`
-      }`,
+        difficulty > 0 ? `&difficulty=${difficulty}` : ""
+      }
+        ${creatorName ? `&name=${creatorName}` : ""}${
+        sortDate ? `&sortDate=${sortDate}` : ""
+      }
+        `,
     });
   }
 };
@@ -86,17 +111,103 @@ export const deleteCreatedLevel = async (id: string): Promise<any> => {
   return await customFetch(request).then((response) => response.json());
 };
 
-export const getCreatedLevel = async (): Promise<
-  GetCreateSuccessResponse | ApiErrorResponse
-> => {
+export const getCreatedLevelFromUser = async (
+  username: string,
+  {
+    page = 1,
+    limit = 10,
+    difficulty = -1,
+    sortDate = "desc",
+  }: {
+    page?: number;
+    limit?: number;
+    difficulty?: number;
+    creatorName?: string;
+    sortDate?: "asc" | "desc";
+  }
+): Promise<GetCreateSuccessResponse | ApiErrorResponse> => {
+  if (
+    localStorage.getItem(LocalStorageToken.accessToken) ||
+    localStorage.getItem(LocalStorageToken.refreshToken)
+  ) {
+    const request = requestWithAuthorization(
+      `${
+        import.meta.env.VITE_SNAKE_API_ROUTE
+      }/level/create/${username}?page=${page}&limit=${limit}&sortDate=${sortDate}${
+        difficulty > 0 ? `&difficulty=${difficulty}` : ""
+      }`,
+      {
+        method: "GET",
+      }
+    );
+
+    return await customFetch(request).then((response) => {
+      if (response.status === 204) {
+        return {
+          success: true,
+          data: {
+            maps: [],
+          },
+          pagination: {
+            currentPage: 1,
+            pageSize: 10,
+            totalItems: 0,
+            totalPages: 0,
+          },
+        };
+      } else {
+        return response.json();
+      }
+    });
+  } else {
+    return await get({
+      path: `/level/create/${username}?page=${page}&limit=${limit}&sortDate=${sortDate}${
+        difficulty > 0 ? `&difficulty=${difficulty}` : ""
+      }`,
+    });
+  }
+};
+
+export const getCreatedLevel = async ({
+  page = 1,
+  limit = 10,
+  difficulty = -1,
+  sortDate = "desc",
+}: {
+  page?: number;
+  limit?: number;
+  difficulty?: number;
+  sortDate?: "asc" | "desc";
+}): Promise<GetCreateSuccessResponse | ApiErrorResponse> => {
   const request = requestWithAuthorization(
-    `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/create`,
+    `${
+      import.meta.env.VITE_SNAKE_API_ROUTE
+    }/level/create?page=${page}&limit=${limit}&sortDate=${sortDate}${
+      difficulty > 0 ? `&difficulty=${difficulty}` : ""
+    }`,
     {
       method: "GET",
     }
   );
 
-  return await customFetch(request).then((response) => response.json());
+  return await customFetch(request).then((response) => {
+    if (response.status === 204) {
+      return {
+        success: true,
+        data: {
+          maps: [],
+        },
+        pagination: {
+          currentPage: 1,
+          pageSize: 10,
+          totalItems: 0,
+          totalPages: 0,
+        },
+      };
+    } else {
+      return response.json();
+    }
+  });
 };
 
 export const getCreatedLevelById = async (
@@ -105,15 +216,6 @@ export const getCreatedLevelById = async (
   return await get({
     path: `/level/online/${uuid}`,
   });
-
-  // const request = requestWithAuthorization(
-  //   `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/online/${uuid}`,
-  //   {
-  //     method: "GET",
-  //   }
-  // );
-
-  // return await customFetch(request).then((response) => response.json());
 };
 
 export const uploadOnlineCompletion = async (

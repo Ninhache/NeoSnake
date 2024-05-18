@@ -1,18 +1,32 @@
 import { useEffect, useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-import { OnlinePreview } from "../../@types/ApiType";
-import { getCreatedLevel } from "../../lib/level";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { OnlinePreview } from "../../@types/ApiType.ts";
+import { getCreatedLevelFromUser } from "../../lib/level.ts";
 import UIDropdown from "../UI/UIDropdown.tsx";
 import UIPagination from "../UI/UIPagination.tsx";
-import UISuspense from "../UI/UISuspense";
-import { useAuth } from "../contexts/AuthContext";
-import LayoutComponent from "../layouts/LayoutComponent";
-import UIPersonalLevelPreview from "./UIPersonalLevelPreview.tsx";
+import UISuspense from "../UI/UISuspense.tsx";
+import LayoutComponent from "../layouts/LayoutComponent.tsx";
+import UIProfileLevelPreview from "./UIProfileLevelPreview.tsx";
 
 type Props = {};
-const PageAccount: React.FC<Props> = ({}) => {
-  const { logout } = useAuth();
+const PageProfile: React.FC<Props> = ({}) => {
+  const { username } = useParams();
   const navigate = useNavigate();
+  if (!username) {
+    return (
+      <LayoutComponent>
+        <h1 className="text-3xl text-center font-bold my-8">
+          No username provided
+        </h1>
+        <button
+          onClick={() => navigate("/")}
+          className="block mx-auto mt-4 bg-gray-800 hover:bg-opacity-60 text-white font-bold py-4 px-4 rounded-lg mb-8 transition-opacity"
+        >
+          Go back to home
+        </button>
+      </LayoutComponent>
+    );
+  }
 
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(12);
@@ -21,14 +35,14 @@ const PageAccount: React.FC<Props> = ({}) => {
   const [sortDate, setSortDate] = useState("desc" as "asc" | "desc");
   const [difficulty, setDifficulty] = useState(-1);
 
-  const [previewMap, setPreviewMap] = useState<OnlinePreview[]>([]);
+  const [levels, setLevels] = useState<OnlinePreview[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getCreatedLevel({ page, limit, difficulty, sortDate })
+    getCreatedLevelFromUser(username, {})
       .then((response) => {
         if (response.success) {
-          setPreviewMap(response.data);
+          setLevels(response.data);
 
           setPage(response.pagination.currentPage);
           setLimit(response.pagination.pageSize);
@@ -51,7 +65,9 @@ const PageAccount: React.FC<Props> = ({}) => {
 
   return (
     <LayoutComponent>
-      <h1 className="text-3xl text-center font-bold my-8">Account</h1>
+      <h1 className="text-3xl text-center font-bold my-8">
+        {username}'s profile
+      </h1>
 
       <div className="border-2 mx-16 mb-8 border-opacity-45 border-gray-500"></div>
       <div>
@@ -104,49 +120,30 @@ const PageAccount: React.FC<Props> = ({}) => {
           onPrev={handlePrevPage}
         />
       </div>
-      <div className="mb-8">
-        {loading ? (
-          <UISuspense />
-        ) : (
-          <div className="flex gap-2 mb-4 flex-wrap">
-            {previewMap.length === 0 ? (
-              <div className="text-center">
-                No levels found, go to the{" "}
-                <NavLink to={"/create"} className={`text-blue-500 font-bold`}>
-                  Create section
-                </NavLink>{" "}
-                to create one !
-              </div>
-            ) : (
-              previewMap.map((map) => (
-                <div key={map.id}>
-                  <UIPersonalLevelPreview
-                    key={map.id}
-                    scenario={map}
-                    onDelete={(uuid: string) => {
-                      setPreviewMap((prev) =>
-                        prev.filter((p) => p.id !== uuid)
-                      );
-                    }}
-                  />
-                </div>
-              ))
-            )}
-          </div>
-        )}
-      </div>
 
-      <button
-        className="bg-red-700 bg-opacity-70 text-white py-2 px-12 rounded-lg"
-        onClick={() => {
-          logout();
-          navigate(localStorage.getItem("lastPath") || "/");
-        }}
-      >
-        Logout
-      </button>
+      {loading ? (
+        <UISuspense />
+      ) : (
+        <div className="flex gap-2 mb-4 flex-wrap">
+          {levels.length === 0 ? (
+            <div className="text-center">
+              No levels found, go to the{" "}
+              <NavLink to={"/create"} className={`text-blue-500 font-bold`}>
+                Create section
+              </NavLink>{" "}
+              to create one !
+            </div>
+          ) : (
+            levels.map((map) => (
+              <div key={map.id}>
+                <UIProfileLevelPreview key={map.id} scenario={map} />
+              </div>
+            ))
+          )}
+        </div>
+      )}
     </LayoutComponent>
   );
 };
 
-export default PageAccount;
+export default PageProfile;
