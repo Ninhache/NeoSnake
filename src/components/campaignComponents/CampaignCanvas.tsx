@@ -5,7 +5,10 @@ import { Direction } from "../../@types/DirectionType";
 import { Nullable } from "../../@types/NullableType";
 import { ScenarioData, ScenarioFruit } from "../../@types/Scenario";
 import { SnakeMap } from "../../classes/Map";
-import { getCampaignLevel, uploadCampaignCompletion } from "../../lib/level";
+import {
+  getCampaignLevel,
+  uploadCampaignCompletion,
+} from "../../lib/services/level";
 
 import { timestampToChrono } from "../../lib/time";
 import UISuspense from "../UI/UISuspense";

@@ -8,7 +8,7 @@ import WidgetEditableOptions from "./WidgetEditableOptions";
 
 import { useEffect, useState } from "react";
 
-import { getExistingMap } from "../../lib/level";
+import { getExistingMap } from "../../lib/services/level";
 import UISuspense from "../UI/UISuspense";
 import WidgetScenarios from "./WidgetScenarios";
 

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { OnlinePreview } from "../../@types/ApiType";
-import { deleteCreatedLevel } from "../../lib/level";
+import { deleteCreatedLevel } from "../../lib/services/level";
 import ConfirmModal from "../UI/UIConfirmModal";
 
 type Props = {

@@ -12,7 +12,7 @@ import {
   signInRequest,
   signUpRequest,
   updateStoredTokensFromRefresh,
-} from "../../lib/auth";
+} from "../../lib/services/auth";
 
 interface AuthState {
   accessToken: Nullable<string>;

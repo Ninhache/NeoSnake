@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { Nullable } from "../../@types/NullableType";
-import { uploadMap } from "../../lib/level";
+import { uploadMap } from "../../lib/services/level";
 import UINotification from "../UI/UINotification";
 import UISuspense from "../UI/UISuspense";
 import { useEditor } from "../contexts/EditorContext";

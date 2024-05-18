@@ -57,7 +57,6 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
   }, [currentFruitIndex]);
 
   useEffect(() => {}, [mapData.maps[currentScenario].fruits]);
-  console.log("shape", shape);
   return (
     <div
       className="bg-gray-800 bg-opacity-40 overflow-x-hidden flex flex-col justify-between min-w-96 h-full"

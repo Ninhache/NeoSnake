@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ScenariosName } from "../../@types/ApiType";
-import { getCampaignPreviewLevels } from "../../lib/level";
+import { getCampaignPreviewLevels } from "../../lib/services/level.ts";
 import UICampaignPreview from "./UICampaignPreview.tsx";
 import UISuspense from "../UI/UISuspense";
 
