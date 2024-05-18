@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import UIFruits from "./UIFruits";
-import { DrawingType, useEditor } from "../contexts/EditorContext";
-import ColorModal from "../UI/UIColorModal";
 import { ObstacleColor } from "../../classes/Obstacles";
+import ColorModal from "../UI/UIColorModal";
+import { DrawingType, useEditor } from "../contexts/EditorContext";
+import UIFruits from "./UIFruits";
 
 type Props = {};
 const WidgetEditableFruits: React.FC<Props> = ({}) => {
@@ -16,9 +16,11 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
     isDrawing,
     currentObstacleColor,
     setObstacleColors,
+    selectShape,
+    shape,
   } = useEditor();
 
-  const [isColorModalOpen, setIsColorModalOpen] = useState(false);
+  const [isColorModalOpen, setColorModalOpen] = useState(false);
 
   const enableDrawing = (type: DrawingType) => {
     if (isDrawing === type) {
@@ -55,18 +57,18 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
   }, [currentFruitIndex]);
 
   useEffect(() => {}, [mapData.maps[currentScenario].fruits]);
-
+  console.log("shape", shape);
   return (
     <div
       className="bg-gray-800 bg-opacity-40 overflow-x-hidden flex flex-col justify-between min-w-96 h-full"
-      style={{ maxHeight: "450px" }}
+      style={{ maxHeight: "420px" }}
     >
       <ColorModal
         isOpen={isColorModalOpen}
-        onClose={() => setIsColorModalOpen(false)}
+        onClose={() => setColorModalOpen(false)}
         onSelectColor={(color: ObstacleColor) => {
           setObstacleColors(color);
-          setIsColorModalOpen(false);
+          setColorModalOpen(false);
         }}
       />
       <div className="hide-scrollbars flex-grow overflow-x-hidden">
@@ -90,14 +92,17 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
           />
         ))}
       </div>
-      <div className="flex gap-2 justify-center py-2">
+
+      <div
+        className={`relative flex justify-center items-center p-6 transition-colors`}
+      >
         <button
-          className={`group relative border-2 p-6 transition-colors border-transparent`}
+          className={`group relative border-4 p-6 transition-colors border-transparent`}
           style={{
             backgroundColor: currentObstacleColor,
           }}
           onClick={() => {
-            setIsColorModalOpen(true);
+            setColorModalOpen(true);
           }}
         >
           <svg
@@ -106,9 +111,8 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-8 h-8 absolute -top-2 -right-2 stroke-gray-400 z-10
-            group-hover:scale-110 group-hover:stroke-gray-300 group-hover:rotate-90 transition-all
-            "
+            className="w-8 h-8 absolute -top-2 -right-2 stroke-black opacity-70 z-10
+            group-hover:scale-110 group-hover:opacity-100 group-hover:rotate-90 transition-all"
           >
             <path
               strokeLinecap="round"
@@ -124,10 +128,96 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
         </button>
 
         <button
-          className={`relative bg-black border-2 p-6 hover:bg-gray-900 transition-colors ${
-            isDrawing === "OBSTACLE" ? " border-blue-500" : "border-transparent"
-          }`}
+          className={`group relative flex justify-center bg-white items-center border-4 p-6 transition-colors 
+          ${
+            shape === "CIRCLE"
+              ? "border-blue-500 bg-blue-200"
+              : "border-transparent bg-white"
+          }
+          `}
           onClick={() => {
+            setDrawing("NONE");
+            if (shape === "CIRCLE") {
+              selectShape(null);
+            } else {
+              selectShape("CIRCLE");
+            }
+          }}
+        >
+          <div
+            className="absolute w-10 h-10 rounded-full border-2"
+            style={{
+              borderColor: "black",
+              backgroundColor: currentObstacleColor,
+            }}
+          ></div>
+        </button>
+
+        <button
+          className={`group relative flex justify-center  items-center border-4 p-6 transition-colors 
+          ${
+            shape === "RECTANGLE"
+              ? "border-blue-500 bg-blue-200"
+              : "border-transparent bg-white"
+          }
+          `}
+          onClick={() => {
+            setDrawing("NONE");
+
+            if (shape === "RECTANGLE") {
+              selectShape(null);
+            } else {
+              selectShape("RECTANGLE");
+            }
+          }}
+        >
+          <div
+            className="absolute border-2 w-10 h-10"
+            style={{
+              borderColor: "black",
+              backgroundColor: currentObstacleColor,
+            }}
+          ></div>
+        </button>
+
+        <button
+          className={`group relative flex justify-center bg-white items-center border-4 p-6 transition-colors 
+          ${
+            shape === "LINE"
+              ? "border-blue-500 bg-blue-200"
+              : "border-transparent bg-white"
+          }
+          `}
+          onClick={() => {
+            setDrawing("NONE");
+
+            if (shape === "LINE") {
+              selectShape(null);
+            } else {
+              selectShape("LINE");
+            }
+          }}
+        >
+          <div
+            className="absolute border-2 w-12 h-2 rotate-45"
+            style={{
+              borderColor: "black",
+              backgroundColor: currentObstacleColor,
+            }}
+          ></div>
+        </button>
+
+        <button
+          className={`group relative bg-black border-4 p-6 hover:bg-gray-900 transition-colors ${
+            isDrawing === "OBSTACLE"
+              ? " border-blue-500 bg-blue-200"
+              : "border-transparent bg-white"
+          }`}
+          style={{
+            backgroundColor: currentObstacleColor,
+          }}
+          onClick={() => {
+            selectShape(null);
             enableDrawing("OBSTACLE");
           }}
         >
@@ -140,7 +230,7 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-6 h-6 absolute -top-1 -right-1 stroke-gray-400 scale-125"
+            className="w-6 h-6 absolute -top-1 -right-1 stroke-black scale-125 opacity-70 group-hover:rotate-12 group-hover:opacity-100 transition-all"
           >
             <path
               strokeLinecap="round"
@@ -151,7 +241,7 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
         </button>
 
         <button
-          className={`relative bg-red-500 border-2 p-6 hover:bg-red-400 transition-colors
+          className={`relative bg-red-500 border-4 p-6 hover:bg-red-400 transition-colors
           ${currentFruitIndex === -1 && "cursor-not-allowed opacity-50"}
           ${isDrawing === "FRUIT" ? " border-blue-500" : "border-transparent"}`}
           disabled={currentFruitIndex === -1}
@@ -181,7 +271,7 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
         <div className="border-l-2 border-gray-700 m-2"></div>
 
         <button
-          className="relative bg-red-500 border-2 p-6 hover:bg-red-400 transition-colors border-transparent"
+          className="relative bg-red-500 border-4 p-6 hover:bg-red-400 transition-colors border-transparent"
           onClick={() => {
             addGameFruits({ x: 5, y: 5, type: "FBa" });
             setCurrentFruitIndex(mapData.maps[currentScenario].fruits.length);

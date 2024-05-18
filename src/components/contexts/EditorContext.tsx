@@ -41,6 +41,14 @@ interface ScenarioDataContextProps {
   setLatestChanges: (data: Coordinates[]) => void;
   setMapData: (data: ScenarioData) => void;
   setObstacleColors: (color: ObstacleColor) => void;
+  shape: Nullable<"LINE" | "RECTANGLE" | "CIRCLE">;
+  selectShape: (
+    shape:
+      | Nullable<"LINE" | "RECTANGLE" | "CIRCLE">
+      | ((
+          prev: Nullable<"LINE" | "RECTANGLE" | "CIRCLE">
+        ) => Nullable<"LINE" | "RECTANGLE" | "CIRCLE">)
+  ) => void;
 }
 
 const defaultScenario: ScenarioData = {
@@ -91,6 +99,7 @@ const EditorContext = createContext<ScenarioDataContextProps>({
   deleteGameFruits: () => {},
   deleteObstacle: () => {},
   deleteScenario: () => {},
+
   duplicateScenario: () => {},
   setCurrentScenario: () => {},
   setCurrentFruitIndex: () => {},
@@ -99,6 +108,8 @@ const EditorContext = createContext<ScenarioDataContextProps>({
   setLatestChanges: () => {},
   setMapData: () => {},
   setObstacleColors: () => {},
+  shape: null,
+  selectShape: () => {},
 });
 
 interface ProviderProps {
@@ -118,6 +129,8 @@ const EditorContextProvider: React.FC<ProviderProps> = ({ children }) => {
 
   const [currentScenario, setCurrentScenario] = useState<number>(0);
   const [currentFruitIndex, setCurrentFruitIndex] = useState<number>(-1);
+  const [shape, selectShape] =
+    useState<Nullable<"LINE" | "RECTANGLE" | "CIRCLE">>(null);
 
   const addGameFruits = ({
     x,
@@ -397,6 +410,8 @@ const EditorContextProvider: React.FC<ProviderProps> = ({ children }) => {
         deleteGameFruits,
         deleteFutureFruitPositionsByIndex,
         deleteFutureFruitPositionsByCoordinates,
+        selectShape,
+        shape,
       }}
     >
       {children}
