@@ -19,14 +19,11 @@ const UIScenarioExplorePreview: React.FC<Props> = ({ scenario }) => {
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, width, height);
 
-    const sizeX =
-      (width * scenario.preview.options.cellSize) /
-      scenario.preview.options.width;
+    const sizeX = (width * scenario.options.cellSize) / scenario.options.width;
     const sizeY =
-      (height * scenario.preview.options.cellSize) /
-      scenario.preview.options.height;
+      (height * scenario.options.cellSize) / scenario.options.height;
 
-    scenario.preview.fruits.forEach((fruit) => {
+    scenario.fruits.forEach((fruit) => {
       ctx.fillStyle = "red";
       ctx.fillRect(
         fruit.actualPosition.x * sizeX,
@@ -46,7 +43,7 @@ const UIScenarioExplorePreview: React.FC<Props> = ({ scenario }) => {
       });
     });
 
-    scenario.preview.obstacles.forEach((obstacle) => {
+    scenario.obstacles.forEach((obstacle) => {
       ctx.fillStyle = obstacle.color;
       ctx.fillRect(obstacle.x * sizeX, obstacle.y * sizeY, sizeX, sizeY);
     });
@@ -89,14 +86,18 @@ const UIScenarioExplorePreview: React.FC<Props> = ({ scenario }) => {
           className={`border-2 border-transparent`}
         />
       </NavLink>
-      <p className="text-center font-bold m-1">
-        {scenario.preview.options.name}
-      </p>
+      <p className="text-center font-bold m-1">{scenario.options.name}</p>
       <div className="flex justify-end gap-1 text-gray-500">
-        By <p className="font-bold text-white">{`${scenario.creatorName}`}</p>
+        By{" "}
+        <NavLink
+          className="font-bold text-white hover:scale-110 transition-transform duration-150"
+          to={`/profile/${scenario.creatorName}`}
+        >
+          {scenario.creatorName}
+        </NavLink>
       </div>
       <p className="text-gray-500 italic text-right">
-        Difficulty {scenario.preview.options.difficulty}
+        Difficulty {scenario.options.difficulty}
       </p>
       {scenario.completed ? (
         <div>

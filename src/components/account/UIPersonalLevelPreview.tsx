@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Preview } from "../../@types/ApiType";
-import ConfirmModal from "../UI/UIConfirmModal";
+import { OnlinePreview } from "../../@types/ApiType";
 import { deleteCreatedLevel } from "../../lib/level";
+import ConfirmModal from "../UI/UIConfirmModal";
 
 type Props = {
-  scenario: Preview;
+  scenario: OnlinePreview;
   onDelete: (uuid: string) => void;
 };
 const UIPersonalLevelPreview: React.FC<Props> = ({ scenario, onDelete }) => {
@@ -164,6 +164,10 @@ const UIPersonalLevelPreview: React.FC<Props> = ({ scenario, onDelete }) => {
       </button>
 
       <p className="text-center font-bold m-1">{scenario.options.name}</p>
+
+      <p className="text-gray-500 italic text-right">
+        Difficulty {scenario.options.difficulty}
+      </p>
     </div>
   );
 };
