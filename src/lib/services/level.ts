@@ -6,8 +6,8 @@ import {
   GetLevelSuccessResponse,
   OnlineMapSuccessResponse,
   PreviewLevelSuccessResponse,
-} from "../@types/ApiType";
-import { ScenarioData } from "../@types/Scenario";
+} from "../../@types/ApiType";
+import { ScenarioData } from "../../@types/Scenario";
 import { customFetch, get, requestWithAuthorization } from "./api";
 import { LocalStorageToken } from "./auth";
 
@@ -145,9 +145,7 @@ export const getCreatedLevelFromUser = async (
       if (response.status === 204) {
         return {
           success: true,
-          data: {
-            maps: [],
-          },
+          data: [],
           pagination: {
             currentPage: 1,
             pageSize: 10,
@@ -194,14 +192,12 @@ export const getCreatedLevel = async ({
     if (response.status === 204) {
       return {
         success: true,
-        data: {
-          maps: [],
-        },
+        data: [],
         pagination: {
           currentPage: 1,
           pageSize: 10,
           totalItems: 0,
-          totalPages: 0,
+          totalPages: 1,
         },
       };
     } else {
