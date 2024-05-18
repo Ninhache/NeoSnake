@@ -149,7 +149,7 @@ export class SnakeMap {
     }
 
     this.snake.directionQueue = [
-      stringToDirectionType(jsonObj.snake.direction) || Direction.Right,
+      stringToDirectionType(jsonObj.snake.direction) ?? Direction.Right,
     ];
 
     this.indexCurrentMap = 0;
