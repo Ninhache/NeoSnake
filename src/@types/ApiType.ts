@@ -1,74 +1,23 @@
-import { OptionsScenarioData, ScenarioMapData } from "./Scenario";
-
-export interface ApiResponse {
-  success: boolean;
-  statusCode: number;
-  message: string;
-}
-
-export interface ApiErrorResponse extends ApiResponse {
-  success: false;
-}
-
-export interface LoginSuccessResponse extends ApiResponse {
-  success: true;
-  statusCode: number;
-  accessToken: string;
-  refreshToken: string;
-  username: string;
-}
-
-export interface SignupSuccessResponse extends ApiResponse {
-  success: true;
-}
-
-export interface CampaignMapSuccessResponse extends ApiResponse {
-  success: true;
-  data: string;
-}
+import {
+  OptionsScenarioData,
+  ScenarioFruits,
+  ScenarioMapData,
+  ScenarioObstacles,
+} from "./Scenario";
 
 export interface OnlinePreview extends ScenarioMapData {
   id: string;
   creatorName: string;
-  preview: {
-    options: OptionsScenarioData;
-  } & ScenarioMapData;
+  options: OptionsScenarioData;
+  fruits: ScenarioFruits[];
+  obstacles: ScenarioObstacles[];
   completed: boolean;
   completionTime?: Date;
-}
-
-export interface OnlineMapSuccessResponse extends ApiResponse {
-  success: true;
-  data: OnlinePreview[];
 }
 
 export interface Preview extends ScenarioMapData {
   id: string;
   options: OptionsScenarioData;
-}
-
-export interface GetCreateSuccessResponse extends ApiResponse {
-  success: true;
-  data: Preview[];
-}
-
-export interface GetLevelSuccessResponse extends ApiResponse {
-  success: true;
-  data: {
-    id: string;
-    map_data: string;
-    creator_id: number;
-    difficulty: number;
-    created_at: Date;
-    updated_at: Date;
-  };
-}
-
-export interface ExistingCreateLevelSuccessResponse extends ApiResponse {
-  success: true;
-  data: {
-    map_data: string;
-  };
 }
 
 export interface ScenariosName {
@@ -80,11 +29,84 @@ export interface ScenariosName {
   completionTime?: Date;
 }
 
-export interface PreviewLevelSuccessResponse extends ApiResponse {
+export interface ApiResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+}
+
+export interface Pagination {
+  pagination: {
+    totalItems: number;
+    totalPages: number;
+    pageSize: number;
+    currentPage: number;
+  };
+}
+
+export interface ApiErrorResponse extends ApiResponse {
+  success: false;
+}
+
+export interface ApiSuccessResponse extends ApiResponse {
+  success: true;
+}
+
+export interface LoginSuccessResponse extends ApiSuccessResponse {
+  success: true;
+  statusCode: number;
+  accessToken: string;
+  refreshToken: string;
+  username: string;
+}
+
+export interface SignupSuccessResponse extends ApiSuccessResponse {
+  success: true;
+}
+
+export interface CampaignMapSuccessResponse extends ApiSuccessResponse {
+  success: true;
+  data: string;
+}
+
+export interface OnlineMapSuccessResponse
+  extends ApiSuccessResponse,
+    Pagination {
+  success: true;
+  data: OnlinePreview[];
+}
+
+export interface GetCreateSuccessResponse
+  extends ApiSuccessResponse,
+    Pagination {
+  success: true;
+  data: OnlinePreview[];
+}
+
+export interface GetLevelSuccessResponse extends ApiSuccessResponse {
+  success: true;
+  data: {
+    id: string;
+    map_data: string;
+    creator_id: number;
+    difficulty: number;
+    created_at: Date;
+    updated_at: Date;
+  };
+}
+
+export interface ExistingCreateLevelSuccessResponse extends ApiSuccessResponse {
+  success: true;
+  data: {
+    map_data: string;
+  };
+}
+
+export interface PreviewLevelSuccessResponse extends ApiSuccessResponse {
   success: true;
   data: ScenariosName[];
 }
 
-export interface RefreshResponse extends ApiResponse {
+export interface RefreshResponse extends ApiSuccessResponse {
   accessToken: string;
 }

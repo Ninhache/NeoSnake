@@ -14,6 +14,7 @@ import WidgetHome from "./components/landingPage/WidgetLandingPage";
 import "./styles/App.css";
 
 import React, { ReactNode } from "react";
+import PageProfile from "./components/account/PageProfile.tsx";
 import { useAuth } from "./components/contexts/AuthContext";
 import WidgetExplore from "./components/onlineComponents/WidgetExplore";
 import WidgetOnline from "./components/onlineComponents/WidgetOnline";
@@ -43,6 +44,8 @@ const RouterContent: React.FC = () => {
             </ProtectedRoute>
           }
         />
+        <Route path="/profile/:username?" element={<PageProfile />} />
+
         <Route path="/explore" element={<WidgetExplore />} />
         <Route path="/campaign/:id?" element={<PageCampaign />} />
         <Route path="/online/:id?" element={<WidgetOnline />} />

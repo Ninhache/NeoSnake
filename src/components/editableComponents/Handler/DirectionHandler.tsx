@@ -18,7 +18,6 @@ const DirectionHandler: React.FC = () => {
   return (
     <UIDropdown
       items={["Right", "Left", "Down", "Up"]}
-      label="Test"
       onSelect={handleDirectionChange}
     />
   );
