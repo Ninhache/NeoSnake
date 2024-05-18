@@ -94,7 +94,7 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
       </div>
 
       <div
-        className={`relative flex justify-center items-center p-6 transition-colors`}
+        className={`relative flex justify-center items-center p-2 transition-colors`}
       >
         <button
           className={`group relative border-4 p-6 transition-colors border-transparent`}
@@ -111,7 +111,7 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-8 h-8 absolute -top-2 -right-2 stroke-black opacity-70 z-10
+            className="w-8 h-8 absolute -top-2 -right-2 fill-white stroke-black opacity-80 z-10
             group-hover:scale-110 group-hover:opacity-100 group-hover:rotate-90 transition-all"
           >
             <path
@@ -128,7 +128,7 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
         </button>
 
         <button
-          className={`group relative flex justify-center bg-white items-center border-4 p-6 transition-colors 
+          className={`group relative flex justify-center items-center border-4 p-6 transition-colors 
           ${
             shape === "CIRCLE"
               ? "border-blue-500 bg-blue-200"
@@ -154,7 +154,7 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
         </button>
 
         <button
-          className={`group relative flex justify-center  items-center border-4 p-6 transition-colors 
+          className={`group relative flex justify-center items-center border-4 p-6 transition-colors 
           ${
             shape === "RECTANGLE"
               ? "border-blue-500 bg-blue-200"
@@ -181,7 +181,7 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
         </button>
 
         <button
-          className={`group relative flex justify-center bg-white items-center border-4 p-6 transition-colors 
+          className={`group relative flex justify-center items-center border-4 p-6 transition-colors 
           ${
             shape === "LINE"
               ? "border-blue-500 bg-blue-200"
@@ -230,7 +230,7 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-6 h-6 absolute -top-1 -right-1 stroke-black scale-125 opacity-70 group-hover:rotate-12 group-hover:opacity-100 transition-all"
+            className="w-6 h-6 absolute -top-1 -right-1 fill-white stroke-black scale-125 opacity-80 group-hover:rotate-12 group-hover:opacity-100 transition-all"
           >
             <path
               strokeLinecap="round"
@@ -243,7 +243,11 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
         <button
           className={`relative bg-red-500 border-4 p-6 hover:bg-red-400 transition-colors
           ${currentFruitIndex === -1 && "cursor-not-allowed opacity-50"}
-          ${isDrawing === "FRUIT" ? " border-blue-500" : "border-transparent"}`}
+          ${
+            isDrawing === "FRUIT"
+              ? " border-blue-500 bg-blue-200"
+              : "border-transparent"
+          }`}
           disabled={currentFruitIndex === -1}
           onClick={() => {
             enableDrawing("FRUIT");
