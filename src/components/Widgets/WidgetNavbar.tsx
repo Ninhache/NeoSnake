@@ -1,10 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import UINavLink from "../UI/UINavLink";
 import { useAuth } from "../contexts/AuthContext";
 import LayoutComponent from "../layouts/LayoutComponent";
 
 const NavBar: React.FC = () => {
   const { username } = useAuth();
+  const [isMobile, _] = useState(window.innerWidth < 768);
+
   useEffect(() => {}, [username]);
 
   return (
@@ -18,21 +20,27 @@ const NavBar: React.FC = () => {
           <li>
             <UINavLink path="/play" text="Play" />
           </li>
-          <li>
-            <UINavLink path="/explore" text="Explore" />
-          </li>
-          <li>
-            <UINavLink path="/create" text="Create" />
-          </li>
+          {!isMobile && (
+            <>
+              <li>
+                <UINavLink path="/explore" text="Explore" />
+              </li>
+              <li>
+                <UINavLink path="/create" text="Create" />
+              </li>
+            </>
+          )}
           <li>
             <UINavLink path="/faq" text="FAQ" />
           </li>
         </ul>
         <div className="mr-2">
-          <UINavLink
-            path={username ? "/account" : "/login"}
-            text={username ? `${username}` : "Login"}
-          />
+          {!isMobile && (
+            <div className="flex gap-4 items-center">
+              <UINavLink path="/profile" text={username || ""} />
+              <UINavLink path="/logout" text="Logout" />
+            </div>
+          )}
         </div>
       </nav>
     </LayoutComponent>

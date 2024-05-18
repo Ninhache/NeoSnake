@@ -3,8 +3,7 @@ import { useEditor } from "../contexts/EditorContext";
 import { ScenarioMapData } from "../../@types/Scenario";
 import ConfirmModal from "../UI/UIConfirmModal";
 
-interface Props {}
-const WidgetScenarios: React.FC<Props> = ({}) => {
+const WidgetScenarios: React.FC = ({}) => {
   const {
     mapData,
     currentScenario,

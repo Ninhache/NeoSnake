@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
-import { getOnlineCreatedLevels } from "../../lib/level";
-import UIScenarioExplorePreview from "./UIScenarioExplorePreview";
-import LayoutComponent from "../layouts/LayoutComponent";
 import { OnlinePreview } from "../../@types/ApiType";
 import { Nullable } from "../../@types/NullableType";
-import UITextInput from "../UI/UITextInput";
+import { getOnlineCreatedLevels } from "../../lib/level";
 import UIDropdown from "../UI/UIDropdown";
 import UIPagination from "../UI/UIPagination";
+import UITextInput from "../UI/UITextInput";
+import LayoutComponent from "../layouts/LayoutComponent";
+import UIScenarioExplorePreview from "./UIScenarioExplorePreview";
 
-type Props = {};
-const WidgetExplore: React.FC<Props> = ({}) => {
+const WidgetExplore: React.FC = () => {
   const [levels, setLevels] = useState<OnlinePreview[]>([]);
 
   const [page, setPage] = useState(1);
