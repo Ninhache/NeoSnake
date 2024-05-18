@@ -19,7 +19,7 @@ const UITextInput: React.FC<TextInputProps> = ({
       value={value}
       onChange={handleChange}
       placeholder={placeholder}
-      className="text-black w-48 h-8 rounded-lg text-center"
+      className="text-black w-full h-8 rounded-lg text-center"
       maxLength={maxLength}
     />
   );

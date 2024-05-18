@@ -2,7 +2,6 @@ import React, { ChangeEvent, useState } from "react";
 
 interface DropdownProps {
   items: string[];
-  label: string;
   onSelect: (selectedItem: string) => void;
 }
 
