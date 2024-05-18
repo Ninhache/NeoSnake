@@ -88,8 +88,9 @@ const UIPersonalLevelPreview: React.FC<Props> = ({ scenario, onDelete }) => {
 
       <button
         className={
-          "opacity-0 group-hover:opacity-70 transition-opacity hover:scale-105 absolute bottom-12 right-24 bg-red-600 p-1 rounded-md"
+          "opacity-0 group-hover:opacity-85 transition-opacity hover:scale-105 absolute right-24 bg-red-600 p-1 rounded-md"
         }
+        style={{ bottom: "70px" }}
         onClick={(e) => {
           e.stopPropagation();
           setModalOpen(true);
@@ -113,8 +114,9 @@ const UIPersonalLevelPreview: React.FC<Props> = ({ scenario, onDelete }) => {
 
       <button
         className={
-          "opacity-0 group-hover:opacity-70 transition-opacity hover:scale-105 absolute bottom-12 right-14 bg-green-600 p-1 rounded-md"
+          "absolute opacity-0 group-hover:opacity-85 transition-opacity hover:scale-105 right-14 bg-green-600 p-1 rounded-md"
         }
+        style={{ bottom: "70px" }}
         onClick={(e) => {
           e.stopPropagation();
           // force lastPath to be account to redirect here when the user finished to play
@@ -140,8 +142,9 @@ const UIPersonalLevelPreview: React.FC<Props> = ({ scenario, onDelete }) => {
 
       <button
         className={
-          "opacity-0 group-hover:opacity-70 transition-opacity hover:scale-105 absolute bottom-12 right-4 bg-gray-600 rounded-md p-1"
+          "opacity-0 group-hover:opacity-85 transition-opacity hover:scale-105 absolute right-4 bg-gray-600 rounded-md p-1"
         }
+        style={{ bottom: "70px" }}
         onClick={(e) => {
           e.stopPropagation();
           navigate(`/create/${scenario.id}`);

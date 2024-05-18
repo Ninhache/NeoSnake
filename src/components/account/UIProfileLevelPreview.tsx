@@ -75,7 +75,7 @@ const UIProfileLevelPreview: React.FC<Props> = ({ scenario }) => {
 
   return (
     <div
-      className={`border-2 border-opacity-70 p-4   rounded-lg hover:scale-105 transition-transform ${
+      className={`group border-2 border-opacity-70 p-4 rounded-lg hover:scale-105 transition-transform ${
         scenario.completed
           ? "border-amber-400 bg-amber-300 bg-opacity-10 "
           : "border-black bg-gray-800 bg-opacity-60"
@@ -92,8 +92,9 @@ const UIProfileLevelPreview: React.FC<Props> = ({ scenario }) => {
 
       <button
         className={
-          "opacity-0 group-hover:opacity-70 transition-opacity hover:scale-105 absolute bottom-12 right-4 bg-green-600 p-1 rounded-md"
+          "absolute opacity-0 group-hover:opacity-70 transition-opacity hover:scale-105 right-6 bg-green-600 p-1 rounded-md"
         }
+        style={{ bottom: "100px" }}
         onClick={(e) => {
           e.stopPropagation();
           // force lastPath to be /profile to redirect here when the user finished to play
@@ -116,6 +117,7 @@ const UIProfileLevelPreview: React.FC<Props> = ({ scenario }) => {
           />
         </svg>
       </button>
+
       <p className="text-center font-bold m-1">{scenario.options.name}</p>
       <p className="text-gray-500 italic text-right">
         Difficulty {scenario.options.difficulty}
