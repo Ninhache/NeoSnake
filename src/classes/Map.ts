@@ -1,24 +1,17 @@
 import { Coordinates } from "../@types/CoordinatesType";
-import { Direction, stringToDirectionType } from "../@types/DirectionType";
-import { NextFrameInfo } from "../@types/MapTypes";
 import { Nullable } from "../@types/NullableType";
-import {
-  ScenarioData,
-  ScenarioFruit,
-  ScenarioMapData,
-} from "../@types/Scenario";
+import { OnlineScenario } from "../@types/scenario/Online";
+import { BaseScenarioData, Scenario } from "../@types/scenario/Scenario";
 
 import { Entity } from "./Entity";
-import { BasicObstacle } from "./Obstacles";
-import { Snake } from "./Snake";
 
 export class Tile {
-  parent: SnakeMap;
+  parent: Scenario<BaseScenarioData>;
   coordinates: Coordinates;
   private _data: Nullable<Entity>;
 
   constructor(
-    parent: SnakeMap,
+    parent: OnlineScenario,
     coordinates: Coordinates,
     data: Nullable<Entity> = null
   ) {
@@ -81,182 +74,31 @@ export class Tile {
   }
 }
 
-export class SnakeMap {
-  tiles: Tile[];
-  snake: Snake;
-  private readonly jsonObj: ScenarioData;
-  private indexCurrentMap: number;
-  private readonly scoreForEachMap: number[];
-  private readonly _scoreToWin: number;
+export class TextMap {
+  x: number;
+  y: number;
+  content: string;
 
-  /**
-   * The width of the map in pixels (should be always 800)
-   */
-  width_px: number;
-
-  /**
-   * The height of the map in pixels (should be always 800)
-   */
-  height_px: number;
-
-  /**
-   * The size of each cell in the map
-   */
-  cellSize: number;
-
-  /**
-   * The width of the map in cells
-   */
-  width_cell: number;
-
-  /**
-   * The height of the map in cells
-   */
-  height_cell: number;
-
-  constructor(serializedMap: string) {
-    this.tiles = [];
-
-    const jsonObj = MapSerializer.deserialize(serializedMap);
-
-    this.width_px = jsonObj.options.width;
-    this.height_px = jsonObj.options.height;
-    this.cellSize = jsonObj.options.cellSize;
-
-    this.width_cell = Math.floor(this.width_px / jsonObj.options.cellSize);
-    this.height_cell = Math.floor(this.height_px / jsonObj.options.cellSize);
-
-    // Create the map tiles
-    for (let i = 0; this.cellSize * i < this.width_px; i++) {
-      for (let j = 0; this.cellSize * j < this.height_px; j++) {
-        this.tiles.push(new Tile(this, { x: i, y: j }));
-      }
-    }
-    // Create the trash tile
-    this.tiles.push(new Tile(this, { x: -1, y: -1 }));
-
-    // Create the snake
-    const startTile = this.getTile(jsonObj.snake.startPosition as Coordinates);
-    if (!startTile) {
-      throw new Error(
-        `Invalid start position for snake at ${jsonObj.snake.startPosition}`
-      );
-    }
-
-    this.snake = new Snake(startTile, this.cellSize);
-    for (let i = 1; i < jsonObj.snake.length; i++) {
-      this.snake.grow();
-    }
-
-    this.snake.directionQueue = [
-      stringToDirectionType(jsonObj.snake.direction) ?? Direction.Right,
-    ];
-
-    this.indexCurrentMap = 0;
-    this.scoreForEachMap = [];
-    jsonObj.maps.forEach((map, index) => {
-      let score = 0;
-      map.fruits.forEach((fruit) => {
-        score += 1 + fruit.futurePosition.length;
-      });
-      this.scoreForEachMap[index] = score;
-    });
-    this._scoreToWin = this.scoreForEachMap.reduce((a, b) => a + b, 0);
-    this.loadMap(jsonObj.maps[this.indexCurrentMap]);
-
-    this.jsonObj = JSON.parse(JSON.stringify(jsonObj));
+  constructor(x: number, y: number, content: string) {
+    this.x = x;
+    this.y = y;
+    this.content = content;
   }
 
-  loadMap(mapData: ScenarioMapData) {
-    this.tiles.forEach((tile) => {
-      tile.vacate();
-    });
-    mapData.fruits.forEach((fruit) => {
-      const { x, y } = fruit.actualPosition;
-      const cell = this.getTile({ x, y });
-      if (!cell) {
-        throw new Error(`Invalid fruit position at ${x}, ${y}`);
-      }
-      cell.occupy(new ScenarioFruit(cell, fruit.futurePosition));
-    });
-
-    mapData.obstacles.forEach((obstacle) => {
-      const { x, y, color } = obstacle;
-      const cell = this.getTile({ x, y });
-      if (!cell) {
-        throw new Error(`Invalid obstacle position at ${x}, ${y}`);
-      }
-      cell.occupy(new BasicObstacle(cell, color));
-    });
-  }
-
-  scoreNeeded(): number {
-    return this.scoreForEachMap[this.indexCurrentMap];
-  }
-
-  scoreToWin(): number {
-    return this._scoreToWin;
-  }
-
-  next(): void {
-    this.indexCurrentMap += 1;
-    if (this.indexCurrentMap >= this.jsonObj.maps.length) {
-      throw new Error("No more maps to load, apparently player wins!");
-    } else {
-      this.loadMap(this.jsonObj.maps[this.indexCurrentMap]);
-    }
-  }
-
-  public draw(ctx: CanvasRenderingContext2D, alpha: number = 0): void {
-    this.tiles.forEach((tile) => {
-      tile.draw(ctx);
-    });
-
-    this.snake.draw(ctx, alpha);
-  }
-
-  reset(jsonObj?: ScenarioData): void {
-    if (jsonObj === undefined) {
-      jsonObj = this.jsonObj;
-    }
-
-    const startCoordinates = jsonObj.snake.startPosition as Coordinates;
-    const startTile = this.getTile(startCoordinates);
-    if (startTile === null) {
-      throw new Error(
-        `Invalid start position for snake at ${startCoordinates}`
-      );
-    }
-
-    this.snake.reset(startTile);
-    for (let i = 1; i < jsonObj.snake.length; i++) {
-      this.snake.grow();
-    }
-
-    this.loadMap(jsonObj.maps[this.indexCurrentMap]);
-  }
-
-  playNextFrame(): NextFrameInfo {
-    const snakeHasMoved = this.snake.processMovement(this);
-
-    return { snakeHasMoved };
-  }
-
-  getTile(coordinates: Coordinates): Nullable<Tile> {
-    return (
-      this.tiles.find(
-        (tile) => tile.x === coordinates.x && tile.y === coordinates.y
-      ) || null
-    );
+  public draw(ctx: CanvasRenderingContext2D): void {
+    ctx.font = "30px Arial";
+    ctx.fillStyle = "black";
+    ctx.textAlign = "center";
+    ctx.fillText(`${this.content}`, this.x, this.y);
   }
 }
 
 export class MapSerializer {
   static serialize(map: any): string {
-    return JSON.stringify(map as ScenarioData);
+    return JSON.stringify(map);
   }
 
-  static deserialize(jsonString: string): ScenarioData {
+  static deserialize(jsonString: string): BaseScenarioData {
     return JSON.parse(jsonString);
   }
 }
