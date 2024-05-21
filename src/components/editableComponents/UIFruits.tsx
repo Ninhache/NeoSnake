@@ -1,13 +1,13 @@
 import { useEffect } from "react";
-import { ScenarioFruits } from "../../@types/Scenario";
+import { BaseFruits } from "../../@types/scenario/Scenario";
 import chevron from "../../assets/svg/chevron-right-solid.svg";
 import { useEditor } from "../contexts/EditorContext";
-import FruitPositionHandler from "./fruitSectionComponents/FruitPositionHandler";
 import UIFutureFruits from "./UIFutureFruits";
+import FruitPositionHandler from "./fruitSectionComponents/FruitPositionHandler";
 
 type Props = {
   index: number;
-  fruit: ScenarioFruits;
+  fruit: BaseFruits;
   isOpen: boolean;
   onClick: () => void;
   deleteFruit: (delIndex: number) => void;

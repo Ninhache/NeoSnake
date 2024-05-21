@@ -1,12 +1,12 @@
 import { useMemo } from "react";
-import { ScenarioFruits } from "../../../@types/Scenario";
+import { BaseFruits } from "../../../@types/scenario/Scenario";
 import UINumberInput from "../../UI/UINumberInput";
 import { useEditor } from "../../contexts/EditorContext";
 
 type FuturePositionHandlerProps = {
   fruitIndex: number;
   futureIndex: number;
-  fruit: ScenarioFruits;
+  fruit: BaseFruits;
   axis: "x" | "y";
 };
 const FuturePositionHandler: React.FC<FuturePositionHandlerProps> = ({

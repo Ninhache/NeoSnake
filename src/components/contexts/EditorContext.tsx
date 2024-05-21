@@ -2,7 +2,8 @@ import React, { createContext, ReactNode, useContext, useState } from "react";
 import { Coordinates } from "../../@types/CoordinatesType";
 import { foodType, gameObjectType } from "../../@types/MapTypes";
 import { Nullable } from "../../@types/NullableType";
-import { ScenarioData } from "../../@types/Scenario";
+
+import { BaseScenarioData } from "../../@types/scenario/Scenario";
 import { ObstacleColor } from "../../classes/Obstacles";
 
 export type DrawingType = "OBSTACLE" | "FRUIT" | "NONE";
@@ -13,7 +14,7 @@ interface ScenarioDataContextProps {
   currentGameObjectType: Nullable<gameObjectType>;
   currentObstacleColor: ObstacleColor;
   latestChanges: Coordinates[];
-  mapData: ScenarioData;
+  mapData: BaseScenarioData;
   isDrawing: DrawingType;
   pendingChanges: boolean;
   addFutureFruitPositions: (index: number, newCoordinates: Coordinates) => void;
@@ -39,7 +40,7 @@ interface ScenarioDataContextProps {
   ) => void;
   setGameObjectType: (type: Nullable<gameObjectType>) => void;
   setLatestChanges: (data: Coordinates[]) => void;
-  setMapData: (data: ScenarioData) => void;
+  setMapData: (data: BaseScenarioData) => void;
   setObstacleColors: (color: ObstacleColor) => void;
   shape: Nullable<"LINE" | "RECTANGLE" | "CIRCLE">;
   selectShape: (
@@ -51,7 +52,7 @@ interface ScenarioDataContextProps {
   ) => void;
 }
 
-const defaultScenario: ScenarioData = {
+const defaultScenario: BaseScenarioData = {
   options: {
     width: 800,
     height: 800,
@@ -117,7 +118,7 @@ interface ProviderProps {
 }
 
 const EditorContextProvider: React.FC<ProviderProps> = ({ children }) => {
-  const [mapData, setMapData] = useState<ScenarioData>(defaultScenario);
+  const [mapData, setMapData] = useState<BaseScenarioData>(defaultScenario);
   const [latestChanges, setLatestChanges] = useState<Coordinates[]>([]);
   const [isDrawing, setDrawing] = useState<DrawingType>("NONE");
   const [pendingChanges, setPendingChanges] = useState<boolean>(false);
