@@ -1,4 +1,7 @@
-import { ScenarioData, ScenarioMapData } from "../@types/Scenario";
+import {
+  BaseScenarioData,
+  BaseScenarioMapData,
+} from "../@types/scenario/Scenario";
 
 export interface Coordinates {
   x: number;
@@ -10,7 +13,7 @@ interface ReturnMessage {
   success: boolean;
 }
 
-function validateOptions(options: ScenarioData["options"]): ReturnMessage {
+function validateOptions(options: BaseScenarioData["options"]): ReturnMessage {
   if (options.width !== 800) {
     return { message: "Invalid or missing width in options", success: false };
   }
@@ -29,7 +32,7 @@ function validateOptions(options: ScenarioData["options"]): ReturnMessage {
   return { message: "Options are valid", success: true };
 }
 
-function validateSnake(snake: ScenarioData["snake"]): ReturnMessage {
+function validateSnake(snake: BaseScenarioData["snake"]): ReturnMessage {
   if (!snake.startPosition) {
     return {
       message: "Invalid or missing startPosition in snake",
@@ -54,7 +57,7 @@ export interface OverlapDetail {
 }
 
 export function checkForOverlapWithDetails(
-  data: ScenarioData
+  data: BaseScenarioData
 ): OverlapDetail[] {
   const overlaps: OverlapDetail[] = [];
 
@@ -100,7 +103,7 @@ export function checkForOverlapWithDetails(
 }
 
 function validateMapData(
-  mapData: ScenarioMapData,
+  mapData: BaseScenarioMapData,
   index: number
 ): ReturnMessage {
   if (!Array.isArray(mapData.fruits) || mapData.fruits.length === 0) {
@@ -120,7 +123,7 @@ function validateMapData(
   return { message: "Map data is valid", success: true };
 }
 
-export function isValidData(data: ScenarioData): ReturnMessage {
+export function isValidData(data: BaseScenarioData): ReturnMessage {
   if (!data) {
     return { message: "Data is undefined", success: false };
   }

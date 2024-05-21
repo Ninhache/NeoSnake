@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer } from "react";
-import { ScenarioFruit } from "../../@types/Scenario";
+import { ScenarioFruit } from "../../@types/scenario/Scenario";
 
 interface GameState {
   score: number;

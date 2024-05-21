@@ -7,7 +7,7 @@ import {
   OnlineMapSuccessResponse,
   PreviewLevelSuccessResponse,
 } from "../../@types/ApiType";
-import { ScenarioData } from "../../@types/Scenario";
+import { BaseScenarioData } from "../../@types/scenario/Scenario";
 import { customFetch, get, requestWithAuthorization } from "./api";
 import { LocalStorageToken } from "./auth";
 
@@ -19,7 +19,7 @@ export const getCampaignPreviewLevels = async (): Promise<
     localStorage.getItem(LocalStorageToken.refreshToken)
   ) {
     const request = requestWithAuthorization(
-      `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/campaign/preview`,
+      `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/campaign`,
       {
         method: "GET",
       }
@@ -28,7 +28,7 @@ export const getCampaignPreviewLevels = async (): Promise<
     return await customFetch(request).then((response) => response.json());
   } else {
     return await get({
-      path: `/level/campaign/preview`,
+      path: `/level/campaign`,
     });
   }
 };
@@ -37,7 +37,7 @@ export const getCampaignLevel = async (
   id: string
 ): Promise<CampaignMapSuccessResponse | ApiErrorResponse> => {
   return await get({
-    path: `/level/${id}`,
+    path: `/level/campaign/${id}`,
   });
 };
 
@@ -240,7 +240,7 @@ export const uploadCampaignCompletion = async (
   const request = requestWithAuthorization(
     `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/campaign/completion`,
     {
-      method: "POST",
+      method: "PUT",
       body: JSON.stringify({
         mapId: campaignId,
         completionTime: time,
@@ -253,13 +253,13 @@ export const uploadCampaignCompletion = async (
 };
 
 export const uploadMap = async (
-  mapData: ScenarioData,
+  mapData: BaseScenarioData,
   uuid: string
 ): Promise<any> => {
   const request = requestWithAuthorization(
     `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/upload`,
     {
-      method: "POST",
+      method: "PUT",
       body: JSON.stringify({ ...mapData, uuid }),
     }
   );

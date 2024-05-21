@@ -1,9 +1,12 @@
 import { Coordinates } from "../@types/CoordinatesType";
 import { Direction } from "../@types/DirectionType";
+import {
+  BaseScenarioData,
+  Scenario,
+  ScenarioFruit,
+} from "../@types/scenario/Scenario";
+import { Tile } from "./Map";
 
-import { ScenarioFruit } from "../@types/Scenario";
-
-import { SnakeMap, Tile } from "./Map";
 import { Obstacle } from "./Obstacles";
 
 export class SnakeSegment {
@@ -95,7 +98,7 @@ export class Snake {
     this.hasToDie = true;
   }
 
-  public processMovement(map: SnakeMap): boolean {
+  public processMovement(map: Scenario<BaseScenarioData>): boolean {
     if (this.directionQueue.length > 0) {
       this.currentDirection = this.directionQueue.shift()!;
     }
@@ -167,7 +170,7 @@ export class Snake {
 
   public isCollidingWithObstacle(
     newHead: Coordinates,
-    snakeMap: SnakeMap
+    snakeMap: Scenario<BaseScenarioData>
   ): boolean {
     const maybeTile = snakeMap.getTile(newHead);
 

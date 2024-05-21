@@ -3,18 +3,22 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Direction } from "../../@types/DirectionType";
 import { Nullable } from "../../@types/NullableType";
-import { ScenarioData, ScenarioFruit } from "../../@types/Scenario";
-import { SnakeMap } from "../../classes/Map";
+
 import {
   getCreatedLevelById,
   uploadOnlineCompletion,
 } from "../../lib/services/level";
 
+import { OnlineScenario } from "../../@types/scenario/Online";
+import {
+  BaseScenarioData,
+  ScenarioFruit,
+} from "../../@types/scenario/Scenario";
 import { timestampToChrono } from "../../lib/time";
+import { isVisible } from "../../lib/visible";
 import UISuspense from "../UI/UISuspense";
 import { useAuth } from "../contexts/AuthContext";
 import { useGame } from "../contexts/GameContext";
-import { isVisible } from "../../lib/visible";
 
 type Props = {
   width: number;
@@ -32,7 +36,7 @@ const OnlineCanvas: React.FC<Props> = ({ width, height }) => {
   const { state, dispatch } = useGame();
   const stateRef = useRef(state);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [json, setJson] = useState<Nullable<ScenarioData>>(null);
+  const [json, setJson] = useState<Nullable<BaseScenarioData>>(null);
   const [finalTime, setFinalTime] = useState<number>(-1);
   const [resetToggle, setResetToggle] = useState<boolean>(false);
   const { username } = useAuth();
@@ -136,7 +140,7 @@ const OnlineCanvas: React.FC<Props> = ({ width, height }) => {
     if (json === null) return;
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
-    let scenario = new SnakeMap(JSON.stringify(json));
+    let scenario = new OnlineScenario(JSON.stringify(json));
 
     dispatch({ type: "GAME_SET_NAME", payload: json.options.name });
 

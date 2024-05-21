@@ -1,5 +1,7 @@
+import { BaseScenarioData, Scenario } from "../@types/scenario/Scenario";
 import { Entity } from "./Entity";
-import { SnakeMap, Tile } from "./Map";
+import { Tile } from "./Map";
+
 import { Snake } from "./Snake";
 
 export abstract class Obstacle extends Entity {
@@ -7,7 +9,7 @@ export abstract class Obstacle extends Entity {
     super(tile);
   }
 
-  abstract effect(snake: Snake, map: SnakeMap): void;
+  abstract effect(snake: Snake, map: Scenario<BaseScenarioData>): void;
   abstract draw(ctx: CanvasRenderingContext2D): void;
 }
 

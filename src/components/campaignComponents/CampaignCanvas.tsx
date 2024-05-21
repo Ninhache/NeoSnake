@@ -3,18 +3,20 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Direction } from "../../@types/DirectionType";
 import { Nullable } from "../../@types/NullableType";
-import { ScenarioData, ScenarioFruit } from "../../@types/Scenario";
-import { SnakeMap } from "../../classes/Map";
-import {
-  getCampaignLevel,
-  uploadCampaignCompletion,
-} from "../../lib/services/level";
 
+import { uploadCampaignCompletion } from "../../lib/services/level";
+
+import { CampaignScenario } from "../../@types/scenario/Campaign";
+import {
+  CampaignScenarioData,
+  ScenarioFruit,
+  exampleCampaignData,
+} from "../../@types/scenario/Scenario";
 import { timestampToChrono } from "../../lib/time";
+import { isVisible } from "../../lib/visible";
 import UISuspense from "../UI/UISuspense";
 import { useAuth } from "../contexts/AuthContext";
 import { useGame } from "../contexts/GameContext";
-import { isVisible } from "../../lib/visible";
 
 type Props = {
   width: number;
@@ -25,7 +27,7 @@ const CampaignCanvas: React.FC<Props> = ({ width, height }) => {
   const { state, dispatch } = useGame();
   const stateRef = useRef(state);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [json, setJson] = useState<Nullable<ScenarioData>>(null);
+  const [json, setJson] = useState<Nullable<CampaignScenarioData>>(null);
   const [finalTime, setFinalTime] = useState<number>(-1);
   const [playState, setPlayState] = useState<"PLAYING" | "PAUSED" | "STOPPED">(
     "PAUSED"
@@ -60,13 +62,14 @@ const CampaignCanvas: React.FC<Props> = ({ width, height }) => {
   }
 
   useEffect(() => {
-    getCampaignLevel(id).then((response) => {
-      if (response.success) {
-        setJson(JSON.parse(response.data));
-      } else {
-        throw new Error("Failed to fetch the level");
-      }
-    });
+    setJson(exampleCampaignData);
+    // getCampaignLevel(id).then((response) => {
+    //   if (response.success) {
+    //     setJson(JSON.parse(response.data));
+    //   } else {
+    //     throw new Error("Failed to fetch the level");
+    //   }
+    // });
   }, [id]);
 
   useEffect(() => {
@@ -132,7 +135,7 @@ const CampaignCanvas: React.FC<Props> = ({ width, height }) => {
     if (json === null) return;
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
-    let scenario = new SnakeMap(JSON.stringify(json));
+    let scenario = new CampaignScenario(JSON.stringify(json));
 
     dispatch({ type: "GAME_SET_NAME", payload: json.options.name });
 
@@ -199,6 +202,14 @@ const CampaignCanvas: React.FC<Props> = ({ width, height }) => {
         if (frameCount % state.speed === 0) {
           let snakeHasMoved = snake.processMovement(scenario);
 
+          if (!snakeHasMoved) {
+            scoreMap = 0;
+            totalScore = 0;
+            scenario.reset();
+            dispatch({ type: "GAME_RESET" });
+            setResetToggle((prev) => !prev);
+          }
+
           const tile = scenario.getTile(snake.head);
           if (tile) {
             if (tile.data instanceof ScenarioFruit) {
@@ -218,14 +229,6 @@ const CampaignCanvas: React.FC<Props> = ({ width, height }) => {
               scoreMap = 0;
               scenario.next();
             }
-          }
-
-          if (!snakeHasMoved) {
-            scoreMap = 0;
-            totalScore = 0;
-            scenario.reset();
-            dispatch({ type: "GAME_RESET" });
-            setResetToggle((prev) => !prev);
           }
         }
 

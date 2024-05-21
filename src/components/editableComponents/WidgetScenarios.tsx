@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useEditor } from "../contexts/EditorContext";
-import { ScenarioMapData } from "../../@types/Scenario";
+import { BaseScenarioMapData } from "../../@types/scenario/Scenario";
 import ConfirmModal from "../UI/UIConfirmModal";
 
 const WidgetScenarios: React.FC = ({}) => {
@@ -20,7 +20,10 @@ const WidgetScenarios: React.FC = ({}) => {
   const [toDelete, setToDelete] = useState<number>(0);
   const canvasRefs = useRef<(CanvasRef | null)[]>([]);
 
-  const drawCanvas = (ctx: CanvasRenderingContext2D, data: ScenarioMapData) => {
+  const drawCanvas = (
+    ctx: CanvasRenderingContext2D,
+    data: BaseScenarioMapData
+  ) => {
     const width = ctx.canvas.width;
     const height = ctx.canvas.height;
 

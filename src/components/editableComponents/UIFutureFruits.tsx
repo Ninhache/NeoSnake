@@ -1,9 +1,9 @@
-import { ScenarioFruits } from "../../@types/Scenario";
+import { BaseFruits } from "../../@types/scenario/Scenario";
 import { useEditor } from "../contexts/EditorContext";
 import FuturePositionHandler from "./fruitSectionComponents/FuturePositionHandler";
 
 type Props = {
-  fruit: ScenarioFruits;
+  fruit: BaseFruits;
   fruitIndex: number;
   futureIndex: number;
 };

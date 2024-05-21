@@ -1,30 +1,30 @@
 import {
-  OptionsScenarioData,
-  ScenarioFruits,
-  ScenarioMapData,
-  ScenarioObstacles,
-} from "./Scenario";
+  BaseFruits,
+  BaseObstacles,
+  BaseOptionsData,
+  BaseScenarioMapData,
+} from "./scenario/Scenario";
 
-export interface OnlinePreview extends ScenarioMapData {
+export interface OnlinePreview extends BaseScenarioMapData {
   id: string;
   creatorName: string;
-  options: OptionsScenarioData;
-  fruits: ScenarioFruits[];
-  obstacles: ScenarioObstacles[];
+  options: BaseOptionsData;
+  fruits: BaseFruits[];
+  obstacles: BaseObstacles[];
   completed: boolean;
   completionTime?: Date;
 }
 
-export interface Preview extends ScenarioMapData {
+export interface Preview extends BaseScenarioMapData {
   id: string;
-  options: OptionsScenarioData;
+  options: BaseOptionsData;
 }
 
 export interface ScenariosName {
   id: string;
   preview: {
-    options: OptionsScenarioData;
-  } & ScenarioMapData;
+    options: BaseOptionsData;
+  } & BaseScenarioMapData;
   completed: boolean;
   completionTime?: Date;
 }

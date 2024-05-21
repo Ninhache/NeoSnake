@@ -1,11 +1,11 @@
 import { useMemo } from "react";
-import { ScenarioFruits } from "../../../@types/Scenario";
-import { useEditor } from "../../contexts/EditorContext";
+import { BaseFruits } from "../../../@types/scenario/Scenario";
 import UINumberInput from "../../UI/UINumberInput";
+import { useEditor } from "../../contexts/EditorContext";
 
 type Props = {
   index: number;
-  fruit: ScenarioFruits;
+  fruit: BaseFruits;
   axis: "x" | "y";
 };
 const FruitPositionHandler: React.FC<Props> = ({ index, fruit, axis }) => {
