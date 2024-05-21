@@ -66,55 +66,59 @@ const WidgetExplore: React.FC = () => {
   return (
     <LayoutComponent>
       <h1 className="text-3xl text-center font-bold my-8">Explore</h1>
-      <div className="border-2 mx-16 my-4 border-opacity-45 border-gray-500"></div>
 
-      <div>
-        <div className="flex justify-center gap-4">
-          <div className="w-36">
-            <p className="text-gray-400 italic mb-2">Sort by date</p>
-            <UIDropdown
-              items={["Latest Update", "Oldest Update"]}
-              onSelect={(str) => {
-                setSortDate(str === "Oldest Update" ? "asc" : "desc");
-              }}
-            />
+      {totalItems > 0 && (
+        <>
+          <div className="border-2 mx-16 my-4 border-opacity-45 border-gray-500"></div>
+          <div>
+            <div className="flex justify-center gap-4">
+              <div className="w-36">
+                <p className="text-gray-400 italic mb-2">Sort by date</p>
+                <UIDropdown
+                  items={["Latest Update", "Oldest Update"]}
+                  onSelect={(str) => {
+                    setSortDate(str === "Oldest Update" ? "asc" : "desc");
+                  }}
+                />
+              </div>
+
+              <div className="w-36">
+                <p className="text-gray-400 italic mb-2">Difficulty</p>
+                <UIDropdown
+                  items={["All", "1", "2", "3", "4", "5"]}
+                  onSelect={(str) => {
+                    if (str === "All") {
+                      setDifficulty(-1);
+                    } else {
+                      setDifficulty(parseInt(str, 10));
+                    }
+                  }}
+                />
+              </div>
+
+              <div className="w-36 ">
+                <p className="text-gray-400 italic mb-2">Max Items per page</p>
+                <UIDropdown
+                  items={["12", "24", "36", "48", "60"]}
+                  onSelect={(str) => {
+                    setLimit(parseInt(str, 10));
+                  }}
+                />
+              </div>
+
+              <div className="border-l-2 border-gray-500"></div>
+
+              <div className="w-64 flex self-end">
+                <UITextInput
+                  handleChange={handleCreatorNameChange}
+                  placeholder="Creator Name"
+                  value={creatorName}
+                />
+              </div>
+            </div>
           </div>
-
-          <div className="w-36">
-            <p className="text-gray-400 italic mb-2">Difficulty</p>
-            <UIDropdown
-              items={["All", "1", "2", "3", "4", "5"]}
-              onSelect={(str) => {
-                if (str === "All") {
-                  setDifficulty(-1);
-                } else {
-                  setDifficulty(parseInt(str, 10));
-                }
-              }}
-            />
-          </div>
-
-          <div className="w-36 ">
-            <p className="text-gray-400 italic mb-2">Max Items per page</p>
-            <UIDropdown
-              items={["12", "24", "36", "48", "60"]}
-              onSelect={(str) => {
-                setLimit(parseInt(str, 10));
-              }}
-            />
-          </div>
-
-          <div className="border-l-2 border-gray-500"></div>
-
-          <div className="w-64 flex self-end">
-            <UITextInput
-              handleChange={handleCreatorNameChange}
-              placeholder="Creator Name"
-              value={creatorName}
-            />
-          </div>
-        </div>
-      </div>
+        </>
+      )}
 
       <div className="border-2 mx-16 my-4 border-opacity-45 border-gray-500"></div>
       <div className="flex flex-col justify-center">
