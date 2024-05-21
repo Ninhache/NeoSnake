@@ -47,6 +47,13 @@ const WidgetHome: React.FC<Props> = ({}) => {
     getArticles({ page, limit, tag: selectedTags }).then((response) => {
       setData(response.data);
 
+      // Keep only the tags from the articles to prevent the user from ending up with no results at the end
+      const newTags = response.data.reduce((acc, article) => {
+        return [...acc, ...article.tags];
+      }, [] as string[]);
+
+      setArticlesTags(Array.from(new Set([...newTags])));
+
       setPage(response.pagination.page);
       setLimit(response.pagination.limit);
       setTotalItems(response.pagination.totalItems);
