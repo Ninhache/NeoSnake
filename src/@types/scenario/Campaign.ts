@@ -10,6 +10,7 @@ export class CampaignScenario extends Scenario<CampaignScenarioData> {
   constructor(serializedMap: string) {
     super(serializedMap);
     this.text = [];
+    this.loadMap(this.jsonObj.maps[this.indexCurrentMap]);
   }
 
   public loadMap(mapData: BaseScenarioMapData): void {

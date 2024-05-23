@@ -264,11 +264,7 @@ export const duplicateToCampaign = async (id: string): Promise<void> => {
         return;
       } else {
         uploadCampaign(futureCampaignId, map_data).then((res) => {
-          if (res.success) {
-            alert("Success");
-          } else {
-            alert("Error");
-          }
+          console.log(res);
         });
       }
     }

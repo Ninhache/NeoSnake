@@ -35,7 +35,6 @@ const WidgetEditableFruits: React.FC = () => {
 
       const keyUpper = key.toLocaleUpperCase();
       if ([`A`, `Z`].includes(keyUpper)) {
-        e.preventDefault();
         selectShape(null);
         if (keyUpper === "A") {
           enableDrawing("OBSTACLE");

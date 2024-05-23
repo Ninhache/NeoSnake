@@ -145,9 +145,6 @@ export abstract class Scenario<T extends BaseScenarioData> {
     });
 
     this.snake.draw(ctx, alpha);
-    // this.text.forEach((text) => {
-    //   text.draw(ctx);
-    // });
   }
 
   reset(jsonObj?: BaseScenarioData): void {
