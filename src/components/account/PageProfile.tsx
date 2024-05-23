@@ -51,6 +51,9 @@ const PageProfile: React.FC = () => {
           setLevels([]);
         }
       })
+      .catch((error) => {
+        console.error("Error while fetching profile levels", error);
+      })
       .finally(() => {
         setLoading(false);
       });

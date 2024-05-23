@@ -68,7 +68,7 @@ export function checkForOverlapWithDetails(
     }));
 
     map.fruits.forEach((fruit, fruitIndex) => {
-      obstaclePositions.forEach((obstacle) => {
+      obstaclePositions.forEach((obstacle, obstacleIndex) => {
         if (
           obstacle.x === fruit.actualPosition.x &&
           obstacle.y === fruit.actualPosition.y
@@ -76,6 +76,7 @@ export function checkForOverlapWithDetails(
           overlaps.push({
             mapIndex,
             fruitIndex,
+            obstacleIndex,
 
             position: fruit.actualPosition,
             type: "current",
@@ -84,11 +85,12 @@ export function checkForOverlapWithDetails(
       });
 
       fruit.futurePosition.forEach((futurePos) => {
-        obstaclePositions.forEach((obstacle) => {
+        obstaclePositions.forEach((obstacle, obstacleIndex) => {
           if (obstacle.x === futurePos.x && obstacle.y === futurePos.y) {
             overlaps.push({
               mapIndex,
               fruitIndex,
+              obstacleIndex,
 
               position: futurePos,
               type: "future",
@@ -111,6 +113,29 @@ function validateMapData(
       message: `Fruits array for step n°${index + 1} is empty`,
       success: false,
     };
+  }
+
+  // check if there's fruits with the same position
+  const fruitPositions: Coordinates[] = [];
+  for (let i = 0; i < mapData.fruits.length; i++) {
+    const fruit = mapData.fruits[i];
+    const fruitPosition = {
+      x: fruit.actualPosition.x,
+      y: fruit.actualPosition.y,
+    };
+
+    if (
+      fruitPositions.some(
+        (pos) => pos.x === fruitPosition.x && pos.y === fruitPosition.y
+      )
+    ) {
+      return {
+        message: `Fruits with the same position in step n°${index + 1}`,
+        success: false,
+      };
+    }
+
+    fruitPositions.push(fruitPosition);
   }
 
   if (!Array.isArray(mapData.obstacles)) {
@@ -155,16 +180,18 @@ export function isValidData(data: BaseScenarioData): ReturnMessage {
 
       if (details.type === "current") {
         return {
-          message: `Overlap between objects in step n°${
-            index + 1
-          }, first overlap at Fruit n°${
-            Number(details.obstacleIndex) + 1
-          } at position (${details.position.x}, ${details.position.y})`,
+          message: `Overlap between objects for Scene n°${
+            details.mapIndex + 1
+          }, with fruit n°${
+            Number(details.fruitIndex) + 1
+          } : first overlap with an obstacle at position (${
+            details.position.x
+          }, ${details.position.y})`,
           success: false,
         };
       } else if (details.type === "future") {
         return {
-          message: `Overlap between objects in step n°${
+          message: `Overlap between objects for Fruit n°${
             index + 1
           }, first overlap at Fruit n°${
             Number(details.fruitIndex) + 1

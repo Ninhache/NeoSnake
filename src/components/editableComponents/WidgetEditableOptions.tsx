@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { Nullable } from "../../@types/NullableType";
@@ -16,10 +16,13 @@ const WidgetEditableOptions: React.FC = () => {
   const { uuid } = useParams();
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [returnValue, setReturnValue] = useState<Nullable<string>>(null);
+  const [returnType, setReturnType] = useState<"info" | "error" | "warning">(
+    "warning"
+  );
+  const [returnValue, setReturnValue] = useState<string>(
+    "Waiting for you to save the map"
+  );
   const navigate = useNavigate();
-
-  useEffect(() => {}, [mapData, returnValue]);
 
   const handleSave = () => {
     if (!mapData) {
@@ -27,30 +30,40 @@ const WidgetEditableOptions: React.FC = () => {
       return;
     }
 
-    if (!isValidData(mapData).success) {
-      console.error("mapData is invalid");
+    const validMessage = isValidData(mapData);
+    if (!validMessage.success) {
+      setReturnType("error");
+      setReturnValue(validMessage.message);
       return;
     }
 
     let tmpUuid = uuid ?? uuidv4();
-
     setReturnValue("Uploading...");
 
     setLoading(true);
     uploadMap(mapData, tmpUuid)
       .then((_) => {
+        setReturnType("info");
         setReturnValue("Upload with success");
         setLoading(false);
         navigate(`/create/${tmpUuid}`);
       })
+      .catch((error) => {
+        setReturnType("error");
+        setReturnValue("Error while uploading the map");
+        console.error(error);
+      })
       .finally(() => setLoading(false));
   };
+
+  useEffect(() => {}, [mapData]);
+
+  useEffect(() => {}, [returnValue, returnType]);
 
   return (
     <div className="flex flex-col w-full">
       <div className="flex flex-col w-full h-full gap-4">
         <WidgetDefaultOptions />
-
         <WidgetEditableFruits />
         <div className="flex flex-wrap w-auto">
           <DEVLogButton obj={mapData} className="w-1/2" />
@@ -63,9 +76,9 @@ const WidgetEditableOptions: React.FC = () => {
             {loading ? <UISuspense /> : "Save"}
           </button>
         </div>
-        {returnValue && (
-          <UINotification type="info">{returnValue}</UINotification>
-        )}
+        <UINotification type={returnType} closeable={false}>
+          {returnValue}
+        </UINotification>
       </div>
     </div>
   );

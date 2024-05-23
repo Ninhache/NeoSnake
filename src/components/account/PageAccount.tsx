@@ -111,7 +111,7 @@ const PageAccount: React.FC = () => {
         {loading ? (
           <UISuspense />
         ) : (
-          <div className="flex gap-2 mb-4 flex-wrap">
+          <div className="flex gap-2 mb-4 flex-wrap justify-center">
             {previewMap.length === 0 ? (
               <div className="text-center">
                 No levels found, go to the{" "}

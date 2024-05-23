@@ -75,7 +75,7 @@ export const getOnlineCreatedLevels = async ({
     const request = requestWithAuthorization(
       `${
         import.meta.env.VITE_SNAKE_API_ROUTE
-      }/level/upload?page=${page}&limit=${limit}${
+      }/level/online?page=${page}&limit=${limit}${
         difficulty > 0 ? `&difficulty=${difficulty}` : ""
       }${creatorName.length > 2 ? `&name=${creatorName}` : ""}${
         sortDate ? `&sortDate=${sortDate}` : ""
@@ -103,7 +103,7 @@ export const getOnlineCreatedLevels = async ({
     });
   } else {
     return await get({
-      path: `/level/upload?page=${page}&limit=${limit}${
+      path: `/level/online?page=${page}&limit=${limit}${
         difficulty > 0 ? `&difficulty=${difficulty}` : ""
       }
         ${creatorName ? `&name=${creatorName}` : ""}${
@@ -116,7 +116,7 @@ export const getOnlineCreatedLevels = async ({
 
 export const deleteCreatedLevel = async (id: string): Promise<any> => {
   const request = requestWithAuthorization(
-    `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/upload/${id}`,
+    `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/create/user/${id}`,
     {
       method: "DELETE",
     }
@@ -129,7 +129,7 @@ export const getCreatedLevelFromUser = async (
   username: string,
   {
     page = 1,
-    limit = 10,
+    limit = 12,
     difficulty = -1,
     sortDate = "desc",
   }: {
@@ -147,7 +147,7 @@ export const getCreatedLevelFromUser = async (
     const request = requestWithAuthorization(
       `${
         import.meta.env.VITE_SNAKE_API_ROUTE
-      }/level/create/${username}?page=${page}&limit=${limit}&sortDate=${sortDate}${
+      }/level/create/user/${username}?page=${page}&limit=${limit}&sortDate=${sortDate}${
         difficulty > 0 ? `&difficulty=${difficulty}` : ""
       }`,
       {
@@ -162,7 +162,7 @@ export const getCreatedLevelFromUser = async (
           data: [],
           pagination: {
             currentPage: 1,
-            pageSize: 10,
+            pageSize: 12,
             totalItems: 0,
             totalPages: 0,
           },
@@ -173,7 +173,7 @@ export const getCreatedLevelFromUser = async (
     });
   } else {
     return await get({
-      path: `/level/create/${username}?page=${page}&limit=${limit}&sortDate=${sortDate}${
+      path: `/level/create/user/${username}?page=${page}&limit=${limit}&sortDate=${sortDate}${
         difficulty > 0 ? `&difficulty=${difficulty}` : ""
       }`,
     });
@@ -314,7 +314,7 @@ export const uploadMap = async (
   uuid: string
 ): Promise<any> => {
   const request = requestWithAuthorization(
-    `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/upload`,
+    `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/online`,
     {
       method: "PUT",
       body: JSON.stringify({ ...mapData, uuid }),
@@ -328,7 +328,7 @@ export const getExistingMap = async (
   uuid: string
 ): Promise<ExistingCreateLevelSuccessResponse | ApiErrorResponse> => {
   const request = requestWithAuthorization(
-    `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/upload/${uuid}`,
+    `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/create/${uuid}`,
     {
       method: "GET",
     }

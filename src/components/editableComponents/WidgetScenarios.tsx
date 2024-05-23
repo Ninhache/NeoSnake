@@ -122,7 +122,9 @@ const WidgetScenarios: React.FC = ({}) => {
         onClose={() => setModalOpen(false)}
         itemName={`Scenario ${toDelete + 1}`}
       />
-      <div>Steps</div>
+      <div className="text-2xl font-bold my-2 text-gray-500">
+        Scene{mapData.maps.length > 1 && "s"}
+      </div>
       <div className="flex flex-row gap-2 w-auto flex-wrap">
         {mapData.maps.map((_, index) => (
           <div className="relative group" key={index}>

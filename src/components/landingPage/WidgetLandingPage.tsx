@@ -14,7 +14,7 @@ const WidgetHome: React.FC = () => {
   const [error, setError] = useState<number | null>(null);
 
   const [page, setPage] = useState<number>(1);
-  const [limit, setLimit] = useState<number>(10);
+  const [limit, setLimit] = useState<number>(6);
   const [totalItems, setTotalItems] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(0);
   // const [sortDate, setSortDate] = useState<"asc" | "desc">("desc");

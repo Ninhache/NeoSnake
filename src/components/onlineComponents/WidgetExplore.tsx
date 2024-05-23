@@ -58,11 +58,11 @@ const WidgetExplore: React.FC = () => {
   ) => {
     setCreatorName(event.target.value);
 
-    if (timeoutId) clearTimeout(timeoutId); // Clear the existing timeout
+    if (timeoutId) clearTimeout(timeoutId);
 
     const newTimeoutId = setTimeout(() => {
       setDebouncedCreatorName(event.target.value.trim());
-    }, 1000); // 1-second delay
+    }, 1000);
 
     setTimeoutId(newTimeoutId);
   };
