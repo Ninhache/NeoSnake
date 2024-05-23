@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { clamp } from "../../lib/math";
 import "../../styles/UINumberInput.css";
 
@@ -18,12 +19,23 @@ const UINumberInput: React.FC<NumberInputProps> = ({
   max,
   step = 1,
 }) => {
+  const [isShiftPressed, setIsShiftPressed] = useState(false);
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    setIsShiftPressed(event.shiftKey);
+  };
+
+  const handleKeyUp = (_: KeyboardEvent) => {
+    setIsShiftPressed(false);
+  };
+
   const handleIncrement = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.stopPropagation();
+    const increment = isShiftPressed ? 5 : step;
     if (value < max) {
-      onChangeValue(value + step);
+      onChangeValue(Math.min(value + increment, max));
     }
   };
 
@@ -31,10 +43,21 @@ const UINumberInput: React.FC<NumberInputProps> = ({
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.stopPropagation();
+    const decrement = isShiftPressed ? 5 : step;
     if (value > min) {
-      onChangeValue(value - step);
+      onChangeValue(Math.max(value - decrement, min));
     }
   };
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
 
   return (
     <div className="flex w-full">
