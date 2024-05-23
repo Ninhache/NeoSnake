@@ -16,7 +16,7 @@ const UIFaqQuestion: React.FC<Props> = ({ title, children }) => {
       >
         {title}
         <img
-          src={"/chevron-right-solid.svg"}
+          src={"/svg/chevron-right-solid.svg"}
           alt="chevron"
           width={14}
           height={14}
