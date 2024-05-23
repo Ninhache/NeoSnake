@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { BlogPostPreview } from "../../@types/BlogPosts";
-import UIArticlePreview from "./UIArticlePreview";
-import LayoutComponent from "../layouts/LayoutComponent";
-import UISuspense from "../UI/UISuspense";
 import { getArticles, getArticlesTags } from "../../lib/services/article";
-import UITagSelector from "../UI/UITagSelector";
 import UIPagination from "../UI/UIPagination";
+import UISuspense from "../UI/UISuspense";
+import UITagSelector from "../UI/UITagSelector";
+import LayoutComponent from "../layouts/LayoutComponent";
+import LandingPageModal from "./LandingPage";
+import UIArticlePreview from "./UIArticlePreview";
 
 const WidgetHome: React.FC = () => {
   const [data, setData] = useState<BlogPostPreview[]>([]);
@@ -21,6 +23,18 @@ const WidgetHome: React.FC = () => {
 
   const [articlesTags, setArticlesTags] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+  const [isOpen, setIsOpen] = useState(true);
+  const location = useLocation();
+
+  useEffect(() => {
+    const modalShown = sessionStorage.getItem("modalShown");
+
+    if (!modalShown) {
+      setIsOpen(true);
+      sessionStorage.setItem("modalShown", "true");
+    }
+  }, []);
 
   useEffect(() => {
     Promise.all([
@@ -89,6 +103,12 @@ const WidgetHome: React.FC = () => {
   return (
     <LayoutComponent>
       <div className="flex justify-between mb-4">
+        <LandingPageModal
+          isOpen={isOpen}
+          onClose={() => {
+            setIsOpen(false);
+          }}
+        />
         <UITagSelector
           tags={articlesTags}
           selectedTags={selectedTags}
