@@ -4,24 +4,41 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Direction } from "../../@types/DirectionType";
 import { Nullable } from "../../@types/NullableType";
 
-import { uploadCampaignCompletion } from "../../lib/services/level";
+import {
+  getCampaignLevel,
+  uploadCampaignCompletion,
+} from "../../lib/services/level";
 
+import { NavLink } from "react-router-dom";
 import { CampaignScenario } from "../../@types/scenario/Campaign";
 import {
   CampaignScenarioData,
   ScenarioFruit,
-  exampleCampaignData,
 } from "../../@types/scenario/Scenario";
 import { timestampToChrono } from "../../lib/time";
 import { isVisible } from "../../lib/visible";
 import UISuspense from "../UI/UISuspense";
-import { useAuth } from "../contexts/AuthContext";
 import { useGame } from "../contexts/GameContext";
 
 type Props = {
   width: number;
   height: number;
 };
+
+const KONAMI_CODE = [
+  "ArrowUp",
+  "ArrowUp",
+  "ArrowDown",
+  "ArrowDown",
+  "ArrowLeft",
+  "ArrowRight",
+  "ArrowLeft",
+  "ArrowRight",
+  "b",
+  "a",
+  "Enter",
+];
+let konamiCodePosition = 0;
 
 const CampaignCanvas: React.FC<Props> = ({ width, height }) => {
   const { state, dispatch } = useGame();
@@ -33,12 +50,15 @@ const CampaignCanvas: React.FC<Props> = ({ width, height }) => {
     "PAUSED"
   );
   const [resetToggle, setResetToggle] = useState<boolean>(false);
-  const { username } = useAuth();
+  const buttonRef = useRef<HTMLAnchorElement>(null);
+
+  const [nextId, setNextId] = useState<Nullable<number>>(null);
 
   useEffect(() => {
     const restartGame = (event: KeyboardEvent) => {
-      if (event.key === "r" || event.key === "R") {
+      if (event.key.toLocaleLowerCase() === "r") {
         dispatch({ type: "GAME_RESET" });
+        setNextId(null);
         setResetToggle((prev) => !prev);
       }
     };
@@ -62,14 +82,11 @@ const CampaignCanvas: React.FC<Props> = ({ width, height }) => {
   }
 
   useEffect(() => {
-    setJson(exampleCampaignData);
-    // getCampaignLevel(id).then((response) => {
-    //   if (response.success) {
-    //     setJson(JSON.parse(response.data));
-    //   } else {
-    //     throw new Error("Failed to fetch the level");
-    //   }
-    // });
+    getCampaignLevel(id).then((response) => {
+      if (response.success) {
+        setJson(response.data);
+      }
+    });
   }, [id]);
 
   useEffect(() => {
@@ -86,11 +103,11 @@ const CampaignCanvas: React.FC<Props> = ({ width, height }) => {
       throw new Error("Canvas not found");
     }
 
-    ctx.fillStyle = "rgba(100, 255, 100, 0.25)";
+    ctx.fillStyle = "rgba(100, 255, 100, 0.50)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // draw the time at center
-    ctx.font = "30px Arial";
+    ctx.font = "bold 30px Arial";
     ctx.fillStyle = "black";
     ctx.textAlign = "center";
     ctx.fillText(
@@ -105,18 +122,15 @@ const CampaignCanvas: React.FC<Props> = ({ width, height }) => {
       canvas.height / 2 + 50
     );
 
-    if (username) {
-      uploadCampaignCompletion(id, finalTime).then(() => {
-        ctx.fillText(
-          `Time saved...`,
-          canvas.width / 2,
-          canvas.height / 2 + 100
-        );
-      });
-    } else {
-      // save to the local storage instead
-      localStorage.setItem(`campaign_${id}`, `${finalTime}`);
-    }
+    uploadCampaignCompletion(id, finalTime).then((res) => {
+      ctx.fillText(`Time saved...`, canvas.width / 2, canvas.height / 2 + 100);
+
+      if (res.nextId >= 0) {
+        setNextId(res.nextId);
+      }
+
+      buttonRef.current?.focus();
+    });
 
     const handlePressEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -129,7 +143,7 @@ const CampaignCanvas: React.FC<Props> = ({ width, height }) => {
     return () => {
       removeEventListener("keydown", handlePressEscape);
     };
-  }, [finalTime, username, id]);
+  }, [finalTime, id]);
 
   useEffect(() => {
     if (json === null) return;
@@ -152,6 +166,13 @@ const CampaignCanvas: React.FC<Props> = ({ width, height }) => {
     canvas.focus();
 
     const handleKeyPress = (event: KeyboardEvent) => {
+      if (import.meta.env.DEV) {
+        if (event.key.toLocaleLowerCase() === "p") {
+          scoreMap = scenario.scoreNeeded();
+          totalScore = scenario.scoreToWin();
+        }
+      }
+
       // Keep all the events unless they are arrow keys
       if (
         !["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].includes(event.key)
@@ -176,6 +197,23 @@ const CampaignCanvas: React.FC<Props> = ({ width, height }) => {
       }
     };
 
+    const konamiCode = (event: KeyboardEvent) => {
+      const { key } = event;
+      if (KONAMI_CODE.includes(key)) {
+        if (key === KONAMI_CODE[konamiCodePosition]) {
+          konamiCodePosition++;
+          if (konamiCodePosition === KONAMI_CODE.length) {
+            window.switchSecretMode();
+            konamiCodePosition = 0;
+          }
+        } else {
+          konamiCodePosition = 0;
+        }
+      } else {
+        konamiCodePosition = 0;
+      }
+    };
+
     const draw = (ctx: CanvasRenderingContext2D, frameNumber: number) => {
       scenario.draw(ctx, (frameNumber % state.speed) / state.speed);
     };
@@ -185,6 +223,7 @@ const CampaignCanvas: React.FC<Props> = ({ width, height }) => {
       let animationFrameId: number;
 
       window.addEventListener("keydown", handleKeyPress);
+      window.addEventListener("keydown", konamiCode);
       const startTime = performance.now();
       const render = () => {
         if (playStateRef.current === "STOPPED") return;
@@ -239,7 +278,8 @@ const CampaignCanvas: React.FC<Props> = ({ width, height }) => {
 
       return () => {
         window.cancelAnimationFrame(animationFrameId),
-          window.removeEventListener("keydown", handleKeyPress);
+          window.removeEventListener("keydown", handleKeyPress),
+          window.removeEventListener("keydown", konamiCode);
       };
     }
   }, [json, state.speed, resetToggle]);
@@ -255,17 +295,47 @@ const CampaignCanvas: React.FC<Props> = ({ width, height }) => {
         }}
         className="mr-4"
       >
-        {/* {import.meta.env.DEV && jsonState === "ERROR" && (
-          <UINotification type="error" className="mb-4">
-            *DEV* Check if the API is running
-          </UINotification>
-        )} */}
         <UISuspense />
       </div>
     );
   }
 
-  return <canvas ref={canvasRef} width={width} height={height} />;
+  return (
+    <>
+      <div className="relative">
+        <canvas ref={canvasRef} width={width} height={height} />
+
+        <div
+          className={`absolute flex gap-16 justify-center w-full transition-opacity duration-300 ease-out
+          ${nextId === null ? "opacity-0" : "opacity-100"}
+          `}
+          style={{
+            bottom: "25%",
+          }}
+        >
+          <NavLink
+            to={"/"}
+            className="flex justify-center p-5 bg-gray-500 text-white w-24 rounded-lg"
+          >
+            Menu
+          </NavLink>
+          <NavLink
+            to={nextId && nextId > 0 ? `/campaign/${nextId}` : "/congrats"}
+            className="flex justify-center p-5 bg-green-900 font-bold text-white w-24 rounded-lg"
+            ref={buttonRef}
+            onClick={() => {
+              setNextId(null);
+              dispatch({ type: "GAME_RESET" });
+              setResetToggle((prev) => !prev);
+              setFinalTime(-1);
+            }}
+          >
+            Next
+          </NavLink>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default CampaignCanvas;

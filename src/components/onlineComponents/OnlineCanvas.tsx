@@ -17,13 +17,27 @@ import {
 import { timestampToChrono } from "../../lib/time";
 import { isVisible } from "../../lib/visible";
 import UISuspense from "../UI/UISuspense";
-import { useAuth } from "../contexts/AuthContext";
 import { useGame } from "../contexts/GameContext";
 
 type Props = {
   width: number;
   height: number;
 };
+
+const KONAMI_CODE = [
+  "ArrowUp",
+  "ArrowUp",
+  "ArrowDown",
+  "ArrowDown",
+  "ArrowLeft",
+  "ArrowRight",
+  "ArrowLeft",
+  "ArrowRight",
+  "b",
+  "a",
+  "Enter",
+];
+let konamiCodePosition = 0;
 
 const OnlineCanvas: React.FC<Props> = ({ width, height }) => {
   const navigate = useNavigate();
@@ -39,7 +53,6 @@ const OnlineCanvas: React.FC<Props> = ({ width, height }) => {
   const [json, setJson] = useState<Nullable<BaseScenarioData>>(null);
   const [finalTime, setFinalTime] = useState<number>(-1);
   const [resetToggle, setResetToggle] = useState<boolean>(false);
-  const { username } = useAuth();
   const [playState, setPlayState] = useState<"PLAYING" | "PAUSED" | "STOPPED">(
     "PAUSED"
   );
@@ -48,8 +61,9 @@ const OnlineCanvas: React.FC<Props> = ({ width, height }) => {
   useEffect(() => {
     const restartGame = (event: KeyboardEvent) => {
       if (event.key === "r" || event.key === "R") {
-        dispatch({ type: "GAME_RESET" });
+        setFinalTime(-1);
         setResetToggle((prev) => !prev);
+        dispatch({ type: "GAME_RESET" });
       }
     };
 
@@ -71,8 +85,6 @@ const OnlineCanvas: React.FC<Props> = ({ width, height }) => {
     getCreatedLevelById(id).then((response) => {
       if (response.success) {
         setJson(JSON.parse(response.data.map_data));
-      } else {
-        throw new Error("Error fetching level");
       }
     });
   }, [id]);
@@ -91,11 +103,11 @@ const OnlineCanvas: React.FC<Props> = ({ width, height }) => {
       throw new Error("Canvas not found");
     }
 
-    ctx.fillStyle = "rgba(100, 255, 100, 0.25)";
+    ctx.fillStyle = "rgba(100, 255, 100, 0.5)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // draw the time at center
-    ctx.font = "30px Arial";
+    ctx.font = "bold 30px Arial";
     ctx.fillStyle = "black";
     ctx.textAlign = "center";
     ctx.fillText(
@@ -110,18 +122,9 @@ const OnlineCanvas: React.FC<Props> = ({ width, height }) => {
       canvas.height / 2 + 50
     );
 
-    if (username) {
-      uploadOnlineCompletion(id, finalTime).then(() => {
-        ctx.fillText(
-          `Time saved...`,
-          canvas.width / 2,
-          canvas.height / 2 + 100
-        );
-      });
-    } else {
-      // save to the local storage instead
-      localStorage.setItem(`online_${id}`, `${finalTime}`);
-    }
+    uploadOnlineCompletion(id, finalTime).then(() => {
+      ctx.fillText(`Time saved...`, canvas.width / 2, canvas.height / 2 + 100);
+    });
 
     const handlePressEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -134,10 +137,11 @@ const OnlineCanvas: React.FC<Props> = ({ width, height }) => {
     return () => {
       removeEventListener("keydown", handlePressEscape);
     };
-  }, [finalTime, username, id]);
+  }, [finalTime, id]);
 
   useEffect(() => {
     if (json === null) return;
+
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     let scenario = new OnlineScenario(JSON.stringify(json));
@@ -154,7 +158,31 @@ const OnlineCanvas: React.FC<Props> = ({ width, height }) => {
     }
     canvas.focus();
 
+    const konamiCode = (event: KeyboardEvent) => {
+      const { key } = event;
+      if (KONAMI_CODE.includes(key)) {
+        if (key === KONAMI_CODE[konamiCodePosition]) {
+          konamiCodePosition++;
+          if (konamiCodePosition === KONAMI_CODE.length) {
+            window.switchSecretMode();
+            konamiCodePosition = 0;
+          }
+        } else {
+          konamiCodePosition = 0;
+        }
+      } else {
+        konamiCodePosition = 0;
+      }
+    };
+
     const handleKeyPress = (event: KeyboardEvent) => {
+      if (import.meta.env.DEV) {
+        if (event.key.toLocaleLowerCase() === "p") {
+          scoreMap = scenario.scoreNeeded();
+          totalScore = scenario.scoreToWin();
+        }
+      }
+
       // Keep all the events unless they are arrow keys
       if (
         !["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].includes(event.key)
@@ -188,12 +216,25 @@ const OnlineCanvas: React.FC<Props> = ({ width, height }) => {
       let animationFrameId: number;
 
       window.addEventListener("keydown", handleKeyPress);
+      window.addEventListener("keydown", konamiCode);
       const startTime = performance.now();
       const render = () => {
         if (playStateRef.current === "STOPPED") return;
         if (playStateRef.current === "PAUSED") {
           animationFrameId = window.requestAnimationFrame(render);
           return;
+        }
+
+        if (scoreMap >= scenario.scoreNeeded()) {
+          if (totalScore >= scenario.scoreToWin()) {
+            const winTime = performance.now();
+            setFinalTime(winTime - startTime);
+            setPlayState("STOPPED");
+            return;
+          } else {
+            scoreMap = 0;
+            scenario.next();
+          }
         }
 
         frameCount++;
@@ -205,44 +246,39 @@ const OnlineCanvas: React.FC<Props> = ({ width, height }) => {
         if (frameCount % state.speed === 0) {
           let snakeHasMoved = snake.processMovement(scenario);
 
-          const tile = scenario.getTile(snake.head);
-          if (tile) {
-            if (tile.data instanceof ScenarioFruit) {
-              dispatch({ type: "GAME_EAT_FRUIT", fruit: tile.data });
-              snake.eat(tile.data);
-              scoreMap++;
-              totalScore++;
-            }
-          }
-
-          if (scoreMap >= scenario.scoreNeeded()) {
-            if (totalScore >= scenario.scoreToWin()) {
-              const winTime = performance.now();
-              setFinalTime(winTime - startTime);
-              setPlayState("STOPPED");
-            } else {
-              scoreMap = 0;
-              scenario.next();
-            }
-          }
-
           if (!snakeHasMoved) {
             scoreMap = 0;
             totalScore = 0;
             scenario.reset();
             dispatch({ type: "GAME_RESET" });
             setResetToggle((prev) => !prev);
+            return;
+          }
+
+          const tile = scenario.getTile(snake.head);
+
+          if (tile) {
+            if (tile.data instanceof ScenarioFruit) {
+              dispatch({ type: "GAME_EAT_FRUIT", fruit: tile.data });
+              snake.eat(tile.data);
+              scoreMap += 1;
+              totalScore += 1;
+
+              console.log("EAT FRUITS AT", tile.x, tile.y);
+            }
           }
         }
 
         draw(ctx, frameCount);
       };
-      setPlayState("PLAYING");
+
       render();
+      setPlayState("PLAYING");
 
       return () => {
         window.cancelAnimationFrame(animationFrameId),
-          window.removeEventListener("keydown", handleKeyPress);
+          window.removeEventListener("keydown", handleKeyPress),
+          window.removeEventListener("keydown", konamiCode);
       };
     }
   }, [json, state.speed, resetToggle]);
