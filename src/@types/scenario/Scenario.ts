@@ -103,7 +103,6 @@ export abstract class Scenario<T extends BaseScenarioData> {
     this.tiles.forEach((tile) => {
       tile.vacate();
     });
-    // this.text = [];
     mapData.fruits.forEach((fruit) => {
       const { x, y } = fruit.actualPosition;
       const cell = this.getTile({ x, y });
@@ -121,11 +120,6 @@ export abstract class Scenario<T extends BaseScenarioData> {
       }
       cell.occupy(new BasicObstacle(cell, color));
     });
-
-    // mapData.text.forEach((text) => {
-    //   const { x, y, content } = text;
-    //   this.text.push(new TextMap(x, y, content));
-    // });
   }
 
   scoreNeeded(): number {
@@ -161,12 +155,10 @@ export abstract class Scenario<T extends BaseScenarioData> {
       jsonObj = this.jsonObj;
     }
 
-    const startCoordinates = jsonObj.snake.startPosition as Coordinates;
-    const startTile = this.getTile(startCoordinates);
+    const { x, y } = jsonObj.snake.startPosition as Coordinates;
+    const startTile = this.getTile({ x, y });
     if (startTile === null) {
-      throw new Error(
-        `Invalid start position for snake at ${startCoordinates}`
-      );
+      throw new Error(`Invalid start position for snake at ${{ x, y }}`);
     }
 
     this.snake.reset(startTile);
