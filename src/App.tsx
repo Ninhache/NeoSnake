@@ -7,6 +7,12 @@ import WidgetFooter from "./components/Widgets/WidgetFooter";
 import "./styles/App.css";
 import { AuthContextProvider } from "./components/contexts/AuthContext";
 
+window.secretMode = false;
+window.switchSecretMode = () => {
+  window.secretMode = !window.secretMode;
+  window.dispatchEvent(new Event("secretModeChange"));
+};
+
 const App: React.FC = () => {
   return (
     <>
