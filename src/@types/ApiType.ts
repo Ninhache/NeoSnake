@@ -3,6 +3,7 @@ import {
   BaseObstacles,
   BaseOptionsData,
   BaseScenarioMapData,
+  CampaignScenarioData,
 } from "./scenario/Scenario";
 
 export interface OnlinePreview extends BaseScenarioMapData {
@@ -66,7 +67,7 @@ export interface SignupSuccessResponse extends ApiSuccessResponse {
 
 export interface CampaignMapSuccessResponse extends ApiSuccessResponse {
   success: true;
-  data: string;
+  data: CampaignScenarioData;
 }
 
 export interface OnlineMapSuccessResponse
@@ -105,6 +106,7 @@ export interface ExistingCreateLevelSuccessResponse extends ApiSuccessResponse {
 export interface PreviewLevelSuccessResponse extends ApiSuccessResponse {
   success: true;
   data: ScenariosName[];
+  totalItems: number;
 }
 
 export interface RefreshResponse extends ApiSuccessResponse {

@@ -5,6 +5,8 @@ import { getOnlineCreatedLevels } from "../../lib/services/level";
 import UIDropdown from "../UI/UIDropdown";
 import UIPagination from "../UI/UIPagination";
 import UITextInput from "../UI/UITextInput";
+import WidgetDisconnectedOverlay from "../Widgets/WidgetDisconnectedOverlay";
+import { useAuth } from "../contexts/AuthContext";
 import LayoutComponent from "../layouts/LayoutComponent";
 import UIScenarioExplorePreview from "./UIScenarioExplorePreview";
 
@@ -20,6 +22,8 @@ const WidgetExplore: React.FC = () => {
 
   const [debouncedCreatorName, setDebouncedCreatorName] = useState("");
   const [creatorName, setCreatorName] = useState("");
+
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     getOnlineCreatedLevels({
@@ -67,86 +71,94 @@ const WidgetExplore: React.FC = () => {
     <LayoutComponent>
       <h1 className="text-3xl text-center font-bold my-8">Explore</h1>
 
-      {totalItems > 0 && (
-        <>
-          <div className="border-2 mx-16 my-4 border-opacity-45 border-gray-500"></div>
-          <div>
-            <div className="flex justify-center gap-4">
-              <div className="w-36">
-                <p className="text-gray-400 italic mb-2">Sort by date</p>
-                <UIDropdown
-                  items={["Latest Update", "Oldest Update"]}
-                  onSelect={(str) => {
-                    setSortDate(str === "Oldest Update" ? "asc" : "desc");
-                  }}
-                />
-              </div>
-
-              <div className="w-36">
-                <p className="text-gray-400 italic mb-2">Difficulty</p>
-                <UIDropdown
-                  items={["All", "1", "2", "3", "4", "5"]}
-                  onSelect={(str) => {
-                    if (str === "All") {
-                      setDifficulty(-1);
-                    } else {
-                      setDifficulty(parseInt(str, 10));
-                    }
-                  }}
-                />
-              </div>
-
-              <div className="w-36 ">
-                <p className="text-gray-400 italic mb-2">Max Items per page</p>
-                <UIDropdown
-                  items={["12", "24", "36", "48", "60"]}
-                  onSelect={(str) => {
-                    setLimit(parseInt(str, 10));
-                  }}
-                />
-              </div>
-
-              <div className="border-l-2 border-gray-500"></div>
-
-              <div className="w-64 flex self-end">
-                <UITextInput
-                  handleChange={handleCreatorNameChange}
-                  placeholder="Creator Name"
-                  value={creatorName}
-                />
-              </div>
-            </div>
-          </div>
-        </>
-      )}
-
       <div className="border-2 mx-16 my-4 border-opacity-45 border-gray-500"></div>
-      <div className="flex flex-col justify-center">
-        {levels.length === 0 ? (
-          <div className="text-center w-full text-gray-500 italic">
-            <p>No levels found</p>
-          </div>
-        ) : (
-          <>
-            {totalItems > limit && (
-              <div className="flex justify-end items-center mr-16 mb-4">
-                <p className="mr-2 text-gray-400">{totalItems} maps in total</p>
-                <UIPagination
-                  page={page}
-                  totalPages={totalPages}
-                  onNext={handleNextPage}
-                  onPrev={handlePrevPage}
-                />
-              </div>
-            )}
 
-            <div className="flex flex-wrap gap-2 justify-center">
-              {levels.map((level) => (
-                <UIScenarioExplorePreview key={level.id} scenario={level} />
-              ))}
+      <div className="relative">
+        {totalItems > 0 && (
+          <>
+            <div>
+              <div className="flex justify-center gap-4">
+                <div className="w-36">
+                  <p className="text-gray-400 italic mb-2">Sort by date</p>
+                  <UIDropdown
+                    items={["Latest Update", "Oldest Update"]}
+                    onSelect={(str) => {
+                      setSortDate(str === "Oldest Update" ? "asc" : "desc");
+                    }}
+                  />
+                </div>
+
+                <div className="w-36">
+                  <p className="text-gray-400 italic mb-2">Difficulty</p>
+                  <UIDropdown
+                    items={["All", "1", "2", "3", "4", "5"]}
+                    onSelect={(str) => {
+                      if (str === "All") {
+                        setDifficulty(-1);
+                      } else {
+                        setDifficulty(parseInt(str, 10));
+                      }
+                    }}
+                  />
+                </div>
+
+                <div className="w-36 ">
+                  <p className="text-gray-400 italic mb-2">
+                    Max Items per page
+                  </p>
+                  <UIDropdown
+                    items={["12", "24", "36", "48", "60"]}
+                    onSelect={(str) => {
+                      setLimit(parseInt(str, 10));
+                    }}
+                  />
+                </div>
+
+                <div className="border-l-2 border-gray-500"></div>
+
+                <div className="w-64 flex self-end">
+                  <UITextInput
+                    handleChange={handleCreatorNameChange}
+                    placeholder="Creator Name"
+                    value={creatorName}
+                  />
+                </div>
+              </div>
             </div>
           </>
         )}
+
+        <div className="border-2 mx-16 my-4 border-opacity-45 border-gray-500"></div>
+        <div className="flex flex-col justify-center">
+          {levels.length === 0 ? (
+            <div className="text-center w-full text-gray-500 italic">
+              <p>No levels found</p>
+            </div>
+          ) : (
+            <>
+              {totalItems > limit && (
+                <div className="flex justify-end items-center mr-16 mb-4">
+                  <p className="mr-2 text-gray-400">
+                    {totalItems} maps in total
+                  </p>
+                  <UIPagination
+                    page={page}
+                    totalPages={totalPages}
+                    onNext={handleNextPage}
+                    onPrev={handlePrevPage}
+                  />
+                </div>
+              )}
+
+              <div className="flex flex-wrap gap-2 justify-center">
+                {levels.map((level) => (
+                  <UIScenarioExplorePreview key={level.id} scenario={level} />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+        {!isAuthenticated() && <WidgetDisconnectedOverlay />}
       </div>
     </LayoutComponent>
   );
