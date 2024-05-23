@@ -7,7 +7,7 @@ This is the frontend part of the project, look at the [backend repo](https://git
 Simply install using :
 
 ```
-https://github.com/Ninhache/NeoSnake.git
+git clone https://github.com/Ninhache/NeoSnake.git
 cd NeoSnake
 yarn
 ```
@@ -16,13 +16,13 @@ yarn
 
 **Environment Variables:**
 
-Create and populate a file named `.env` with the following structure :
+**Then** you need to create a `.env` file at the root of the project with the following skeleton :
 
 ```.env
 VITE_API_URL=http://localhost:3000
 ```
 
-> You could also use the production API route, which is `https://snakeapi.ninhache.fr`
+> You can also use the hosted prod. API route, which is `https://snakeapi.ninhache.fr`
 > as `VITE_SNAKE_API_ROUTE=https://snakeapi.ninhache.fr`
 
 There's no more particular setup to do, you've access to 2 major commands :
