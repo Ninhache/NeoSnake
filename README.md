@@ -1,6 +1,6 @@
 ## Neo-Snake
 
-This is the frontend part of the project, look at the [backend repo](TO COMPLETE)
+This is the frontend part of the project, look at the [backend repo](https://github.com/Ninhache/NeoSnakeApi.git)
 
 # Installation
 
