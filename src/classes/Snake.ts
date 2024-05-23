@@ -223,8 +223,6 @@ export class Snake {
   public draw(ctx: CanvasRenderingContext2D, alpha: number = 0): void {
     ctx.fillStyle = "#00FF00";
 
-    console.log("Drawing snake");
-    console.log(this.head.current, this.head.target, alpha);
     let headPos = this.interpolate(this.head.current, this.head.target, alpha);
 
     ctx.fillRect(

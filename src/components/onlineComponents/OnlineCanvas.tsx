@@ -263,8 +263,6 @@ const OnlineCanvas: React.FC<Props> = ({ width, height }) => {
               snake.eat(tile.data);
               scoreMap += 1;
               totalScore += 1;
-
-              console.log("EAT FRUITS AT", tile.x, tile.y);
             }
           }
         }

@@ -254,7 +254,6 @@ export const duplicateToCampaign = async (id: string): Promise<void> => {
       const { map_data } = res.data as {
         map_data: string;
       };
-      console.log("parse", parseInt("hazeaz", 10));
       const futureCampaignId = parseInt(
         prompt("Futur campaign id (number only) ?") as string,
         10
@@ -265,7 +264,11 @@ export const duplicateToCampaign = async (id: string): Promise<void> => {
         return;
       } else {
         uploadCampaign(futureCampaignId, map_data).then((res) => {
-          console.log(res);
+          if (res.success) {
+            alert("Success");
+          } else {
+            alert("Error");
+          }
         });
       }
     }
