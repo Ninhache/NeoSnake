@@ -1,27 +1,34 @@
 ## Neo-Snake
 
+This is the frontend part of the project, look at the [backend repo](TO COMPLETE)
+
 # Installation
 
 Simply install using :
 
 ```
-https://github.com/Ninhache/PitSnake.git
-cd PitSnake
+https://github.com/Ninhache/NeoSnake.git
+cd NeoSnake
 yarn
 ```
 
 # Setup & Run
 
-You need to create and populate the .env file with the following structure, where I've provided the default value for the API:
+**Environment Variables:**
+
+Create and populate a file named `.env` with the following structure :
 
 ```.env
-VITE_SNAKE_API_ROUTE=http://localhost:3000
+VITE_API_URL=http://localhost:3000
 ```
 
-There's no particular setup to do, you've access to 2 major commands :
+> You could also use the production API route, which is `https://snakeapi.ninhache.fr`
+> as `VITE_SNAKE_API_ROUTE=https://snakeapi.ninhache.fr`
 
-- `yarn dev` starts a local web server with Hot Module Replacement for development
-- `yarn build & yarn preview` builds the project, and outputs to the folder `./dist`.. and starts a local web server that serves the built solution from `./dist` for previewing
+There's no more particular setup to do, you've access to 2 major commands :
+
+- `yarn dev` : Starts a local web server with Hot Module Replacement
+- `yarn prod` : Builds the project, and outputs to the folder `./dist`.. and starts a local web server that serves the built solution
 
 # _History_
 
@@ -35,26 +42,8 @@ So it will be powered by [**React**](https://fr.react.dev/) & [**TypeScript**](h
 
 ## Final Idea
 
-_that will change sometimes..._
-
-This game is a competitive snake game that requires skill to master. It's inspired by [Trackmania](https://www.ubisoft.com/fr-fr/game/trackmania/trackmania) and [Happy Wheels](https://fr.wikipedia.org/wiki/Happy_Wheels), where the primary goal is "speed". In this game, the objective is to be the fastest at consuming all the fruits in various scenarios.
+This game is a competitive snake game that requires skill to master. It's inspired by [Trackmania](https://www.ubisoft.com/fr-fr/game/trackmania/trackmania) and [Happy Wheels](https://fr.wikipedia.org/wiki/Happy_Wheels), where the primary goal are "speed" and "skills".
 
 I also encourage players to express their creativity by designing and sharing their own levels with the community.
 
 This is the final concept chosen after considering various ideas from previous brainstorming sessions.
-
-## Brainstorm Ideas
-
-**Ideas :**
-
-- a snek...
-- Obstacles / Enemies
-- Different skins (+ custom)
-- Boosts (Speed / Growth / ?)
-- Solo / Multi
-
-**_Vibing_ Ideas :**
-
-- Mods (that you can write in random languages to modify the game ?)
-- Score handling/Leaderboard (+ anti cheat lol)
-- Multiplayer / Multiple Snake ?
