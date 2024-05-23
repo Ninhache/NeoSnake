@@ -1,8 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Coordinates } from "../../@types/CoordinatesType";
 import { Nullable } from "../../@types/NullableType";
 import { isVisible } from "../../lib/visible";
 import { useEditor } from "../contexts/EditorContext";
+import {
+  bresenhamsLineAlgorithm,
+  generateCirclePoints,
+  rectangleAlgorithm,
+} from "../../lib/math";
 
 type Props = {
   width: number;
@@ -37,98 +41,10 @@ const WidgetEditableGrid: React.FC<Props> = ({ width, height }) => {
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const overlayRef = useRef<HTMLCanvasElement>(null);
+  const divRef = useRef<HTMLDivElement>(null);
 
   const [startPos, setStartPos] = useState({ x: -1, y: -1 });
   const [endPos, setEndPos] = useState({ x: -1, y: -1 });
-
-  function bresenhamsLineAlgorithm(
-    x0: number,
-    y0: number,
-    x1: number,
-    y1: number
-  ) {
-    let points = [];
-    let dx = Math.abs(x1 - x0);
-    let sx = x0 < x1 ? 1 : -1;
-    let dy = -Math.abs(y1 - y0);
-    let sy = y0 < y1 ? 1 : -1;
-    let err = dx + dy;
-    let e2;
-
-    while (true) {
-      points.push({ x: x0, y: y0 });
-      if (x0 === x1 && y0 === y1) break;
-      e2 = 2 * err;
-      if (e2 >= dy) {
-        err += dy;
-        x0 += sx;
-      }
-      if (e2 <= dx) {
-        err += dx;
-        y0 += sy;
-      }
-    }
-    return points;
-  }
-
-  function generateCirclePoints(
-    cx: number,
-    cy: number,
-    radius: number
-  ): Coordinates[] {
-    let points: Coordinates[] = [];
-    let x: number = radius;
-    let y: number = 0;
-    let p: number = 1 - radius;
-
-    addCirclePoints(points, cx, cy, x, y);
-
-    while (x > y) {
-      y++;
-      if (p <= 0) {
-        p = p + 2 * y + 1;
-      } else {
-        x--;
-        p = p + 2 * y - 2 * x + 1;
-      }
-      addCirclePoints(points, cx, cy, x, y);
-    }
-
-    return points;
-  }
-
-  function addCirclePoints(
-    points: Coordinates[],
-    cx: number,
-    cy: number,
-    x: number,
-    y: number
-  ): void {
-    points.push({ x: cx + x, y: cy + y });
-    points.push({ x: cx - x, y: cy + y });
-    points.push({ x: cx + x, y: cy - y });
-    points.push({ x: cx - x, y: cy - y });
-    points.push({ x: cx + y, y: cy + x });
-    points.push({ x: cx - y, y: cy + x });
-    points.push({ x: cx + y, y: cy - x });
-    points.push({ x: cx - y, y: cy - x });
-  }
-
-  function rectangleAlgorithm(x0: number, y0: number, x1: number, y1: number) {
-    const xMin = Math.min(x0, x1);
-    const xMax = Math.max(x0, x1);
-    const yMin = Math.min(y0, y1);
-    const yMax = Math.max(y0, y1);
-
-    let points = [];
-    for (let x = xMin; x <= xMax; x++) {
-      for (let y = yMin; y <= yMax; y++) {
-        points.push({ x, y });
-      }
-    }
-
-    return points;
-  }
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -155,6 +71,25 @@ const WidgetEditableGrid: React.FC<Props> = ({ width, height }) => {
       });
 
       if (currentScenario - 1 >= 0) {
+        mapData.maps[currentScenario - 1].fruits.forEach((fruit) => {
+          let lastPost = null;
+
+          if (fruit.futurePosition.length > 0) {
+            lastPost = fruit.futurePosition[fruit.futurePosition.length - 1];
+          } else {
+            lastPost = fruit.actualPosition;
+          }
+
+          ctx.fillStyle = "rgb(255, 193, 203, 0.25)";
+
+          ctx.fillRect(
+            lastPost.x * cellSize,
+            lastPost.y * cellSize,
+            cellSize,
+            cellSize
+          );
+        });
+
         mapData.maps[currentScenario - 1].obstacles.forEach((obstacle) => {
           ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
           ctx.fillRect(
@@ -176,7 +111,7 @@ const WidgetEditableGrid: React.FC<Props> = ({ width, height }) => {
         );
 
         fruit.futurePosition.forEach((futurePosition) => {
-          ctx.fillStyle = "rgb(255, 193, 203, 0.5)";
+          ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
 
           ctx.fillRect(
             futurePosition.x * cellSize,
@@ -392,6 +327,7 @@ const WidgetEditableGrid: React.FC<Props> = ({ width, height }) => {
         clearStates();
       }}
       style={{ position: "relative" }}
+      ref={divRef}
     >
       {(isDrawing !== "NONE" || shape !== null) && (
         <canvas
