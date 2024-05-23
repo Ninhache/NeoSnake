@@ -1,6 +1,4 @@
 import { useState } from "react";
-import closeIcon from "../../assets/svg/close_icon.svg";
-import infoIcon from "../../assets/svg/info_icon.svg";
 
 type NotificationType = "info" | "error" | "warning";
 
@@ -56,7 +54,7 @@ const UINotification: React.FC<Props> = ({
     >
       <div className="flex flex-row items-center gap-2">
         <img
-          src={infoIcon}
+          src={"/svg/info_icon.svg"}
           alt="info"
           className="h-8 w-8"
           style={{
@@ -70,7 +68,7 @@ const UINotification: React.FC<Props> = ({
       </div>
       <button onClick={() => setOpen(false)}>
         <img
-          src={closeIcon}
+          src={"/svg/close_icon.svg"}
           alt="close"
           className="h-8 w-8"
           style={{

@@ -13,8 +13,7 @@ import "../../styles/markdown.css";
 import UISuspense from "../UI/UISuspense";
 import rehypeRaw from "rehype-raw";
 
-type Props = {};
-const WidgetArticle: React.FC<Props> = ({}) => {
+const WidgetArticle: React.FC = () => {
   const params = useParams();
 
   const [data, setData] = useState<Nullable<BlogPost>>(null);

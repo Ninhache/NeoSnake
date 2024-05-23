@@ -1,5 +1,4 @@
 import { useState } from "react";
-import chevron from "../../assets/svg/chevron-right-solid.svg";
 
 type Props = {
   title: string;
@@ -17,7 +16,7 @@ const UIFaqQuestion: React.FC<Props> = ({ title, children }) => {
       >
         {title}
         <img
-          src={chevron}
+          src={"/chevron-right-solid.svg"}
           alt="chevron"
           width={14}
           height={14}

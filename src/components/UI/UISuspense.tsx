@@ -1,6 +1,4 @@
-type Props = {};
-
-const UISuspense: React.FC<Props> = ({}) => {
+const UISuspense: React.FC = () => {
   return <div className="spinner"></div>;
 };
 

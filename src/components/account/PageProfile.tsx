@@ -8,8 +8,7 @@ import UISuspense from "../UI/UISuspense.tsx";
 import LayoutComponent from "../layouts/LayoutComponent.tsx";
 import UIProfileLevelPreview from "./UIProfileLevelPreview.tsx";
 
-type Props = {};
-const PageProfile: React.FC<Props> = ({}) => {
+const PageProfile: React.FC = () => {
   const { username } = useParams();
   const navigate = useNavigate();
   if (!username) {

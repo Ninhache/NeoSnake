@@ -70,10 +70,7 @@ const defaultScenario: BaseScenarioData = {
       fruits: [
         {
           actualPosition: { x: 10, y: 15 },
-          futurePosition: [
-            { x: 15, y: 10 },
-            { x: 15, y: 5 },
-          ],
+          futurePosition: [],
           type: "FBa",
         },
       ],

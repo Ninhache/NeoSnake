@@ -15,10 +15,11 @@ const WidgetEditableOptions: React.FC = () => {
   const { mapData } = useEditor();
   const { uuid } = useParams();
 
-  useEffect(() => {}, [mapData]);
   const [loading, setLoading] = useState<boolean>(false);
   const [returnValue, setReturnValue] = useState<Nullable<string>>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {}, [mapData, returnValue]);
 
   const handleSave = () => {
     if (!mapData) {
@@ -32,6 +33,8 @@ const WidgetEditableOptions: React.FC = () => {
     }
 
     let tmpUuid = uuid ?? uuidv4();
+
+    setReturnValue("Uploading...");
 
     setLoading(true);
     uploadMap(mapData, tmpUuid)

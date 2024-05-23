@@ -7,8 +7,7 @@ import { getArticles, getArticlesTags } from "../../lib/services/article";
 import UITagSelector from "../UI/UITagSelector";
 import UIPagination from "../UI/UIPagination";
 
-type Props = {};
-const WidgetHome: React.FC<Props> = ({}) => {
+const WidgetHome: React.FC = () => {
   const [data, setData] = useState<BlogPostPreview[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<number | null>(null);

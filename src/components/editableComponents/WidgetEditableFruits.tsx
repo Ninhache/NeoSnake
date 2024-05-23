@@ -4,8 +4,7 @@ import ColorModal from "../UI/UIColorModal";
 import { DrawingType, useEditor } from "../contexts/EditorContext";
 import UIFruits from "./UIFruits";
 
-type Props = {};
-const WidgetEditableFruits: React.FC<Props> = ({}) => {
+const WidgetEditableFruits: React.FC = () => {
   const {
     mapData,
     currentScenario,
@@ -34,12 +33,16 @@ const WidgetEditableFruits: React.FC<Props> = ({}) => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const { key } = e;
 
-      const upperCaseKey = key.toLocaleUpperCase();
-      if (upperCaseKey === "A") {
-        enableDrawing("OBSTACLE");
-      } else if (upperCaseKey === "Z") {
-        if (currentFruitIndex === -1) return;
-        enableDrawing("FRUIT");
+      const keyUpper = key.toLocaleUpperCase();
+      if ([`A`, `Z`].includes(keyUpper)) {
+        e.preventDefault();
+        selectShape(null);
+        if (keyUpper === "A") {
+          enableDrawing("OBSTACLE");
+        } else if (keyUpper === "Z") {
+          if (currentFruitIndex === -1) return;
+          enableDrawing("FRUIT");
+        }
       }
     };
 

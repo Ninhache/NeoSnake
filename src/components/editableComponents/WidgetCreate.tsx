@@ -56,7 +56,7 @@ const WidgetCreate: React.FC = () => {
     return (
       <LayoutComponent>
         <h1 className="text-center text-3xl text-white font-bold">
-          You've to be connected to access this
+          You need to login to use that feature
         </h1>
         <WidgetLogin />
       </LayoutComponent>

@@ -2,14 +2,12 @@ import { useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import { ScenariosName } from "../../@types/ApiType";
 import { timestampToChrono } from "../../lib/time";
-import { useAuth } from "../contexts/AuthContext";
 
 type Props = {
   scenario: ScenariosName;
 };
 const UICampaignPreview: React.FC<Props> = ({ scenario }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { username } = useAuth();
 
   const drawCanvas = (ctx: CanvasRenderingContext2D) => {
     const width = ctx.canvas.width;
@@ -58,18 +56,10 @@ const UICampaignPreview: React.FC<Props> = ({ scenario }) => {
   }, [scenario]);
 
   let completionTime = "Not Attempted";
-  if (!username) {
-    const time = localStorage.getItem(`campaign_${scenario.id}`);
-    if (time) {
-      completionTime = timestampToChrono(parseInt(time, 10));
-      scenario.completed = true;
-    }
-  } else {
-    if (scenario.completionTime) {
-      completionTime = timestampToChrono(
-        new Date(scenario.completionTime).getTime()
-      );
-    }
+  if (scenario.completionTime) {
+    completionTime = timestampToChrono(
+      new Date(scenario.completionTime).getTime()
+    );
   }
 
   return (

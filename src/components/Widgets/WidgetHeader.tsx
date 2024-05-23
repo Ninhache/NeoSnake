@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import cobra from "../../assets/cobra.png";
 
-type Props = {};
-const WidgetHeader: React.FC<Props> = ({}) => {
+const WidgetHeader: React.FC = () => {
   const [hasScrolled, setHasScrolled] = useState(false);
 
   useEffect(() => {
@@ -28,7 +26,7 @@ const WidgetHeader: React.FC<Props> = ({}) => {
       )}
       <header className="flex justify-center p-4">
         <img
-          src={cobra}
+          src={"/cobra.png"}
           className={`transition-height duration-300 ease-in-out ${
             hasScrolled ? "h-24" : "h-96"
           }`}

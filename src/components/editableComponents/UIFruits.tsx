@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { BaseFruits } from "../../@types/scenario/Scenario";
-import chevron from "../../assets/svg/chevron-right-solid.svg";
 import { useEditor } from "../contexts/EditorContext";
 import UIFutureFruits from "./UIFutureFruits";
 import FruitPositionHandler from "./fruitSectionComponents/FruitPositionHandler";
@@ -69,7 +68,7 @@ const UIFruits: React.FC<Props> = ({
             />
           </svg>
           <img
-            src={chevron}
+            src={"/svg/chevron-right-solid.svg"}
             alt="chevron"
             width={14}
             height={14}
