@@ -17,6 +17,7 @@ import {
 interface AuthState {
   accessToken: Nullable<string>;
   username: Nullable<string>;
+  role: Nullable<string>;
 }
 
 interface AuthContextProps extends AuthState {
@@ -25,16 +26,19 @@ interface AuthContextProps extends AuthState {
   logout: () => void;
   refreshAccessToken: () => Promise<void>;
   isAuthenticated: () => boolean;
+  isAdmin: () => boolean;
 }
 
 const AuthContext = createContext<AuthContextProps>({
   accessToken: null,
   username: null,
+  role: null,
   login: async () => {},
   signup: async () => {},
   logout: () => {},
   refreshAccessToken: async () => {},
   isAuthenticated: () => false,
+  isAdmin: () => false,
 });
 
 interface ProviderProps {
@@ -45,6 +49,7 @@ const AuthContextProvider: React.FC<ProviderProps> = ({ children }) => {
   const [authState, setAuthState] = useState<AuthState>({
     accessToken: null,
     username: null,
+    role: null,
   });
 
   useEffect(() => {
@@ -54,13 +59,18 @@ const AuthContextProvider: React.FC<ProviderProps> = ({ children }) => {
     try {
       user = jwtDecode(token) as {
         username: string;
+        role: string;
         accessToken: string;
         refreshToken: string;
       };
     } catch (_) {}
 
     if (token && user) {
-      setAuthState({ accessToken: token, username: user.username });
+      setAuthState({
+        accessToken: token,
+        username: user.username,
+        role: user.role,
+      });
     }
   }, []);
 
@@ -74,7 +84,7 @@ const AuthContextProvider: React.FC<ProviderProps> = ({ children }) => {
 
       setAuthState((state) => ({ ...state, accessToken }));
     } catch (error) {
-      setAuthState({ username: null, accessToken: null });
+      setAuthState({ username: null, accessToken: null, role: null });
       throw new Error(`Failed to refresh token ${error}`);
     }
   };
@@ -88,7 +98,9 @@ const AuthContextProvider: React.FC<ProviderProps> = ({ children }) => {
 
     const { accessToken } = signInInfo;
 
-    setAuthState({ accessToken, username });
+    const { role } = jwtDecode(accessToken) as { role: string };
+
+    setAuthState({ accessToken, username, role });
   };
 
   const signup = async (username: string, password: string) => {
@@ -106,7 +118,13 @@ const AuthContextProvider: React.FC<ProviderProps> = ({ children }) => {
 
     const { accessToken } = loginInfo;
 
-    setAuthState({ accessToken, username });
+    const { role } = jwtDecode(accessToken) as { role: string };
+
+    setAuthState({ accessToken, username, role });
+  };
+
+  const isAdmin = (): boolean => {
+    return authState.role?.toLocaleLowerCase() === "admin";
   };
 
   const isAuthenticated = (): boolean => {
@@ -135,7 +153,8 @@ const AuthContextProvider: React.FC<ProviderProps> = ({ children }) => {
   const logout = () => {
     localStorage.removeItem(LocalStorageToken.accessToken);
     localStorage.removeItem(LocalStorageToken.refreshToken);
-    setAuthState({ accessToken: null, username: null });
+
+    setAuthState({ accessToken: null, username: null, role: null });
   };
 
   return (
@@ -147,6 +166,7 @@ const AuthContextProvider: React.FC<ProviderProps> = ({ children }) => {
         logout,
         refreshAccessToken,
         isAuthenticated,
+        isAdmin,
       }}
     >
       {children}

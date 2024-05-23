@@ -1,5 +1,6 @@
 import {
   ApiErrorResponse,
+  ApiSuccessResponse,
   CampaignMapSuccessResponse,
   ExistingCreateLevelSuccessResponse,
   GetCreateSuccessResponse,
@@ -39,6 +40,19 @@ export const getCampaignLevel = async (
   return await get({
     path: `/level/campaign/${id}`,
   });
+};
+
+export const checkAllLevelCompletions = async (): Promise<
+  (ApiSuccessResponse & { allCompleted: boolean }) | ApiErrorResponse
+> => {
+  const request = requestWithAuthorization(
+    `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/campaign/completion/check`,
+    {
+      method: "GET",
+    }
+  );
+
+  return await customFetch(request).then((response) => response.json());
 };
 
 export const getOnlineCreatedLevels = async ({
@@ -214,6 +228,50 @@ export const getCreatedLevelById = async (
   });
 };
 
+export const uploadCampaign = async (
+  id: number,
+  mapData: string
+): Promise<any> => {
+  const data = JSON.parse(mapData);
+  const dd = JSON.stringify({ ...data, id });
+  const request = requestWithAuthorization(
+    `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/campaign`,
+    {
+      method: "PUT",
+      body: `${dd}`,
+    }
+  );
+
+  return await customFetch(request);
+};
+
+/**
+ * Admin only
+ */
+export const duplicateToCampaign = async (id: string): Promise<void> => {
+  await getCreatedLevelById(id).then((res) => {
+    if (res.success) {
+      const { map_data } = res.data as {
+        map_data: string;
+      };
+      console.log("parse", parseInt("hazeaz", 10));
+      const futureCampaignId = parseInt(
+        prompt("Futur campaign id (number only) ?") as string,
+        10
+      );
+
+      if (isNaN(futureCampaignId)) {
+        alert("Invalid campaign id");
+        return;
+      } else {
+        uploadCampaign(futureCampaignId, map_data).then((res) => {
+          console.log(res);
+        });
+      }
+    }
+  });
+};
+
 export const uploadOnlineCompletion = async (
   onlineId: string,
   time: number
@@ -223,7 +281,7 @@ export const uploadOnlineCompletion = async (
     {
       method: "POST",
       body: JSON.stringify({
-        mapId: onlineId,
+        map_id: onlineId,
         completionTime: time,
         completionDate: Date.now(),
       }),
@@ -236,20 +294,20 @@ export const uploadOnlineCompletion = async (
 export const uploadCampaignCompletion = async (
   campaignId: string,
   time: number
-): Promise<any> => {
+): Promise<{ nextId: number }> => {
   const request = requestWithAuthorization(
     `${import.meta.env.VITE_SNAKE_API_ROUTE}/level/campaign/completion`,
     {
       method: "PUT",
       body: JSON.stringify({
-        mapId: campaignId,
+        map_id: campaignId,
         completionTime: time,
         completionDate: Date.now(),
       }),
     }
   );
 
-  return await customFetch(request);
+  return await customFetch(request).then((res) => res.json());
 };
 
 export const uploadMap = async (
