@@ -38,7 +38,7 @@ const PageProfile: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getCreatedLevelFromUser(username, {})
+    getCreatedLevelFromUser(username, { page, limit, difficulty, sortDate })
       .then((response) => {
         if (response.success) {
           setLevels(response.data);
@@ -111,7 +111,7 @@ const PageProfile: React.FC = () => {
         </div>
       </div>
 
-      <h1 className="text-3xl font-bold mb-4">My creations</h1>
+      <h1 className="text-3xl font-bold mb-4">{username}'s Creations</h1>
 
       {totalItems > limit && (
         <div className="flex justify-end items-center mr-16 mb-4">
