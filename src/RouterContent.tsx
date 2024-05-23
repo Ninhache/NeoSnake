@@ -19,6 +19,7 @@ import PageProfile from "./components/account/PageProfile.tsx";
 import { useAuth } from "./components/contexts/AuthContext";
 import WidgetExplore from "./components/onlineComponents/WidgetExplore";
 import WidgetOnline from "./components/onlineComponents/WidgetOnline";
+import WidgetCongrats from "./components/Widgets/WidgetCongrats.tsx";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -53,6 +54,14 @@ const RouterContent: React.FC = () => {
           }
         />
         <Route
+          path="/congrats"
+          element={
+            <ProtectedRoute>
+              <WidgetCongrats />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/account"
           element={
             <RestrictedRoute>
@@ -81,17 +90,21 @@ const RouterContent: React.FC = () => {
         <Route
           path="/campaign/:id?"
           element={
-            <RestrictedRoute>
-              <PageCampaign />
-            </RestrictedRoute>
+            <ProtectedRoute>
+              <RestrictedRoute>
+                <PageCampaign />
+              </RestrictedRoute>
+            </ProtectedRoute>
           }
         />
         <Route
           path="/online/:id?"
           element={
-            <RestrictedRoute>
-              <WidgetOnline />
-            </RestrictedRoute>
+            <ProtectedRoute>
+              <RestrictedRoute>
+                <WidgetOnline />
+              </RestrictedRoute>
+            </ProtectedRoute>
           }
         />
         <Route

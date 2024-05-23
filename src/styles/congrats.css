@@ -1,0 +1,14 @@
+.teaser {
+  opacity: 0;
+  animation: fadeInOut 5s infinite ease-out;
+}
+
+@keyframes fadeInOut {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
