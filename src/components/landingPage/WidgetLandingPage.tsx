@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import { BlogPostPreview } from "../../@types/BlogPosts";
 import { getArticles, getArticlesTags } from "../../lib/services/article";
 import UIPagination from "../UI/UIPagination";
@@ -24,8 +23,7 @@ const WidgetHome: React.FC = () => {
   const [articlesTags, setArticlesTags] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-  const [isOpen, setIsOpen] = useState(true);
-  const location = useLocation();
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const modalShown = sessionStorage.getItem("modalShown");
