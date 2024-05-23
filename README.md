@@ -1,4 +1,4 @@
-## PitSnake
+## Neo-Snake
 
 # Installation
 
