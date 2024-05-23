@@ -99,43 +99,43 @@ export class Snake {
   }
 
   public processMovement(map: Scenario<BaseScenarioData>): boolean {
-    if (this.directionQueue.length > 0) {
-      this.currentDirection = this.directionQueue.shift()!;
-    }
-
     if (this.hasToDie) {
       return false;
     }
 
-    const newHead: Coordinates = {
+    if (this.directionQueue.length > 0) {
+      this.currentDirection = this.directionQueue.shift()!;
+    }
+
+    const targetHead: Coordinates = {
       x: this.head.target.x,
       y: this.head.target.y,
     };
 
     switch (this.currentDirection) {
       case Direction.Up:
-        newHead.y -= 1;
+        targetHead.y -= 1;
         break;
       case Direction.Down:
-        newHead.y += 1;
+        targetHead.y += 1;
         break;
       case Direction.Left:
-        newHead.x -= 1;
+        targetHead.x -= 1;
         break;
       case Direction.Right:
-        newHead.x += 1;
+        targetHead.x += 1;
         break;
     }
 
     if (
-      this.isLeavingTheScreen(newHead, map.width_cell, map.height_cell) ||
-      this.isCollidingWithSelf(newHead) ||
-      this.isCollidingWithObstacle(newHead, map)
+      this.isLeavingTheScreen(targetHead, map.width_cell, map.height_cell) ||
+      this.isCollidingWithSelf(targetHead) ||
+      this.isCollidingWithObstacle(targetHead, map)
     ) {
       return false;
     }
 
-    this.head.updatePosition(newHead.x, newHead.y);
+    this.head.updatePosition(targetHead.x, targetHead.y);
     this.body[0].updatePosition(this.head.current.x, this.head.current.y);
     for (let i = 0; i < this.body.length - 1; i++) {
       this.body[i + 1].updatePosition(
@@ -199,8 +199,14 @@ export class Snake {
    * @param length the length of the snake
    * @returns a number between 0x40 and 0xA0
    */
-  private calculateColor(i: number, length: number): number {
-    return Math.floor(0xa0 - (i * 0xa0) / length) + 0x40;
+  private calculateColor(i: number, length: number): string {
+    if (window.secretMode) {
+      const hue = Math.floor((360 * i) / length) + 150;
+      return `hsl(${hue}, 100%, 50%)`;
+    } else {
+      const g = Math.floor(0xa0 - (i * 0xa0) / length) + 0x40;
+      return `rgb(0, ${g}, 0)`;
+    }
   }
 
   private interpolate(
@@ -215,8 +221,10 @@ export class Snake {
   }
 
   public draw(ctx: CanvasRenderingContext2D, alpha: number = 0): void {
-    ctx.fillStyle = "#00D000";
+    ctx.fillStyle = "#00FF00";
 
+    console.log("Drawing snake");
+    console.log(this.head.current, this.head.target, alpha);
     let headPos = this.interpolate(this.head.current, this.head.target, alpha);
 
     ctx.fillRect(
@@ -227,7 +235,8 @@ export class Snake {
     );
 
     this.body.forEach((segment, i) => {
-      ctx.fillStyle = `rgb(0,${this.calculateColor(i, this.body.length)},0)`;
+      ctx.fillStyle = `${this.calculateColor(i, this.body.length)}`;
+
       let segmentPos = this.interpolate(segment.current, segment.target, alpha);
       ctx.fillRect(
         segmentPos.x * this.cellSize,
