@@ -47,3 +47,13 @@ This game is a competitive snake game that requires skill to master. It's inspir
 I also encourage players to express their creativity by designing and sharing their own levels with the community.
 
 This is the final concept chosen after considering various ideas from previous brainstorming sessions.
+
+## Improvement Track
+
+Given that the project had a deadline, certain features had to be limited. For instance, the "leaderboard" had to be canceled due to the inability to validate each player's times. The system that was retained is therefore simpler, with a time associated with a map and a user. I've a potential solution but I needed more time to develop + I wasnt sure it could be "that" strong
+
+Talking about that, some requests are too large and need to be compressed. I tried this, and it was working well. However, I needed to conduct benchmarks before deploying it, but I was too busy to do so..
+
+If we consider that the general style needs to be revisited, we cannot overlook the performance of HTML canvases. Switching to WebGL could solve many of these issues.
+
+What is certain is that if I were to start over, I would definitely write more tests to validate certain functions, but I think I would also review a significant part of the data model. I'm not too sure how the game functions currently, even though it works well.
