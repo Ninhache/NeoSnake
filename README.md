@@ -57,3 +57,5 @@ Talking about that, some requests are too large and need to be compressed. I tri
 If we consider that the general style needs to be revisited, we cannot overlook the performance of HTML canvases. Switching to WebGL could solve many of these issues.
 
 What is certain is that if I were to start over, I would definitely write more tests to validate certain functions, but I think I would also review a significant part of the data model. I'm not too sure how the game functions currently, even though it works well.
+
+There's also a problem: I used React with Vite, and while I'm familiar with both technologies, the issue lies with the technologies themselves. React is notorious for poor SEO performance due to its large initial bundle size. I would recommend using Next.js (yes, I'm a fan) to reduce that bundle size. Using Server-Side Rendering (SSR) with Vite is still in beta, and I didn't want to learn it since I really appreciate the work of the Next.js team
